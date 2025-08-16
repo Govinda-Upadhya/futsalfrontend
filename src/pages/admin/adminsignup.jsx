@@ -1,12 +1,14 @@
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const Adminsignup = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   const onSubmit = async (data) => {
@@ -24,7 +26,7 @@ const Adminsignup = () => {
     );
     console.log(res.data);
     const { url, imageUrl } = await res.data;
-
+    console.log(imageUrl);
     // 2. Upload file directly to S3
     let Upload = await axios.put(url, file, {
       headers: {
@@ -41,13 +43,17 @@ const Adminsignup = () => {
       profile: imageUrl,
     };
 
-    // send to your backend API that stores in MongoDB
-    const saveRes = await axios.post("http://localhost:3001/admin/signup", {
+    const saveRes = await axios.post(
+      "http://localhost:3001/admin/signup",
       signupData,
-    });
-
-    const result = await saveRes.data;
-    console.log("Signup result:", result);
+      { withCredentials: true }
+    );
+    console.log(saveRes);
+    if (saveRes.status == 200) {
+      navigate("/admin/signin");
+    } else {
+      alert("couldnt signin");
+    }
   };
 
   return (
@@ -149,9 +155,14 @@ const Adminsignup = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-purple-600 transition duration-300"
+          className={`w-full py-3 text-white font-semibold rounded-lg shadow-md transition duration-300 ${
+            isSubmitting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+          }`}
+          disabled={isSubmitting}
         >
-          Sign Up
+          {isSubmitting ? "Submitting..." : "Sign Up"}
         </button>
       </form>
     </div>
