@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { base_url } from "../../types/ground";
 
 const Adminsignup = () => {
   const navigate = useNavigate();
@@ -16,43 +17,43 @@ const Adminsignup = () => {
     const file = data.profile[0];
     if (!file) return alert("Please select a file");
 
-    // 1. Get presigned URL from backend
-    const res = await axios.post(
-      "http://localhost:3001/admin/getpresignedurl/signup",
-      {
+    try {
+      // 1. Get presigned URL from backend
+      const res = await axios.post(`${base_url}/admin/getpresignedurl/signup`, {
         fileName: file.name,
         fileType: file.type,
+      });
+      const { url, imageUrl } = res.data;
+      console.log("Presigned URL:", url, "Image URL:", imageUrl);
+
+      // 2. Upload file directly to S3
+      await axios.put(url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      // 3. Save signup data
+      const signupData = {
+        name: data.name,
+        email: data.email,
+        contact: data.contact,
+        password: data.password,
+        profile: imageUrl,
+      };
+
+      const saveRes = await axios.post(`${base_url}/admin/signup`, signupData, {
+        withCredentials: true,
+      });
+
+      if (saveRes.status === 200) {
+        navigate("/admin/signin");
+      } else {
+        alert("Signup failed");
       }
-    );
-    console.log(res.data);
-    const { url, imageUrl } = await res.data;
-    console.log(imageUrl);
-    // 2. Upload file directly to S3
-    let Upload = await axios.put(url, file, {
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
-    console.log(Upload.response);
-
-    const signupData = {
-      name: data.name,
-      email: data.email,
-      contact: data.contact,
-      password: data.password,
-      profile: imageUrl,
-    };
-
-    const saveRes = await axios.post(
-      "http://localhost:3001/admin/signup",
-      signupData,
-      { withCredentials: true }
-    );
-    console.log(saveRes);
-    if (saveRes.status == 200) {
-      navigate("/admin/signin");
-    } else {
-      alert("couldnt signin");
+    } catch (err) {
+      console.error("Error during signup:", err);
+      alert("Something went wrong. Check console for details.");
     }
   };
 

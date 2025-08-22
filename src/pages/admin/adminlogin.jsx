@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { base_url } from "../../types/ground";
 
 const Adminsignin = () => {
   const navigate = useNavigate();
@@ -12,24 +13,21 @@ const Adminsignin = () => {
   } = useForm();
 
   const [message, setMessage] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     setMessage("");
     setLoading(true);
 
-    const apiEndpoint = "http://localhost:3001/admin/signin";
-
     try {
-      const response = await axios.post(apiEndpoint, data, {
+      const response = await axios.post(`${base_url}/admin/signin`, data, {
         withCredentials: true,
       });
 
-      if ((response.status = 200)) {
+      if (response.status === 200) {
         navigate("/admin/dashboard");
       } else {
-        alert("couldnt signin");
+        alert("Could not sign in");
       }
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
@@ -47,7 +45,7 @@ const Adminsignin = () => {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email input field with validation */}
+          {/* Email input */}
           <div>
             <label
               htmlFor="email"
@@ -77,6 +75,7 @@ const Adminsignin = () => {
             )}
           </div>
 
+          {/* Password input */}
           <div>
             <label
               htmlFor="password"
@@ -116,7 +115,7 @@ const Adminsignin = () => {
           </button>
         </form>
 
-        {/* Message display area for success or error */}
+        {/* Message */}
         {message && (
           <p
             className={`mt-4 text-center text-sm font-medium ${
@@ -127,7 +126,7 @@ const Adminsignin = () => {
           </p>
         )}
 
-        {/* Link for password recovery or other actions */}
+        {/* Forgot password link */}
         <div className="text-center text-sm">
           <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
             Forgot your password?

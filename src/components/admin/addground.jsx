@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-
+import { base_url } from "../../types/ground";
 const Addground = () => {
   const {
     register,
@@ -12,6 +12,11 @@ const Addground = () => {
   } = useForm({
     defaultValues: {
       name: "",
+      type: "Football",
+      location: "",
+      pricePerHour: 0,
+      rating: 4,
+      features: [""],
       address: "",
       availability: [{ start: "", end: "" }],
       description: "",
@@ -26,6 +31,15 @@ const Addground = () => {
   } = useFieldArray({
     control,
     name: "availability",
+  });
+
+  const {
+    fields: featureFields,
+    append: addFeature,
+    remove: removeFeature,
+  } = useFieldArray({
+    control,
+    name: "features",
   });
 
   const [images, setImages] = useState([]);
@@ -59,16 +73,12 @@ const Addground = () => {
   };
 
   const onSubmit = async (data) => {
-    // Merge files with other form data
-    const submitData = {
-      ...data,
-      images,
-    };
-
+    const submitData = { ...data, images };
+    console.log("submitteddata", submitData);
     const uploadUrl = [];
     for (const photo of submitData.images) {
       const res = await axios.post(
-        "http://localhost:3001/admin/createground/uploadpic",
+        `${base_url}/admin/createground/uploadpic`,
         { fileType: photo.type, fileName: photo.name },
         { withCredentials: true }
       );
@@ -76,26 +86,32 @@ const Addground = () => {
     }
     const imageurl = [];
     for (let i = 0; i < uploadUrl.length; i++) {
-      const uploaded = await axios.put(uploadUrl[i].url, submitData.images[i], {
+      await axios.put(uploadUrl[i].url, submitData.images[i], {
         headers: {
           "Content-Type": submitData.images[i].type,
         },
       });
       imageurl.push(uploadUrl[i].imageUrl);
     }
+
     const sendtobackend = await axios.post(
-      "http://localhost:3001/admin/createground",
+      `${base_url}/admin/createground`,
       {
         name: submitData.name,
+        type: submitData.type,
+        location: submitData.location,
+        pricePerHour: submitData.pricePerHour,
+        rating: 4, // default
+        features: submitData.features,
         address: submitData.address,
         availability: submitData.availability,
         description: submitData.description,
         image: imageurl,
+        admin: submitData.admin,
       },
-      {
-        withCredentials: true,
-      }
+      { withCredentials: true }
     );
+
     if (sendtobackend.status == 200) {
       reset();
       setImages([]);
@@ -105,7 +121,6 @@ const Addground = () => {
     } else {
       alert("your information is wrong format");
     }
-    // Reset form
   };
 
   return (
@@ -123,6 +138,82 @@ const Addground = () => {
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
           )}
+        </div>
+
+        {/* Type */}
+        <div>
+          <label className="block font-medium">Type</label>
+          <select
+            {...register("type", { required: "Type is required" })}
+            className="w-full border rounded p-2"
+          >
+            <option value="Football">Football</option>
+            <option value="Cricket">Cricket</option>
+            <option value="Basketball">Basketball</option>
+            <option value="Tennis">Tennis</option>
+            <option value="Badminton">Badminton</option>
+          </select>
+        </div>
+
+        {/* Location */}
+        <div>
+          <label className="block font-medium">Location</label>
+          <input
+            type="text"
+            {...register("location", { required: "Location is required" })}
+            className="w-full border rounded p-2"
+          />
+          {errors.location && (
+            <p className="text-red-500 text-sm">{errors.location.message}</p>
+          )}
+        </div>
+
+        {/* Price per Hour */}
+        <div>
+          <label className="block font-medium">Price Per Hour</label>
+          <input
+            type="number"
+            {...register("pricePerHour", {
+              required: "Price per hour is required",
+              min: { value: 0, message: "Price cannot be negative" },
+            })}
+            className="w-full border rounded p-2"
+          />
+          {errors.pricePerHour && (
+            <p className="text-red-500 text-sm">
+              {errors.pricePerHour.message}
+            </p>
+          )}
+        </div>
+
+        {/* Features */}
+        <div>
+          <label className="block font-medium">Features</label>
+          {featureFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2 mb-2">
+              <input
+                type="text"
+                {...register(`features.${index}`, {
+                  required: "Feature is required",
+                })}
+                className="w-full border rounded p-2"
+              />
+              <button
+                type="button"
+                onClick={() => removeFeature(index)}
+                className="bg-red-500 text-white px-2 py-1 rounded"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addFeature("")}
+            className="mt-2 bg-gray-200 px-3 py-1 rounded"
+          >
+            + Add Feature
+          </button>
         </div>
 
         {/* Address */}
@@ -243,6 +334,9 @@ const Addground = () => {
             <p className="text-red-500 text-sm">{errors.admin.message}</p>
           )}
         </div>
+
+        {/* Hidden Rating */}
+        <input type="hidden" value={4} {...register("rating")} />
 
         {/* Submit */}
         <button

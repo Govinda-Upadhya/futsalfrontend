@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
+import { base_url } from "../../types/ground";
+// Base URL for API
 
 const Groundetails = () => {
   const { id } = useParams();
@@ -16,6 +18,11 @@ const Groundetails = () => {
   } = useForm({
     defaultValues: {
       name: "",
+      type: "Football",
+      location: "",
+      pricePerHour: 0,
+      rating: 4,
+      features: [""],
       address: "",
       availability: [{ start: "", end: "" }],
       description: "",
@@ -32,22 +39,33 @@ const Groundetails = () => {
     name: "availability",
   });
 
-  const [images, setImages] = useState([]); // new files
-  const [previews, setPreviews] = useState([]); // local previews
-  const [existingImages, setExistingImages] = useState([]); // already uploaded image URLs
+  const {
+    fields: featureFields,
+    append: addFeature,
+    remove: removeFeature,
+  } = useFieldArray({
+    control,
+    name: "features",
+  });
 
-  // fetch ground details
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+
   useEffect(() => {
     const fetchGround = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3001/admin/seeGround/${id}`,
-          { withCredentials: true }
-        );
+        const res = await axios.get(`${base_url}/admin/seeGround/${id}`, {
+          withCredentials: true,
+        });
         const ground = res.data;
-
         reset({
           name: ground.name,
+          type: ground.type || "Football",
+          location: ground.location || "",
+          pricePerHour: ground.pricePerHour || 0,
+          rating: ground.rating || 4,
+          features: ground.features || [""],
           address: ground.address,
           availability: ground.availability || [{ start: "", end: "" }],
           description: ground.description,
@@ -59,7 +77,6 @@ const Groundetails = () => {
         console.error("Error fetching ground:", err);
       }
     };
-
     fetchGround();
   }, [id, reset]);
 
@@ -71,7 +88,6 @@ const Groundetails = () => {
         newFiles[index] = file;
         return newFiles;
       });
-
       setPreviews((prev) => {
         const newPreviews = [...prev];
         newPreviews[index] = URL.createObjectURL(file);
@@ -92,21 +108,20 @@ const Groundetails = () => {
 
   const removeExistingImage = (index) => {
     setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    setRemovedImage((prev) => [...prev, existingImages[index]]);
   };
 
   const onSubmit = async (data) => {
     try {
-      // Step 1: Upload new images if any
       const uploadUrl = [];
       for (const photo of images.filter(Boolean)) {
         const res = await axios.post(
-          "http://localhost:3001/admin/createground/uploadpic",
+          `${base_url}/admin/createground/uploadpic`,
           { fileType: photo.type, fileName: photo.name },
           { withCredentials: true }
         );
         uploadUrl.push(res.data);
       }
-
       const newImageUrls = [];
       for (let i = 0; i < uploadUrl.length; i++) {
         await axios.put(uploadUrl[i].url, images[i], {
@@ -114,13 +129,9 @@ const Groundetails = () => {
         });
         newImageUrls.push(uploadUrl[i].imageUrl);
       }
-
-      // Step 2: Merge with existing images
       const finalImages = [...existingImages, ...newImageUrls];
-
-      // Step 3: Send update to backend
       await axios.put(
-        `http://localhost:3001/admin/updateground/${id}`,
+        `${base_url}/admin/updateground/${id}`,
         {
           ...data,
           images: finalImages,
@@ -129,8 +140,6 @@ const Groundetails = () => {
         },
         { withCredentials: true }
       );
-
-      // Step 4: Update state so UI shows new images
       reset();
       setExistingImages(finalImages);
       setImages([]);
@@ -144,7 +153,7 @@ const Groundetails = () => {
     <div className="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6">
       <h2 className="text-xl font-bold mb-4">Edit Ground</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
+        {/* Ground Name */}
         <div>
           <label className="block font-medium">Ground Name</label>
           <input
@@ -155,6 +164,82 @@ const Groundetails = () => {
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
           )}
+        </div>
+
+        {/* Type */}
+        <div>
+          <label className="block font-medium">Type</label>
+          <select
+            {...register("type", { required: "Type is required" })}
+            className="w-full border rounded p-2"
+          >
+            <option value="Football">Football</option>
+            <option value="Cricket">Cricket</option>
+            <option value="Basketball">Basketball</option>
+            <option value="Tennis">Tennis</option>
+            <option value="Badminton">Badminton</option>
+          </select>
+        </div>
+
+        {/* Location */}
+        <div>
+          <label className="block font-medium">Location</label>
+          <input
+            type="text"
+            {...register("location", { required: "Location is required" })}
+            className="w-full border rounded p-2"
+          />
+          {errors.location && (
+            <p className="text-red-500 text-sm">{errors.location.message}</p>
+          )}
+        </div>
+
+        {/* Price */}
+        <div>
+          <label className="block font-medium">Price Per Hour</label>
+          <input
+            type="number"
+            {...register("pricePerHour", {
+              required: "Price per hour is required",
+              min: { value: 0, message: "Price cannot be negative" },
+            })}
+            className="w-full border rounded p-2"
+          />
+          {errors.pricePerHour && (
+            <p className="text-red-500 text-sm">
+              {errors.pricePerHour.message}
+            </p>
+          )}
+        </div>
+
+        {/* Features */}
+        <div>
+          <label className="block font-medium">Features</label>
+          {featureFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2 mb-2">
+              <input
+                type="text"
+                {...register(`features.${index}`, {
+                  required: "Feature is required",
+                })}
+                className="w-full border rounded p-2"
+              />
+              <button
+                type="button"
+                onClick={() => removeFeature(index)}
+                className="bg-red-500 text-white px-2 py-1 rounded"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addFeature("")}
+            className="mt-2 bg-gray-200 px-3 py-1 rounded"
+          >
+            + Add Feature
+          </button>
         </div>
 
         {/* Address */}
@@ -183,10 +268,7 @@ const Groundetails = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => {
-                    removeExistingImage(index);
-                    setRemovedImage([...removedImage, url]);
-                  }}
+                  onClick={() => removeExistingImage(index)}
                   className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 text-xs"
                 >
                   ✕
@@ -196,7 +278,7 @@ const Groundetails = () => {
           </div>
         </div>
 
-        {/* Upload New Images */}
+        {/* New Images */}
         <div>
           <label className="block font-medium">Upload New Images</label>
           {images.map((_, index) => (
@@ -289,7 +371,7 @@ const Groundetails = () => {
           />
         </div>
 
-        {/* Admin ID */}
+        {/* Admin */}
         <div>
           <label className="block font-medium">Admin ID</label>
           <input
@@ -302,7 +384,8 @@ const Groundetails = () => {
           )}
         </div>
 
-        {/* Submit */}
+        <input type="hidden" value={4} {...register("rating")} />
+
         <button
           type="submit"
           disabled={isSubmitting}

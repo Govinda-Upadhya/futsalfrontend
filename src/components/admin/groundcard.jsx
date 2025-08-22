@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { base_url } from "../../types/ground";
 const Groundcard = ({ ground }) => {
   const navigate = useNavigate();
 
@@ -12,12 +12,9 @@ const Groundcard = ({ ground }) => {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this ground?")) {
       try {
-        await axios.delete(
-          `http://localhost:3001/admin/deleteground/${ground._id}`,
-          {
-            withCredentials: true,
-          }
-        );
+        await axios.delete(`${base_url}/admin/deleteground/${ground._id}`, {
+          withCredentials: true,
+        });
 
         window.location.reload();
       } catch (error) {
@@ -41,7 +38,7 @@ const Groundcard = ({ ground }) => {
     >
       {/* Placeholder image for the futsal ground */}
       <img
-        src={ground.images[0]}
+        src={ground.image[0]}
         alt={ground.name}
         className="w-full h-48 object-cover"
       />

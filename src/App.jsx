@@ -5,12 +5,17 @@ import Adminsignup from "./pages/admin/adminsignup";
 import Admin from "./pages/admin/admin";
 import Adminsignin from "./pages/admin/adminlogin";
 import Groundetails from "./pages/admin/groundetails";
+import HomePage from "./pages/home/home";
+import BookingPage from "./components/booking/bookingpage";
+import BookingPending from "./components/booking/bookingPending";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route element={<Home />} path="/" />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/booking/:groundId" element={<BookingPage />} />
+        <Route path="/users/booking/:booking_id" element={<BookingPending />} />
         <Route element={<Admin />} path="/admin/dashboard" />
         <Route element={<Groundetails />} path="/admin/ground/:id" />
         <Route element={<Adminsignup />} path="/admin/signup" />

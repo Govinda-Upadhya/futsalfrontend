@@ -4,21 +4,25 @@ import Footer from "../../components/admin/footer";
 import Futsalcomponent from "../../components/admin/futsalcomponent";
 import axios from "axios";
 import Addground from "../../components/admin/addground";
-
+import Booking from "./adminBooking";
+import { base_url } from "../../types/ground";
 const Admin = () => {
   const [active, setActive] = useState("dashboard");
   const [grounds, setGrounds] = useState([]);
 
   useEffect(() => {
     async function fetchGround() {
-      const res = await axios.get("http://localhost:3001/admin/seeGrounds", {
-        withCredentials: true,
-      });
-      if (res.status == 200) {
-        console.log(res.data.grounds);
-        setGrounds(res.data.grounds);
-      } else {
-        console.log("no grounds");
+      try {
+        const res = await axios.get(`${base_url}/admin/seeGrounds`, {
+          withCredentials: true,
+        });
+        if (res.status == 200) {
+          setGrounds(res.data.grounds);
+        } else {
+          alert("You havent registered any grounds");
+        }
+      } catch (error) {
+        alert("You have not registered any grounds yet");
       }
     }
     fetchGround();
@@ -30,7 +34,7 @@ const Admin = () => {
       {active == "dashboard" ? (
         <Futsalcomponent grounds={grounds} />
       ) : active == "booking" ? (
-        <p>booking</p>
+        <Booking />
       ) : (
         <Addground />
       )}
