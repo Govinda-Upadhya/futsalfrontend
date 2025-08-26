@@ -155,17 +155,6 @@ const BookingPage: React.FC = () => {
               <div className="flex items-center text-gray-600 mt-1">
                 <MapPin className="h-4 w-4 mr-1" />
                 <span>{ground.location}</span>
-                <Star
-                  className="h-4 w-4 ml-4 mr-1 text-yellow-400"
-                  fill="currentColor"
-                />
-                <span>{ground.rating}</span>
-              </div>
-            </div>
-            <div className="mt-4 md:mt-0">
-              <div className="text-3xl font-bold text-emerald-600">
-                ₹{ground.pricePerHour}
-                <span className="text-lg text-gray-500">/hour</span>
               </div>
             </div>
           </div>
@@ -182,13 +171,21 @@ const BookingPage: React.FC = () => {
                 alt={ground.name}
                 className="w-full h-64 object-cover"
               />
+
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   Ground Details
                 </h3>
-                <p className="text-gray-600 mb-4">{ground.description}</p>
 
-                <h4 className="font-semibold text-gray-900 mb-3">Features</h4>
+                <p className="text-gray-600 mb-4">{ground.description}</p>
+                <div className="mt-4 md:mt-0">
+                  <div className="text-xl font-bold text-gray-500 mb-2">
+                    Nu.{ground.pricePerHour}
+                    <span className="text-lg text-gray-500">/hour</span>
+                  </div>
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-3">Facilities</h4>
+
                 <div className="grid grid-cols-2 gap-2">
                   {ground.features.map((feature, index) => (
                     <div

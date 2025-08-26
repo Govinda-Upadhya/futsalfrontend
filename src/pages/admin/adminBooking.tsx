@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+
 interface TimeRange {
   start: string;
   end: string;
@@ -27,6 +28,10 @@ interface Booking {
 const Booking: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Search states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchDate, setSearchDate] = useState("");
 
   // Modal states
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -88,7 +93,6 @@ const Booking: React.FC = () => {
         }
         alert("Booking confirmed");
       } else if (status === "REJECTED") {
-        // Open modal instead of direct rejection
         setSelectedBookingId(id);
         setShowRejectModal(true);
         return;
@@ -140,85 +144,153 @@ const Booking: React.FC = () => {
     );
   }
 
-  return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Bookings</h1>
+  // Filter bookings by ID, name, email, contact AND date
+  const filteredBookings = bookings.filter((b) => {
+    const lower = searchTerm.toLowerCase();
+    const matchesText = lower
+      ? b._id.toLowerCase().includes(lower) ||
+        (b.name || "").toLowerCase().includes(lower) ||
+        b.email.toLowerCase().includes(lower) ||
+        b.contact.toLowerCase().includes(lower)
+      : true;
 
-      {bookings.length === 0 ? (
+    const matchesDate = searchDate
+      ? new Date(b.date).toISOString().split("T")[0] === searchDate
+      : true;
+
+    return matchesText && matchesDate;
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
+        All Bookings
+      </h1>
+
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex flex-col w-full sm:w-1/2">
+          <label className="text-sm font-medium text-gray-600 mb-1">
+            Search by ID, Name, Email, or Contact
+          </label>
+          <input
+            type="text"
+            placeholder="Enter keyword..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-400 outline-none"
+          />
+        </div>
+
+        <div className="flex flex-col w-full sm:w-1/2">
+          <label className="text-sm font-medium text-gray-600 mb-1">
+            Filter by Date
+          </label>
+          <input
+            type="date"
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-400 outline-none"
+          />
+        </div>
+      </div>
+
+      {(searchTerm || searchDate) && (
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            setSearchDate("");
+          }}
+          className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm text-gray-700"
+        >
+          Reset Filters
+        </button>
+      )}
+
+      {filteredBookings.length === 0 ? (
         <div className="text-gray-500 text-center">No bookings found</div>
       ) : (
         <div className="overflow-x-auto bg-white rounded-xl shadow-md">
-          <table className="min-w-full border-collapse">
+          <table className="min-w-full border-collapse text-sm sm:text-base">
             <thead className="bg-emerald-600 text-white">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Booking ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Contact
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Ground
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Time
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
-              {bookings
+              {filteredBookings
                 .sort(
                   (a, b) =>
                     new Date(a.date).getTime() - new Date(b.date).getTime()
                 )
                 .map((booking) => (
-                  <tr key={booking._id} className="border-t hover:bg-gray-50">
-                    <td className="px-6 py-3 text-sm">{booking._id}</td>
-                    <td className="px-6 py-3 text-sm">{booking.name || "-"}</td>
-                    <td className="px-6 py-3 text-sm">{booking.email}</td>
-                    <td className="px-6 py-3 text-sm">{booking.contact}</td>
-                    <td className="px-6 py-3 text-sm">
+                  <tr
+                    key={booking._id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 sm:px-6 py-3 break-words max-w-[150px]">
+                      {booking._id}
+                    </td>
+                    <td className="px-4 sm:px-6 py-3">{booking.name || "-"}</td>
+                    <td className="px-4 sm:px-6 py-3 break-words max-w-[180px]">
+                      {booking.email}
+                    </td>
+                    <td className="px-4 sm:px-6 py-3">{booking.contact}</td>
+                    <td className="px-4 sm:px-6 py-3">
                       {booking.ground?.name}
                     </td>
-                    <td className="px-6 py-3 text-sm">
+                    <td className="px-4 sm:px-6 py-3">
                       ₹{booking.amount || 0}
                     </td>
-                    <td className="px-6 py-3 text-sm">
+                    <td className="px-4 sm:px-6 py-3 whitespace-nowrap">
                       {new Date(booking.date).toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="px-6 py-3 text-sm">
-                      {booking.time.map((t, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-block bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md mr-1 text-xs"
-                        >
-                          {t.start} - {t.end}
-                        </span>
-                      ))}
+                    <td className="px-4 sm:px-6 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {booking.time.map((t, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs"
+                          >
+                            {t.start} - {t.end}
+                          </span>
+                        ))}
+                      </div>
                     </td>
-                    <td className="px-6 py-3 text-sm">
+                    <td className="px-4 sm:px-6 py-3">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${
                           booking.status === "CONFIRMED"
@@ -231,7 +303,7 @@ const Booking: React.FC = () => {
                         {booking.status}
                       </span>
                     </td>
-                    <td className="px-6 py-3 text-sm">
+                    <td className="px-4 sm:px-6 py-3">
                       {booking.status === "PENDING" && (
                         <div className="flex flex-col sm:flex-row gap-2">
                           <button
@@ -268,9 +340,9 @@ const Booking: React.FC = () => {
         </div>
       )}
 
-      {/* Transparent Reject Modal */}
+      {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-4">
           <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md relative">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Reject Booking
@@ -285,7 +357,7 @@ const Booking: React.FC = () => {
               className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none"
               rows={4}
             />
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="mt-5 flex flex-col sm:flex-row justify-end gap-3">
               <button
                 onClick={() => {
                   setShowRejectModal(false);

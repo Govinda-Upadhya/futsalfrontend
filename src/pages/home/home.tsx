@@ -81,10 +81,6 @@ const HomePage: React.FC = () => {
               >
                 Find Grounds Now
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-emerald-900 transition-all duration-200 flex items-center justify-center gap-2">
-                <Play className="h-5 w-5" />
-                Watch Demo
-              </button>
             </div>
           </div>
         </div>

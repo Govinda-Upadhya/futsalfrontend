@@ -14,10 +14,11 @@ const Addground = () => {
       name: "",
       type: "Football",
       location: "",
+      capacity: 0,
       pricePerHour: 0,
       rating: 4,
       features: [""],
-      address: "",
+
       availability: [{ start: "", end: "" }],
       description: "",
       admin: "",
@@ -103,7 +104,7 @@ const Addground = () => {
         pricePerHour: submitData.pricePerHour,
         rating: 4, // default
         features: submitData.features,
-        address: submitData.address,
+        capacity: submitData.capacity,
         availability: submitData.availability,
         description: submitData.description,
         image: imageurl,
@@ -186,9 +187,21 @@ const Addground = () => {
           )}
         </div>
 
+        {/*capacity */}
+        <div>
+          <label className="block font-medium">Capacity</label>
+          <input
+            type="text"
+            {...register("capacity", { required: "Capacity is required" })}
+            className="w-full border rounded p-2"
+          />
+          {errors.capacity && (
+            <p className="text-red-500 text-sm">{errors.capacity.message}</p>
+          )}
+        </div>
         {/* Features */}
         <div>
-          <label className="block font-medium">Features</label>
+          <label className="block font-medium">Facilities</label>
           {featureFields.map((field, index) => (
             <div key={field.id} className="flex gap-2 mb-2">
               <input
@@ -212,21 +225,8 @@ const Addground = () => {
             onClick={() => addFeature("")}
             className="mt-2 bg-gray-200 px-3 py-1 rounded"
           >
-            + Add Feature
+            + Add Facility
           </button>
-        </div>
-
-        {/* Address */}
-        <div>
-          <label className="block font-medium">Address</label>
-          <input
-            type="text"
-            {...register("address", { required: "Address is required" })}
-            className="w-full border rounded p-2"
-          />
-          {errors.address && (
-            <p className="text-red-500 text-sm">{errors.address.message}</p>
-          )}
         </div>
 
         {/* Images */}
@@ -321,22 +321,6 @@ const Addground = () => {
             rows={3}
           />
         </div>
-
-        {/* Admin ID */}
-        <div>
-          <label className="block font-medium">Admin ID</label>
-          <input
-            type="text"
-            {...register("admin", { required: "Admin ID is required" })}
-            className="w-full border rounded p-2"
-          />
-          {errors.admin && (
-            <p className="text-red-500 text-sm">{errors.admin.message}</p>
-          )}
-        </div>
-
-        {/* Hidden Rating */}
-        <input type="hidden" value={4} {...register("rating")} />
 
         {/* Submit */}
         <button

@@ -20,10 +20,11 @@ const Groundetails = () => {
       name: "",
       type: "Football",
       location: "",
+      capacity: 0,
       pricePerHour: 0,
       rating: 4,
       features: [""],
-      address: "",
+
       availability: [{ start: "", end: "" }],
       description: "",
       admin: "",
@@ -59,6 +60,7 @@ const Groundetails = () => {
           withCredentials: true,
         });
         const ground = res.data;
+        console.log(ground);
         reset({
           name: ground.name,
           type: ground.type || "Football",
@@ -66,13 +68,13 @@ const Groundetails = () => {
           pricePerHour: ground.pricePerHour || 0,
           rating: ground.rating || 4,
           features: ground.features || [""],
-          address: ground.address,
+
           availability: ground.availability || [{ start: "", end: "" }],
           description: ground.description,
           admin: ground.admin,
-          images: ground.images,
+          images: ground.image,
         });
-        setExistingImages(ground.images || []);
+        setExistingImages(ground.image || []);
       } catch (err) {
         console.error("Error fetching ground:", err);
       }
@@ -194,6 +196,18 @@ const Groundetails = () => {
           )}
         </div>
 
+        {/*capacity */}
+        <div>
+          <label className="block font-medium">Capacity</label>
+          <input
+            type="text"
+            {...register("capacity", { required: "Capacity is required" })}
+            className="w-full border rounded p-2"
+          />
+          {errors.capacity && (
+            <p className="text-red-500 text-sm">{errors.capacity.message}</p>
+          )}
+        </div>
         {/* Price */}
         <div>
           <label className="block font-medium">Price Per Hour</label>
@@ -214,7 +228,7 @@ const Groundetails = () => {
 
         {/* Features */}
         <div>
-          <label className="block font-medium">Features</label>
+          <label className="block font-medium">Facility</label>
           {featureFields.map((field, index) => (
             <div key={field.id} className="flex gap-2 mb-2">
               <input
@@ -238,21 +252,8 @@ const Groundetails = () => {
             onClick={() => addFeature("")}
             className="mt-2 bg-gray-200 px-3 py-1 rounded"
           >
-            + Add Feature
+            + Add Facility
           </button>
-        </div>
-
-        {/* Address */}
-        <div>
-          <label className="block font-medium">Address</label>
-          <input
-            type="text"
-            {...register("address", { required: "Address is required" })}
-            className="w-full border rounded p-2"
-          />
-          {errors.address && (
-            <p className="text-red-500 text-sm">{errors.address.message}</p>
-          )}
         </div>
 
         {/* Existing Images */}
@@ -266,6 +267,7 @@ const Groundetails = () => {
                   alt="ground"
                   className="w-20 h-20 object-cover rounded border"
                 />
+
                 <button
                   type="button"
                   onClick={() => removeExistingImage(index)}
@@ -369,19 +371,6 @@ const Groundetails = () => {
             className="w-full border rounded p-2"
             rows={3}
           />
-        </div>
-
-        {/* Admin */}
-        <div>
-          <label className="block font-medium">Admin ID</label>
-          <input
-            type="text"
-            {...register("admin", { required: "Admin ID is required" })}
-            className="w-full border rounded p-2"
-          />
-          {errors.admin && (
-            <p className="text-red-500 text-sm">{errors.admin.message}</p>
-          )}
         </div>
 
         <input type="hidden" value={4} {...register("rating")} />

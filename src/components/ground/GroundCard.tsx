@@ -37,15 +37,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
             {ground.type}
           </span>
         </div>
-        <div className="absolute top-4 right-4">
-          <div className="flex items-center bg-black/20 backdrop-blur-sm rounded-full px-3 py-1">
-            <Star
-              className="h-4 w-4 text-yellow-400 mr-1"
-              fill="currentColor"
-            />
-            <span className="text-white font-medium">{ground.rating}</span>
-          </div>
-        </div>
       </div>
 
       {/* Content */}
