@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Play, Star, MapPin, Clock } from "lucide-react";
 import { base_url } from "../../types/ground";
-import SearchBar from "../../components/search /SearchBar";
+
+import SearchBar from "../../components/search/SearchBar";
 import GroundCard from "../../components/ground/GroundCard";
 import axios from "axios";
 import { Ground } from "../../types/ground";
