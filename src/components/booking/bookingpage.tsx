@@ -179,7 +179,10 @@ const BookingPage: React.FC = () => {
 
                 <p className="text-gray-600 mb-4">{ground.description}</p>
                 <div className="mt-4 md:mt-0">
-                  <div className="text-xl font-bold text-gray-500 mb-2">
+                  <h4 className="font-semibold text-gray-900 mb-3">
+                    Facilities
+                  </h4>
+                  <div className="text-l font-bold text-gray-500 mb-2">
                     Nu.{ground.pricePerHour}
                     <span className="text-lg text-gray-500">/hour</span>
                   </div>

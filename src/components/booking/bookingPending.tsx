@@ -11,7 +11,7 @@ interface bookinginfotype {
   contact: string;
   amount: string;
   time: TimeSlot[];
-  ground: { name: string }; // fix typing to show ground name
+  ground: { name: string; _id: string }; // fix typing to show ground name
   date: string;
 }
 
@@ -42,28 +42,29 @@ const BookingPending = () => {
     if (!file) return;
     setUploading(true);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = async () => {
-      try {
-        await axios.post(`${base_url}/users/bookinginfo/send_screentshot`, {
-          screenshot: reader.result, // base64 string
-          name: bookingInfo?.name,
-          groundId: bookingInfo.ground._id,
-          contactInfo: bookingInfo?.contact,
-          email: bookingInfo.email,
-        });
-        alert(
-          "Screenshot sent successfully! You will get the confirmation soon"
-        );
-        navigate("/");
-      } catch (err) {
-        console.error(err);
-        alert("Failed to send screenshot.");
-      } finally {
-        setUploading(false);
-      }
-    };
+    const formData = new FormData();
+    formData.append("screenshot", file);
+    formData.append("name", bookingInfo?.name || "");
+    formData.append("groundId", bookingInfo?.ground._id || "");
+    formData.append("contactInfo", bookingInfo?.contact || "");
+    formData.append("email", bookingInfo?.email || "");
+
+    try {
+      await axios.post(
+        `${base_url}/users/bookinginfo/send_screentshot`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      alert("Screenshot sent successfully!");
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send screenshot.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   if (!bookingInfo) return <p>Loading...</p>;
