@@ -1,34 +1,55 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Play, Star, MapPin, Clock } from "lucide-react";
+import { Plus } from "lucide-react"; // For + button
 import { base_url } from "../../types/ground";
 
 import SearchBar from "../../components/search/SearchBar";
 import GroundCard from "../../components/ground/GroundCard";
 import axios from "axios";
 import { Ground } from "../../types/ground";
-
-// Define base URL
+import ChallengeCard from "../../components/challenge/challengeCard";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
   const [grounds, setGrounds] = useState<Ground[]>([]);
-
+  const [activeTab, setActiveTab] = useState<"grounds" | "rivals">("grounds"); // NEW
+  const [challenges, setChallenges] = useState<
+    {
+      teamName: string;
+      teamImage: string;
+      availability: [{ date: string; start: string; end: string }];
+      memebers: number;
+      sport: string;
+      email: string;
+    }[]
+  >([]);
+  function handleAccept(id: string) {
+    navigate(`/acceptChallenge/${id}`);
+  }
   useEffect(() => {
     async function fetchGrounds() {
       try {
         const res = await axios.get(`${base_url}/users/getgrounds`, {
           withCredentials: true,
         });
-        console.log(res.data.ground);
         setGrounds(res.data.ground);
       } catch (error) {
         console.error("Error fetching grounds:", error);
       }
     }
+    async function fetchChallenges() {
+      try {
+        const res = await axios.get(`${base_url}/users/getChallenge`);
+        setChallenges(res.data.challenges);
+        console.log(res.data.challenges);
+      } catch (error) {
+        console.error("Error fetching grounds:", error);
+      }
+    }
     fetchGrounds();
+    fetchChallenges();
   }, []);
 
   const handleSearch = (name: string, type: string) => {
@@ -53,9 +74,14 @@ const HomePage: React.FC = () => {
     });
   }, [grounds, searchName, searchType]);
 
+  // --- New handler for rivals ---
+  const handleAddChallenge = () => {
+    navigate("/addChallenge");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+      {/* Hero Section (unchanged) */}
       <div className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-700 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -71,105 +97,128 @@ const HomePage: React.FC = () => {
               fields to tennis courts, find and book your ideal playing ground
               with instant confirmation.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="flex justify-center gap-6 border-b border-gray-200 mb-8">
+          <button
+            onClick={() => setActiveTab("grounds")}
+            className={`px-6 py-3 text-lg font-semibold ${
+              activeTab === "grounds"
+                ? "border-b-4 border-emerald-600 text-emerald-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Grounds
+          </button>
+          <button
+            onClick={() => setActiveTab("rivals")}
+            className={`px-6 py-3 text-lg font-semibold ${
+              activeTab === "rivals"
+                ? "border-b-4 border-emerald-600 text-emerald-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Challenges
+          </button>
+        </div>
+
+        {/* Grounds Section */}
+        {activeTab === "grounds" && (
+          <>
+            <div id="search-section" className="py-8">
+              <SearchBar onSearch={handleSearch} className="mb-12" />
+
+              {(searchName || searchType) && (
+                <p className="text-gray-600 mb-6">
+                  Found {filteredGrounds.length} ground
+                  {filteredGrounds.length !== 1 ? "s" : ""}
+                  {searchName && ` matching "${searchName}"`}
+                  {searchType && ` in ${searchType}`}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredGrounds.map((ground) => (
+                <GroundCard
+                  key={ground._id}
+                  ground={ground}
+                  onBook={() => handleBookGround(ground._id)}
+                />
+              ))}
+            </div>
+
+            {filteredGrounds.length === 0 && (searchName || searchType) && (
+              <div className="text-center py-12 text-gray-500">
+                No grounds found matching your criteria. Try adjusting your
+                search.
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Rivals Section */}
+        {activeTab === "rivals" && (
+          <div className="py-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Challenges</h2>
               <button
-                onClick={() =>
-                  document
-                    .getElementById("search-section")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 px-8 py-4 rounded-xl font-semibold hover:from-yellow-300 hover:to-orange-300 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                onClick={handleAddChallenge}
+                className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
               >
-                Find Grounds Now
+                <Plus size={20} />
+                Add Challenge
               </button>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Stats Section */}
-      <div className="bg-white py-12 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-emerald-600">50+</div>
-              <div className="text-gray-600">Premium Grounds</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-emerald-600">10,000+</div>
-              <div className="text-gray-600">Happy Bookings</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-emerald-600">4.8</div>
-              <div className="text-gray-600">Average Rating</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-emerald-600">24/7</div>
-              <div className="text-gray-600">Support</div>
-            </div>
-          </div>
-        </div>
-      </div>
+            {challenges.length === 0 ? (
+              <p className="text-gray-500">
+                No challenges yet. Add one to get started!
+              </p>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {challenges.map((challenge, index) => {
+                    // Parse availability string if it's a string
+                    let availabilityData = [];
+                    if (typeof challenge.availability === "string") {
+                      try {
+                        availabilityData = JSON.parse(challenge.availability);
+                      } catch (err) {
+                        console.error("Invalid availability format", err);
+                      }
+                    } else {
+                      availabilityData = challenge.availability;
+                    }
 
-      {/* Search Section */}
-      <div
-        id="search-section"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-      >
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Find Your Ideal Ground
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Search through our extensive collection of sports facilities and
-            book instantly
-          </p>
-        </div>
+                    // Format availability display
+                    const availabilityText = availabilityData
+                      .map(
+                        (slot: any) =>
+                          `${slot.date} | ${slot.start} - ${slot.end}`
+                      )
+                      .join(", ");
 
-        <SearchBar onSearch={handleSearch} className="mb-12" />
-
-        {/* Results Count */}
-        {(searchName || searchType) && (
-          <div className="mb-6">
-            <p className="text-gray-600">
-              Found {filteredGrounds.length} ground
-              {filteredGrounds.length !== 1 ? "s" : ""}
-              {searchName && ` matching "${searchName}"`}
-              {searchType && ` in ${searchType}`}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* All Grounds / Search Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        {!searchName && !searchType && (
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              All Available Grounds
-            </h2>
-            <p className="text-xl text-gray-600">
-              Browse our complete collection of sports facilities
-            </p>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredGrounds.map((ground) => (
-            <GroundCard
-              key={ground._id}
-              ground={ground}
-              onBook={() => handleBookGround(ground._id)}
-            />
-          ))}
-        </div>
-
-        {filteredGrounds.length === 0 && (searchName || searchType) && (
-          <div className="text-center py-12">
-            <div className="text-gray-500 text-lg">
-              No grounds found matching your criteria. Try adjusting your
-              search.
-            </div>
+                    return (
+                      <ChallengeCard
+                        key={challenge._id || index}
+                        teamName={challenge.teamName}
+                        teamImage={challenge.teamImage}
+                        availability={availabilityText}
+                        playersCount={challenge.memebers || challenge.memebers}
+                        sport={challenge.sport}
+                        email={challenge.email}
+                        onAccept={() => handleAccept(challenge._id)}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
