@@ -7,6 +7,7 @@ interface ChallengeCardProps {
   playersCount: number;
   sport: string;
   email: string; // NEW
+  description: string;
   onAccept: () => void;
 }
 
@@ -18,6 +19,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
   sport,
   email,
   onAccept,
+  description,
 }) => {
   const getSportColor = (sport: string) => {
     const colors = {

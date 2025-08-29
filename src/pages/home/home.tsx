@@ -14,20 +14,27 @@ const HomePage: React.FC = () => {
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
   const [grounds, setGrounds] = useState<Ground[]>([]);
-  const [activeTab, setActiveTab] = useState<"grounds" | "rivals">("grounds"); // NEW
+  const [activeTab, setActiveTab] = useState<"grounds" | "rivals">("grounds");
   const [challenges, setChallenges] = useState<
     {
+      _id?: string;
       teamName: string;
       teamImage: string;
-      availability: [{ date: string; start: string; end: string }];
-      memebers: number;
+      availability: [{ date: string; start: string; end: string }] | string;
+      members: string;
       sport: string;
       email: string;
+      description: string;
     }[]
   >([]);
+
+  const [challengeSearch, setChallengeSearch] = useState("");
+  const [challengeDateSearch, setChallengeDateSearch] = useState("");
+
   function handleAccept(id: string) {
     navigate(`/acceptChallenge/${id}`);
   }
+
   useEffect(() => {
     async function fetchGrounds() {
       try {
@@ -43,9 +50,8 @@ const HomePage: React.FC = () => {
       try {
         const res = await axios.get(`${base_url}/users/getChallenge`);
         setChallenges(res.data.challenges);
-        console.log(res.data.challenges);
       } catch (error) {
-        console.error("Error fetching grounds:", error);
+        console.error("Error fetching challenges:", error);
       }
     }
     fetchGrounds();
@@ -74,14 +80,51 @@ const HomePage: React.FC = () => {
     });
   }, [grounds, searchName, searchType]);
 
-  // --- New handler for rivals ---
   const handleAddChallenge = () => {
     navigate("/addChallenge");
   };
 
+  // --- Filter challenges ---
+  const filteredChallenges = useMemo(() => {
+    return challenges.filter((challenge) => {
+      const query = challengeSearch.toLowerCase();
+      const dateQuery = challengeDateSearch;
+
+      // Parse availability
+      let availabilityData: any[] = [];
+      if (typeof challenge.availability === "string") {
+        try {
+          availabilityData = JSON.parse(challenge.availability);
+        } catch {
+          availabilityData = [];
+        }
+      } else {
+        availabilityData = challenge.availability;
+      }
+
+      // Check matches for text query
+      const matchesName = challenge.teamName?.toLowerCase().includes(query);
+      const matchesEmail = challenge.email?.toLowerCase().includes(query);
+      const matchesDescription = challenge.description
+        ?.toLowerCase()
+        .includes(query);
+      const matchesSport = challenge.sport?.toLowerCase().includes(query);
+
+      const textMatches =
+        matchesName || matchesEmail || matchesDescription || matchesSport;
+
+      // Check if the challenge's availability includes the selected date
+      const dateMatches =
+        !dateQuery ||
+        availabilityData.some((slot: any) => slot.date === dateQuery);
+
+      return textMatches && dateMatches;
+    });
+  }, [challenges, challengeSearch, challengeDateSearch]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section (unchanged) */}
+      {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-700 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -175,49 +218,63 @@ const HomePage: React.FC = () => {
               </button>
             </div>
 
-            {challenges.length === 0 ? (
+            {/* Search Bar for Challenges */}
+            <div className="mb-6 flex gap-4">
+              <input
+                type="text"
+                placeholder="Search by team name, email, or sport..."
+                value={challengeSearch}
+                onChange={(e) => setChallengeSearch(e.target.value)}
+                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              />
+              <input
+                type="date"
+                value={challengeDateSearch}
+                onChange={(e) => setChallengeDateSearch(e.target.value)}
+                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+              />
+            </div>
+
+            {filteredChallenges.length === 0 ? (
               <p className="text-gray-500">
-                No challenges yet. Add one to get started!
+                No challenges found. Try a different search.
               </p>
             ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {challenges.map((challenge, index) => {
-                    // Parse availability string if it's a string
-                    let availabilityData = [];
-                    if (typeof challenge.availability === "string") {
-                      try {
-                        availabilityData = JSON.parse(challenge.availability);
-                      } catch (err) {
-                        console.error("Invalid availability format", err);
-                      }
-                    } else {
-                      availabilityData = challenge.availability;
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredChallenges.map((challenge, index) => {
+                  let availabilityData: any[] = [];
+                  if (typeof challenge.availability === "string") {
+                    try {
+                      availabilityData = JSON.parse(challenge.availability);
+                    } catch {
+                      availabilityData = [];
                     }
+                  } else {
+                    availabilityData = challenge.availability;
+                  }
 
-                    // Format availability display
-                    const availabilityText = availabilityData
-                      .map(
-                        (slot: any) =>
-                          `${slot.date} | ${slot.start} - ${slot.end}`
-                      )
-                      .join(", ");
+                  const availabilityText = availabilityData
+                    .map(
+                      (slot: any) =>
+                        `${slot.date} (${slot.start} - ${slot.end})`
+                    )
+                    .join(", ");
 
-                    return (
-                      <ChallengeCard
-                        key={challenge._id || index}
-                        teamName={challenge.teamName}
-                        teamImage={challenge.teamImage}
-                        availability={availabilityText}
-                        playersCount={challenge.memebers || challenge.memebers}
-                        sport={challenge.sport}
-                        email={challenge.email}
-                        onAccept={() => handleAccept(challenge._id)}
-                      />
-                    );
-                  })}
-                </div>
-              </>
+                  return (
+                    <ChallengeCard
+                      key={challenge._id || index}
+                      teamName={challenge.teamName}
+                      teamImage={challenge.teamImage}
+                      availability={availabilityText}
+                      playersCount={challenge.members}
+                      sport={challenge.sport}
+                      email={challenge.email}
+                      description={challenge.description}
+                      onAccept={() => handleAccept(challenge._id!)}
+                    />
+                  );
+                })}
+              </div>
             )}
           </div>
         )}

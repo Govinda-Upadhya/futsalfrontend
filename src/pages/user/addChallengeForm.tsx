@@ -7,39 +7,37 @@ import { useNavigate } from "react-router-dom";
 
 interface ChallengeFormData {
   teamName: string;
-  teamImage: FileList | null; // File upload
+  teamImage: FileList | null;
   email: string;
-  members: number;
+  members: string;
+  contact: string;
   sport: string;
-  availability: { date: string; start: string; end: string }[];
+  availability: { date: string }[];
+  description: string;
 }
 
-interface AddChallengeFormProps {
-  onSubmit: (formData: FormData) => void; // send FormData
-}
-
-const AddChallengeForm: React.FC<AddChallengeFormProps> = ({ onSubmit }) => {
+const AddChallengeForm: React.FC = () => {
   const navigate = useNavigate();
+  const [preview, setPreview] = useState<string | null>(null);
+
   const {
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<ChallengeFormData>({
     defaultValues: {
       teamName: "",
       teamImage: null,
       email: "",
-      members: 6,
-      sport: "",
+      members: "6",
+      contact: "",
       availability: [
         {
           date: new Date().toISOString().split("T")[0],
-          start: "14:00",
-          end: "16:00",
         },
       ],
+      description: "",
     },
   });
 
@@ -49,14 +47,9 @@ const AddChallengeForm: React.FC<AddChallengeFormProps> = ({ onSubmit }) => {
   });
 
   const submitHandler = async (data: ChallengeFormData) => {
-    const photo = data.teamImage[0];
-    const newData = {
-      availability: JSON.stringify(data.availability),
-      teamName: data.teamName,
-      email: data.email,
-      memebers: data.members,
-      sport: data.sport,
-    };
+    const photo = data.teamImage?.[0];
+    console.log(data);
+    if (!photo) return;
 
     const res = await axios.post(
       `${base_url}/admin/createground/uploadpic`,
@@ -65,15 +58,15 @@ const AddChallengeForm: React.FC<AddChallengeFormProps> = ({ onSubmit }) => {
     );
 
     await axios.put(res.data.url, photo, {
-      headers: {
-        "Content-Type": photo.type,
-      },
+      headers: { "Content-Type": photo.type },
     });
+
     const addChallenge = await axios.post(`${base_url}/users/createChallenge`, {
-      newData,
+      ...data,
       imageUrl: res.data.imageUrl,
     });
-    if (addChallenge.status == 200) {
+
+    if (addChallenge.status === 200) {
       alert("challenge made");
       navigate("/");
     }
@@ -82,94 +75,103 @@ const AddChallengeForm: React.FC<AddChallengeFormProps> = ({ onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className="bg-white p-6 rounded-xl shadow-md max-w-lg mx-auto space-y-4"
-      encType="multipart/form-data"
+      className="bg-gray-200 p-6 rounded-3xl shadow-lg max-w-4xl mx-auto flex flex-col sm:flex-row gap-6 mt-10"
     >
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Add Challenge</h2>
+      {/* Left side - Image Upload */}
+      <div className="flex flex-col items-center w-full sm:w-1/3 relative ">
+        <div className="w-40 h-40 rounded-full border-2 border-gray-400 flex items-center justify-center overflow-hidden bg-white relative">
+          {preview ? (
+            <img
+              src={preview}
+              alt="Team Preview"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-gray-400 text-sm">Upload</span>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            {...register("teamImage", { required: "Team image is required" })}
+            className="absolute top-0 left-0 w-40 h-40 opacity-0 cursor-pointer bg-white"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setPreview(URL.createObjectURL(e.target.files[0]));
+              }
+            }}
+          />
+        </div>
+        <p className="mt-2 text-gray-600 text-sm ">Upload your team image</p>
+        {errors.teamImage && (
+          <p className="text-red-500 text-xs">{errors.teamImage.message}</p>
+        )}
+      </div>
 
-      {/* Team Name */}
-      <div>
-        <label className="block font-medium mb-1">Team Name</label>
+      {/* Right side - Inputs */}
+      <div className="flex-1 space-y-3">
         <input
           type="text"
+          placeholder="Team Name"
           {...register("teamName", { required: "Team name is required" })}
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 bg-white"
         />
         {errors.teamName && (
-          <p className="text-red-500 text-sm">{errors.teamName.message}</p>
+          <p className="text-red-500 text-xs">{errors.teamName.message}</p>
         )}
-      </div>
 
-      {/* Team Image */}
-      <div>
-        <label className="block font-medium mb-1">Team Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          {...register("teamImage", { required: "Team image is required" })}
-          className="w-full border rounded p-2"
-        />
-        {errors.teamImage && (
-          <p className="text-red-500 text-sm">{errors.teamImage.message}</p>
-        )}
-      </div>
-
-      {/* Email */}
-      <div>
-        <label className="block font-medium mb-1">Email</label>
         <input
           type="email"
+          placeholder="Email Address"
           {...register("email", { required: "Email is required" })}
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 bg-white"
         />
         {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
+          <p className="text-red-500 text-xs">{errors.email.message}</p>
         )}
-      </div>
 
-      {/* Members */}
-      <div>
-        <label className="block font-medium mb-1">Members</label>
         <input
-          type="number"
-          {...register("members", {
-            required: "Members count is required",
-            min: 1,
-          })}
-          className="w-full border rounded p-2"
+          type="text"
+          placeholder="Number of Players"
+          {...register("members", { required: "Members required", min: 1 })}
+          className="w-full border rounded p-2 bg-white"
         />
         {errors.members && (
-          <p className="text-red-500 text-sm">{errors.members.message}</p>
+          <p className="text-red-500 text-xs">{errors.members.message}</p>
         )}
-      </div>
 
-      {/* Sport */}
-      <div>
-        <label className="block font-medium mb-1">Sport</label>
+        <input
+          type="text"
+          placeholder="Contact Number"
+          {...register("contact", { required: "Contact is required" })}
+          className="w-full border rounded p-2 bg-white"
+        />
+        {errors.contact && (
+          <p className="text-red-500 text-xs">{errors.contact.message}</p>
+        )}
+        {/* sports */}
         <select
           {...register("sport", { required: "Sport is required" })}
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 bg-white"
         >
+          <option value="">Select Sport</option>
           <option value="Football">Football</option>
-          <option value="Basketball">Basketball</option>
           <option value="Cricket">Cricket</option>
-          <option value="Tennis">Tennis</option>
+          <option value="Basketball">Basketball</option>
           <option value="Badminton">Badminton</option>
+          <option value="Volleyball">Volleyball</option>
         </select>
         {errors.sport && (
-          <p className="text-red-500 text-sm">{errors.sport.message}</p>
+          <p className="text-red-500 text-xs">{errors.sport.message}</p>
         )}
-      </div>
-
-      {/* Availability */}
-      <div>
-        <label className="block font-medium mb-2">Availability</label>
+        {/* Availability */}
         {fields.map((field, index) => (
-          <div key={field.id} className="mb-4 border p-3 rounded-lg space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                <Calendar className="h-4 w-4 inline mr-1" />
-                Select Date
+          <div
+            key={field.id}
+            className="border p-3 rounded space-y-2 bg-white flex items-center justify-between"
+          >
+            <div className="flex-1">
+              <label className="text-sm font-medium flex items-center mb-1">
+                <Calendar className="h-4 w-4 mr-1" /> Date Availability
               </label>
               <input
                 type="date"
@@ -177,66 +179,53 @@ const AddChallengeForm: React.FC<AddChallengeFormProps> = ({ onSubmit }) => {
                   required: "Date is required",
                 })}
                 min={new Date().toISOString().split("T")[0]}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full border rounded p-2 "
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 items-end w-full">
-              <input
-                type="text"
-                placeholder="Start HH:mm"
-                {...register(`availability.${index}.start`, {
-                  required: "Start time required",
-                  pattern: {
-                    value: /^([01]\d|2[0-3]):([0-5]\d)$/,
-                    message: "Invalid time (HH:mm)",
-                  },
-                })}
-                className="border rounded p-2 flex-1 w-[50%]"
-              />
-              <input
-                type="text"
-                placeholder="End HH:mm"
-                {...register(`availability.${index}.end`, {
-                  required: "End time required",
-                  pattern: {
-                    value: /^([01]\d|2[0-3]):([0-5]\d)$/,
-                    message: "Invalid time (HH:mm)",
-                  },
-                })}
-                className="border rounded p-2 flex-1 w-[50%]"
-              />
+
+            {/* Remove button only if more than 1 field */}
+            {fields.length > 1 && (
               <button
                 type="button"
                 onClick={() => remove(index)}
-                className="bg-red-500 text-white px-3 py-2 rounded mt-2 sm:mt-0"
+                className="ml-3 bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition"
               >
                 ✕
               </button>
-            </div>
+            )}
           </div>
         ))}
+
         <button
           type="button"
           onClick={() =>
             append({
               date: new Date().toISOString().split("T")[0],
-              start: "",
-              end: "",
             })
           }
-          className="mt-2 bg-gray-200 px-3 py-1 rounded"
+          className="bg-gray-300 px-3 py-1 rounded text-sm"
         >
-          + Add more Availability
+          + Add More Availability
+        </button>
+
+        {/* Description */}
+        <textarea
+          placeholder="Tell something about when you will be available"
+          {...register("description", { required: "Description required" })}
+          className="w-full border rounded p-2 h-20 bg-white"
+        />
+        {errors.description && (
+          <p className="text-red-500 text-xs">{errors.description.message}</p>
+        )}
+
+        <button
+          disabled={isSubmitting}
+          type="submit"
+          className="w-full bg-emerald-600 text-white py-2 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:bg-gray-400"
+        >
+          Add Challenge
         </button>
       </div>
-
-      <button
-        disabled={isSubmitting ? true : false}
-        type="submit"
-        className="w-full bg-emerald-600 text-white py-2 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:bg-gray-300 disabled:cursor-none"
-      >
-        Add Challenge
-      </button>
     </form>
   );
 };
