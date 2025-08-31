@@ -221,7 +221,7 @@ const AddChallengeForm: React.FC = () => {
         <button
           disabled={isSubmitting}
           type="submit"
-          className="w-full bg-emerald-600 text-white py-2 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:bg-gray-400"
+          className="w-full bg-gray-800 text-white py-2 rounded-lg font-semibold hover:bg-black transition disabled:bg-gray-400"
         >
           Add Challenge
         </button>
