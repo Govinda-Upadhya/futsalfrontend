@@ -34,16 +34,16 @@ const Groundcard = ({ ground }) => {
   return (
     <div
       onClick={() => navigate(`/admin/ground/${ground._id}`)}
-      className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform transform hover:scale-105 relative" // Added 'relative' for positioning
+      className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform transform hover:scale-105 relative w-full max-w-xs mx-auto sm:max-w-full mb-4"
     >
       {/* Placeholder image for the futsal ground */}
       <img
         src={ground.image[0]}
         alt={ground.name}
-        className="w-full h-48 object-cover"
+        className="w-full h-40 sm:h-48 object-cover"
       />
       {/* Edit and Delete button container */}
-      <div className="absolute top-2 right-2 flex space-x-2">
+  <div className="absolute top-2 right-2 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
         {/* Edit button with pencil icon */}
         <button
           type="button"

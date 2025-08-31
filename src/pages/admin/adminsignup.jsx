@@ -58,12 +58,12 @@ const Adminsignup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-2 sm:p-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg border border-gray-200"
+        className="bg-white p-4 sm:p-8 rounded-2xl shadow-lg w-full max-w-lg border border-gray-200"
       >
-        <h2 className="text-3xl font-extrabold text-center mb-6 text-gray-800">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-center mb-6 text-gray-800">
           Admin Signup
         </h2>
 

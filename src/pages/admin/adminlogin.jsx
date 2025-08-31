@@ -38,9 +38,9 @@ const Adminsignin = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg transition-transform transform hover:scale-105">
-        <h2 className="text-3xl font-bold text-center text-gray-800">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-2 sm:p-4">
+      <div className="w-full max-w-md p-4 sm:p-8 space-y-6 bg-white rounded-xl shadow-lg transition-transform transform hover:scale-105">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
           Admin Sign In
         </h2>
 

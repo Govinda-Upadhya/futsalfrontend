@@ -162,14 +162,14 @@ const Booking: React.FC = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6">
+  <div className="max-w-7xl w-full mx-auto p-2 sm:p-6">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
         All Bookings
       </h1>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="flex flex-col w-full sm:w-1/2">
+  <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
+  <div className="flex flex-col w-full sm:w-1/2">
           <label className="text-sm font-medium text-gray-600 mb-1">
             Search by ID, Name, Email, or Contact
           </label>
@@ -182,7 +182,7 @@ const Booking: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-col w-full sm:w-1/2">
+  <div className="flex flex-col w-full sm:w-1/2">
           <label className="text-sm font-medium text-gray-600 mb-1">
             Filter by Date
           </label>
@@ -210,8 +210,8 @@ const Booking: React.FC = () => {
       {filteredBookings.length === 0 ? (
         <div className="text-gray-500 text-center">No bookings found</div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl shadow-md">
-          <table className="min-w-full border-collapse text-sm sm:text-base">
+  <div className="overflow-x-auto bg-white rounded-xl shadow-md w-full">
+          <table className="min-w-full border-collapse text-xs sm:text-base">
             <thead className="bg-emerald-600 text-white">
               <tr>
                 <th className="px-4 sm:px-6 py-3 text-left font-semibold">
@@ -305,7 +305,7 @@ const Booking: React.FC = () => {
                     </td>
                     <td className="px-4 sm:px-6 py-3">
                       {booking.status === "PENDING" && (
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 w-full">
                           <button
                             onClick={() =>
                               handleAction(booking._id, "CONFIRMED")
@@ -342,8 +342,8 @@ const Booking: React.FC = () => {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-2 sm:px-4">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 w-full max-w-md relative">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Reject Booking
             </h2>

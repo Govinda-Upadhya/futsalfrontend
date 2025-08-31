@@ -1,10 +1,10 @@
 export default function Header({ active, setActive }) {
   return (
-    <header className="bg-gray-900 text-white p-4 sticky top-0 z-50 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Futsal Admin Dashboard</h1>
-        <nav>
-          <ul className="flex space-x-4">
+    <header className="bg-gray-900 text-white p-2 sm:p-4 sticky top-0 z-50 shadow-md w-full">
+      <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+        <h1 className="text-lg sm:text-2xl font-bold">Futsal Admin Dashboard</h1>
+        <nav className="w-full sm:w-auto">
+          <ul className="flex flex-col sm:flex-row w-full sm:w-auto space-y-2 sm:space-y-0 sm:space-x-4">
             <li>
               <button
                 onClick={() => setActive("dashboard")}

@@ -84,13 +84,11 @@ const HomePage: React.FC = () => {
     navigate("/addChallenge");
   };
 
-  // --- Filter challenges ---
   const filteredChallenges = useMemo(() => {
     return challenges.filter((challenge) => {
       const query = challengeSearch.toLowerCase();
       const dateQuery = challengeDateSearch;
 
-      // Parse availability
       let availabilityData: any[] = [];
       if (typeof challenge.availability === "string") {
         try {
@@ -102,7 +100,6 @@ const HomePage: React.FC = () => {
         availabilityData = challenge.availability;
       }
 
-      // Check matches for text query
       const matchesName = challenge.teamName?.toLowerCase().includes(query);
       const matchesEmail = challenge.email?.toLowerCase().includes(query);
       const matchesDescription = challenge.description
@@ -113,7 +110,6 @@ const HomePage: React.FC = () => {
       const textMatches =
         matchesName || matchesEmail || matchesDescription || matchesSport;
 
-      // Check if the challenge's availability includes the selected date
       const dateMatches =
         !dateQuery ||
         availabilityData.some((slot: any) => slot.date === dateQuery);
@@ -125,17 +121,15 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-700 overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <div className="relative bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Book Your Perfect
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
-                Sports Ground
-              </span>
+              <span className="block text-primary">Sports Ground</span>
             </h1>
-            <p className="text-xl text-emerald-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Discover premium sports facilities across the city. From football
               fields to tennis courts, find and book your ideal playing ground
               with instant confirmation.
@@ -149,9 +143,9 @@ const HomePage: React.FC = () => {
         <div className="flex justify-center gap-6 border-b border-gray-200 mb-8">
           <button
             onClick={() => setActiveTab("grounds")}
-            className={`px-6 py-3 text-lg font-semibold ${
+            className={`px-6 py-3 text-lg font-semibold transition ${
               activeTab === "grounds"
-                ? "border-b-4 border-emerald-600 text-emerald-600"
+                ? "border-b-4 border-primary text-primary"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -159,9 +153,9 @@ const HomePage: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("rivals")}
-            className={`px-6 py-3 text-lg font-semibold ${
+            className={`px-6 py-3 text-lg font-semibold transition ${
               activeTab === "rivals"
-                ? "border-b-4 border-emerald-600 text-emerald-600"
+                ? "border-b-4 border-primary text-primary"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -208,10 +202,10 @@ const HomePage: React.FC = () => {
         {activeTab === "rivals" && (
           <div className="py-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Challenges</h2>
+              <h2 className="text-2xl font-bold text-foreground">Challenges</h2>
               <button
                 onClick={handleAddChallenge}
-                className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
+                className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition"
               >
                 <Plus size={20} />
                 Add Challenge
@@ -219,19 +213,19 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Search Bar for Challenges */}
-            <div className="mb-6 flex gap-4">
+            <div className="mb-6 flex flex-col sm:flex-row gap-4">
               <input
                 type="text"
                 placeholder="Search by team name, email, or sport..."
                 value={challengeSearch}
                 onChange={(e) => setChallengeSearch(e.target.value)}
-                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <input
                 type="date"
                 value={challengeDateSearch}
                 onChange={(e) => setChallengeDateSearch(e.target.value)}
-                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                className="w-full sm:w-1/3 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 

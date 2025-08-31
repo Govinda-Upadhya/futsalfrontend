@@ -152,16 +152,16 @@ const Groundetails = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6">
+  <div className="max-w-2xl w-full mx-auto bg-white shadow-md rounded-xl p-4 sm:p-6">
       <h2 className="text-xl font-bold mb-4">Edit Ground</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Ground Name */}
         <div>
           <label className="block font-medium">Ground Name</label>
           <input
             type="text"
             {...register("name", { required: "Ground name is required" })}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
           />
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -173,7 +173,7 @@ const Groundetails = () => {
           <label className="block font-medium">Type</label>
           <select
             {...register("type", { required: "Type is required" })}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
           >
             <option value="Football">Football</option>
             <option value="Cricket">Cricket</option>
@@ -189,7 +189,7 @@ const Groundetails = () => {
           <input
             type="text"
             {...register("location", { required: "Location is required" })}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
           />
           {errors.location && (
             <p className="text-red-500 text-sm">{errors.location.message}</p>
@@ -202,7 +202,7 @@ const Groundetails = () => {
           <input
             type="text"
             {...register("capacity", { required: "Capacity is required" })}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
           />
           {errors.capacity && (
             <p className="text-red-500 text-sm">{errors.capacity.message}</p>
@@ -217,7 +217,7 @@ const Groundetails = () => {
               required: "Price per hour is required",
               min: { value: 0, message: "Price cannot be negative" },
             })}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
           />
           {errors.pricePerHour && (
             <p className="text-red-500 text-sm">
@@ -230,18 +230,18 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Facility</label>
           {featureFields.map((field, index) => (
-            <div key={field.id} className="flex gap-2 mb-2">
+            <div key={field.id} className="flex flex-col sm:flex-row gap-2 mb-2">
               <input
                 type="text"
                 {...register(`features.${index}`, {
                   required: "Feature is required",
                 })}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
               />
               <button
                 type="button"
                 onClick={() => removeFeature(index)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
+                className="bg-red-500 text-white px-2 py-1 rounded text-xs"
               >
                 ✕
               </button>
@@ -250,7 +250,7 @@ const Groundetails = () => {
           <button
             type="button"
             onClick={() => addFeature("")}
-            className="mt-2 bg-gray-200 px-3 py-1 rounded"
+            className="mt-2 bg-gray-200 px-3 py-1 rounded text-xs"
           >
             + Add Facility
           </button>
@@ -284,12 +284,12 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Upload New Images</label>
           {images.map((_, index) => (
-            <div key={index} className="flex items-center gap-2 mb-2">
+            <div key={index} className="flex flex-col sm:flex-row items-center gap-2 mb-2">
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileChange(e, index)}
-                className="flex-1 border rounded p-2"
+                className="flex-1 border rounded p-2 text-sm"
               />
               {previews[index] && (
                 <img
@@ -301,7 +301,7 @@ const Groundetails = () => {
               <button
                 type="button"
                 onClick={() => removeImageField(index)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
+                className="bg-red-500 text-white px-2 py-1 rounded text-xs"
               >
                 ✕
               </button>
@@ -310,7 +310,7 @@ const Groundetails = () => {
           <button
             type="button"
             onClick={addImageField}
-            className="mt-2 bg-gray-200 px-3 py-1 rounded"
+            className="mt-2 bg-gray-200 px-3 py-1 rounded text-xs"
           >
             + Add Image
           </button>
@@ -320,7 +320,7 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Availability (24h HH:mm)</label>
           {timeFields.map((field, index) => (
-            <div key={field.id} className="flex gap-2 mb-2">
+            <div key={field.id} className="flex flex-col sm:flex-row gap-2 mb-2">
               <input
                 type="text"
                 placeholder="HH:mm"
@@ -331,7 +331,7 @@ const Groundetails = () => {
                     message: "Enter valid time in 24h format (HH:mm)",
                   },
                 })}
-                className="border rounded p-2"
+                className="border rounded p-2 text-sm"
               />
               <input
                 type="text"
@@ -343,12 +343,12 @@ const Groundetails = () => {
                     message: "Enter valid time in 24h format (HH:mm)",
                   },
                 })}
-                className="border rounded p-2"
+                className="border rounded p-2 text-sm"
               />
               <button
                 type="button"
                 onClick={() => removeTime(index)}
-                className="bg-red-500 text-white px-3 py-1 rounded"
+                className="bg-red-500 text-white px-3 py-1 rounded text-xs"
               >
                 ✕
               </button>
@@ -357,7 +357,7 @@ const Groundetails = () => {
           <button
             type="button"
             onClick={() => addTime({ start: "", end: "" })}
-            className="mt-2 bg-gray-200 px-3 py-1 rounded"
+            className="mt-2 bg-gray-200 px-3 py-1 rounded text-xs"
           >
             + Add Time Slot
           </button>
@@ -368,7 +368,7 @@ const Groundetails = () => {
           <label className="block font-medium">Description</label>
           <textarea
             {...register("description")}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-sm"
             rows={3}
           />
         </div>
@@ -378,7 +378,7 @@ const Groundetails = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-base"
         >
           {isSubmitting ? "Updating..." : "Update Ground"}
         </button>

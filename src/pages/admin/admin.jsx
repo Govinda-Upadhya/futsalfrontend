@@ -29,7 +29,7 @@ const Admin = () => {
     return () => {};
   }, []);
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
+  <div className="flex flex-col min-h-screen bg-gray-100 font-sans w-full">
       <Header setActive={setActive} active={active} />
       {active == "dashboard" ? (
         <Futsalcomponent grounds={grounds} />
