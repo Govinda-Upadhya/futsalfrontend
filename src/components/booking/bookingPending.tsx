@@ -124,7 +124,7 @@ const BookingPending = () => {
             <button
               onClick={handleSend}
               disabled={uploading || !file}
-              className="w-full bg-black text-white py-3 rounded-lg hover:bg-black transition-colors disabled:opacity-50"
+              className="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-[#1AA148] hover:text-white transition-colors disabled:opacity-50"
             >
               {uploading ? "Sending..." : "Send Screenshot"}
             </button>

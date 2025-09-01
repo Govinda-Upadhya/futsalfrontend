@@ -20,7 +20,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden group">
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden group mb-4">
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img
@@ -77,13 +77,13 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
 
         {/* Price and Book Button */}
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold  text-black">
+          <div className="text-2xl font-bold  text-green-700">
             ₹{ground.pricePerHour}
-            <span className="text-sm text-black font-normal">/hour</span>
+            <span className="text-sm text-green-700 font-normal">/hour</span>
           </div>
           <button
             onClick={() => onBook(ground._id)}
-            className="  bg-black to-emerald-500 text-white px-6 py-2 rounded-lg font-semibold  transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+            className="  bg-[#1AA148] text-white px-6 py-2 rounded-lg font-semibold  transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
           >
             Book Now
           </button>

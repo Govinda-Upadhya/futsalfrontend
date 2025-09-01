@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react"; // For + button
-import { base_url } from "../../types/ground";
+import { Plus } from "lucide-react";
+import { base_url, Ground } from "../../types/ground";
 
 import SearchBar from "../../components/search/SearchBar";
 import GroundCard from "../../components/ground/GroundCard";
 import axios from "axios";
-import { Ground } from "../../types/ground";
 import ChallengeCard from "../../components/challenge/challengeCard";
 
 const HomePage: React.FC = () => {
@@ -15,27 +14,17 @@ const HomePage: React.FC = () => {
   const [availableGroundIds, setAvailableGroundIds] = useState<string[]>([]);
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
+  const [searchLocation, setSearchLocation] = useState(""); // NEW state
   const [grounds, setGrounds] = useState<Ground[]>([]);
   const [activeTab, setActiveTab] = useState<"grounds" | "rivals">("grounds");
-  const [challenges, setChallenges] = useState<
-    {
-      _id?: string;
-      teamName: string;
-      teamImage: string;
-      availability: [{ date: string; start: string; end: string }] | string;
-      members: string;
-      sport: string;
-      email: string;
-      description: string;
-    }[]
-  >([]);
-
+  const [challenges, setChallenges] = useState<any[]>([]);
   const [challengeSearch, setChallengeSearch] = useState("");
   const [challengeDateSearch, setChallengeDateSearch] = useState("");
 
   function handleAccept(id: string) {
     navigate(`/acceptChallenge/${id}`);
   }
+
   useEffect(() => {
     async function getAvailable() {
       if (!searchDate) {
@@ -46,23 +35,22 @@ const HomePage: React.FC = () => {
         const res = await axios.post(`${base_url}/users/searchDate`, {
           searchDate,
         });
-        // assuming API returns a list of ground IDs
+        console.log("date", res.data.availableGroundIds);
         setAvailableGroundIds(res.data.availableGroundIds || []);
       } catch (err) {
         console.error("Error fetching available grounds:", err);
         setAvailableGroundIds([]);
       }
     }
-
     getAvailable();
   }, [searchDate]);
+
   useEffect(() => {
     async function fetchGrounds() {
       try {
         const res = await axios.get(`${base_url}/users/getgrounds`, {
           withCredentials: true,
         });
-
         setGrounds(res.data.ground);
       } catch (error) {
         console.error("Error fetching grounds:", error);
@@ -80,16 +68,24 @@ const HomePage: React.FC = () => {
     fetchChallenges();
   }, []);
 
-  const handleSearch = (name: string, type: string, date: string) => {
+  // ✅ Updated to include location
+  const handleSearch = (
+    name: string,
+    type: string,
+    date: string,
+    location: string
+  ) => {
     setSearchName(name);
     setSearchType(type);
     setSearchDate(date);
+    setSearchLocation(location.trim());
   };
 
   const handleBookGround = (groundId: number) => {
     navigate(`/booking/${groundId}`);
   };
 
+  // ✅ Updated filter logic
   const filteredGrounds = useMemo(() => {
     return grounds.filter((ground) => {
       const matchesName = ground.name
@@ -98,13 +94,22 @@ const HomePage: React.FC = () => {
       const matchesType =
         !searchType ||
         ground.type.trim().toLowerCase() === searchType.trim().toLowerCase();
-
       const matchesDate =
         !searchDate || availableGroundIds.includes(ground._id);
+      const matchesLocation =
+        !searchLocation ||
+        ground.location?.toLowerCase().includes(searchLocation.toLowerCase());
 
-      return matchesName && matchesType && matchesDate;
+      return matchesName && matchesType && matchesDate && matchesLocation;
     });
-  }, [grounds, searchName, searchType, searchDate, availableGroundIds]);
+  }, [
+    grounds,
+    searchName,
+    searchType,
+    searchDate,
+    searchLocation,
+    availableGroundIds,
+  ]);
 
   const handleAddChallenge = () => {
     navigate("/addChallenge");
@@ -147,18 +152,16 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative bg-[#1AA148] overflow-hidden text-white">
+        <div className="absolute inset-0 bg-[#1AA148]"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Book Your Perfect
-              <span className="block text-primary">Sports Ground</span>
+              <span className="block">Sports Ground</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Discover premium sports facilities across the city. From football
-              fields to tennis courts, find and book your ideal playing ground
-              with instant confirmation.
+            <p className="text-xl mb-8 max-w-3xl mx-auto">
+              Play Smarter – Book Your Ground Faster. ThangGO at your service 😉
             </p>
           </div>
         </div>
@@ -171,7 +174,7 @@ const HomePage: React.FC = () => {
             onClick={() => setActiveTab("grounds")}
             className={`px-6 py-3 text-lg font-semibold transition ${
               activeTab === "grounds"
-                ? "border-b-4 border-primary text-primary"
+                ? "border-b-4 border-emerald-600 text-emerald-700"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -181,7 +184,7 @@ const HomePage: React.FC = () => {
             onClick={() => setActiveTab("rivals")}
             className={`px-6 py-3 text-lg font-semibold transition ${
               activeTab === "rivals"
-                ? "border-b-4 border-primary text-primary"
+                ? "border-b-4 border-emerald-600 text-emerald-700"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -193,14 +196,16 @@ const HomePage: React.FC = () => {
         {activeTab === "grounds" && (
           <>
             <div id="search-section" className="py-8">
+              {/* ✅ Pass searchLocation into SearchBar */}
               <SearchBar onSearch={handleSearch} className="mb-12" />
 
-              {(searchName || searchType) && (
+              {(searchName || searchType || searchLocation) && (
                 <p className="text-gray-600 mb-6">
                   Found {filteredGrounds.length} ground
                   {filteredGrounds.length !== 1 ? "s" : ""}
                   {searchName && ` matching "${searchName}"`}
                   {searchType && ` in ${searchType}`}
+                  {searchLocation && ` near "${searchLocation}"`}
                 </p>
               )}
             </div>
@@ -215,12 +220,13 @@ const HomePage: React.FC = () => {
               ))}
             </div>
 
-            {filteredGrounds.length === 0 && (searchName || searchType) && (
-              <div className="text-center py-12 text-gray-500">
-                No grounds found matching your criteria. Try adjusting your
-                search.
-              </div>
-            )}
+            {filteredGrounds.length === 0 &&
+              (searchName || searchType || searchLocation) && (
+                <div className="text-center py-12 text-gray-500">
+                  No grounds found matching your criteria. Try adjusting your
+                  search.
+                </div>
+              )}
           </>
         )}
 
@@ -228,10 +234,10 @@ const HomePage: React.FC = () => {
         {activeTab === "rivals" && (
           <div className="py-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Challenges</h2>
+              <h2 className="text-2xl font-bold">Challenges</h2>
               <button
                 onClick={handleAddChallenge}
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition"
+                className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
               >
                 <Plus size={20} />
                 Add Challenge
@@ -245,13 +251,13 @@ const HomePage: React.FC = () => {
                 placeholder="Search by team name, email, or sport..."
                 value={challengeSearch}
                 onChange={(e) => setChallengeSearch(e.target.value)}
-                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
               <input
                 type="date"
                 value={challengeDateSearch}
                 onChange={(e) => setChallengeDateSearch(e.target.value)}
-                className="w-full sm:w-1/3 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full sm:w-1/3 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 

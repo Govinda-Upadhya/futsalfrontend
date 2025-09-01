@@ -25,6 +25,7 @@ const Adminsignin = () => {
       });
 
       if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
         navigate("/admin/dashboard");
       } else {
         alert("Could not sign in");

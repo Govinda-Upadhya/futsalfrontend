@@ -137,23 +137,26 @@ const BookingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* Header */}
+      <div className="bg-white ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Back Button */}
           <button
             onClick={() => navigate("/")}
-            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4"
+            className="flex items-center text-[#1AA148] font-semibold hover:text-green-700 transition-colors mb-4"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Back to Grounds
           </button>
 
+          {/* Ground Info */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900">
                 {ground.name}
               </h1>
-              <div className="flex items-center text-gray-600 mt-1">
-                <MapPin className="h-4 w-4 mr-1" />
+              <div className="flex items-center mt-2 text-gray-600 text-lg">
+                <MapPin className="h-5 w-5 mr-2 text-gray-500" />
                 <span>{ground.location}</span>
               </div>
             </div>
@@ -395,7 +398,7 @@ const BookingPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isBooking || !selectedTimeSlot.length}
-                className="w-full  bg-black text-white py-4 px-6 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-700 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+                className="w-full  bg-[#1AA148] text-white py-4 px-6 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-700 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
                 {isBooking ? (
                   <>
