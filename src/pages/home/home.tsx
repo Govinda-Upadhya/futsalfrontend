@@ -59,6 +59,7 @@ const HomePage: React.FC = () => {
     async function fetchChallenges() {
       try {
         const res = await axios.get(`${base_url}/users/getChallenge`);
+        console.log(res.data.challenges);
         setChallenges(res.data.challenges);
       } catch (error) {
         console.error("Error fetching challenges:", error);
@@ -280,10 +281,7 @@ const HomePage: React.FC = () => {
                   }
 
                   const availabilityText = availabilityData
-                    .map(
-                      (slot: any) =>
-                        `${slot.date} (${slot.start} - ${slot.end})`
-                    )
+                    .map((slot: any) => `${slot.date} ${challenge.description}`)
                     .join(", ");
 
                   return (

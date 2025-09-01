@@ -112,8 +112,9 @@ const BookingPending = () => {
 
           <div className="space-y-3">
             <p>
-              To confirm your booking, upload the payment screenshot and send it
-              to us:
+              To confirm your booking, upload the payment screenshot. The
+              payment is send to the ground owner for confirmation and after
+              match you need to pay the remaining amount.
             </p>
             <input
               type="file"

@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
             </NavLink>
 
             <NavLink to="/admin/signin" className={getNavLinkClass}>
-              Ground Owner Login
+              Login
             </NavLink>
           </div>
 
