@@ -10,6 +10,8 @@ import BookingPage from "./components/booking/bookingpage";
 import BookingPending from "./components/booking/bookingPending";
 import AddChallengeForm from "./pages/user/addChallengeForm";
 import AcceptChallenge from "./pages/user/acceptChallenge";
+import ForgotPassword from "./pages/admin/changePassword";
+import ChangePasswordLink from "./pages/admin/changePasswordLink";
 
 function App() {
   return (
@@ -24,6 +26,11 @@ function App() {
         <Route element={<Groundetails />} path="/admin/ground/:id" />
         <Route element={<Adminsignup />} path="/admin/signup" />
         <Route element={<Adminsignin />} path="/admin/signin" />
+        <Route element={<ForgotPassword />} path="/admin/changePassword" />
+        <Route
+          element={<ChangePasswordLink />}
+          path="/admin/changePassword/:id"
+        />
       </Routes>
     </>
   );

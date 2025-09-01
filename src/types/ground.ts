@@ -1,5 +1,5 @@
 export interface Ground {
-  _id: number;
+  _id: string;
   name: string;
   type: "Football" | "Cricket" | "Basketball" | "Tennis" | "Badminton";
   location: string;

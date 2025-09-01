@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { Search, Calendar, Filter } from "lucide-react";
 
 interface SearchBarProps {
-  onSearch: (name: string, type: string) => void;
+  onSearch: (name: string, type: string, date: string) => void;
   className?: string;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
   const [searchName, setSearchName] = useState("");
-
   const [searchType, setSearchType] = useState("");
+  const [searchDate, setSearchDate] = useState("");
 
   const handleSearch = () => {
-    onSearch(searchName, searchType);
+    onSearch(searchName, searchType, searchDate);
   };
 
   const groundTypes = [
@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
 
   return (
     <div className={`bg-white rounded-2xl shadow-lg p-6 ${className}`}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Name Search */}
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -62,6 +62,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+
+        {/* Date Filter */}
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Date
+          </label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <input
+              type="date"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
+            />
           </div>
         </div>
 

@@ -11,6 +11,8 @@ import ChallengeCard from "../../components/challenge/challengeCard";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchDate, setSearchDate] = useState("");
+  const [availableGroundIds, setAvailableGroundIds] = useState<string[]>([]);
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
   const [grounds, setGrounds] = useState<Ground[]>([]);
@@ -34,13 +36,33 @@ const HomePage: React.FC = () => {
   function handleAccept(id: string) {
     navigate(`/acceptChallenge/${id}`);
   }
+  useEffect(() => {
+    async function getAvailable() {
+      if (!searchDate) {
+        setAvailableGroundIds([]);
+        return;
+      }
+      try {
+        const res = await axios.post(`${base_url}/users/searchDate`, {
+          searchDate,
+        });
+        // assuming API returns a list of ground IDs
+        setAvailableGroundIds(res.data.availableGroundIds || []);
+      } catch (err) {
+        console.error("Error fetching available grounds:", err);
+        setAvailableGroundIds([]);
+      }
+    }
 
+    getAvailable();
+  }, [searchDate]);
   useEffect(() => {
     async function fetchGrounds() {
       try {
         const res = await axios.get(`${base_url}/users/getgrounds`, {
           withCredentials: true,
         });
+
         setGrounds(res.data.ground);
       } catch (error) {
         console.error("Error fetching grounds:", error);
@@ -58,9 +80,10 @@ const HomePage: React.FC = () => {
     fetchChallenges();
   }, []);
 
-  const handleSearch = (name: string, type: string) => {
+  const handleSearch = (name: string, type: string, date: string) => {
     setSearchName(name);
     setSearchType(type);
+    setSearchDate(date);
   };
 
   const handleBookGround = (groundId: number) => {
@@ -76,9 +99,12 @@ const HomePage: React.FC = () => {
         !searchType ||
         ground.type.trim().toLowerCase() === searchType.trim().toLowerCase();
 
-      return matchesName && matchesType;
+      const matchesDate =
+        !searchDate || availableGroundIds.includes(ground._id);
+
+      return matchesName && matchesType && matchesDate;
     });
-  }, [grounds, searchName, searchType]);
+  }, [grounds, searchName, searchType, searchDate, availableGroundIds]);
 
   const handleAddChallenge = () => {
     navigate("/addChallenge");

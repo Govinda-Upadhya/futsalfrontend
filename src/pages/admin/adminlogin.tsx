@@ -128,7 +128,10 @@ const Adminsignin = () => {
 
         {/* Forgot password link */}
         <div className="text-center text-sm">
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+          <a
+            onClick={() => navigate("/admin/changePassword")}
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             Forgot your password?
           </a>
         </div>
