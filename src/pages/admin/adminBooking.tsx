@@ -47,6 +47,7 @@ const Booking: React.FC = () => {
         const res = await axios.get(`${base_url}/admin/bookings`, {
           withCredentials: true,
         });
+        console.log(res.data.bookings);
         setBookings(res.data.bookings);
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -162,14 +163,14 @@ const Booking: React.FC = () => {
   });
 
   return (
-  <div className="max-w-7xl w-full mx-auto p-2 sm:p-6">
+    <div className="max-w-7xl w-full mx-auto p-2 sm:p-6">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
         All Bookings
       </h1>
 
       {/* Search & Filter Bar */}
-  <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
-  <div className="flex flex-col w-full sm:w-1/2">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
+        <div className="flex flex-col w-full sm:w-1/2">
           <label className="text-sm font-medium text-gray-600 mb-1">
             Search by ID, Name, Email, or Contact
           </label>
@@ -182,7 +183,7 @@ const Booking: React.FC = () => {
           />
         </div>
 
-  <div className="flex flex-col w-full sm:w-1/2">
+        <div className="flex flex-col w-full sm:w-1/2">
           <label className="text-sm font-medium text-gray-600 mb-1">
             Filter by Date
           </label>
@@ -210,7 +211,7 @@ const Booking: React.FC = () => {
       {filteredBookings.length === 0 ? (
         <div className="text-gray-500 text-center">No bookings found</div>
       ) : (
-  <div className="overflow-x-auto bg-white rounded-xl shadow-md w-full">
+        <div className="overflow-x-auto bg-white rounded-xl shadow-md w-full">
           <table className="min-w-full border-collapse text-xs sm:text-base">
             <thead className="bg-emerald-600 text-white">
               <tr>
@@ -228,6 +229,9 @@ const Booking: React.FC = () => {
                 </th>
                 <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Ground
+                </th>
+                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
+                  Sports
                 </th>
                 <th className="px-4 sm:px-6 py-3 text-left font-semibold">
                   Amount
@@ -267,6 +271,9 @@ const Booking: React.FC = () => {
                     <td className="px-4 sm:px-6 py-3">{booking.contact}</td>
                     <td className="px-4 sm:px-6 py-3">
                       {booking.ground?.name}
+                    </td>
+                    <td className="px-4 sm:px-6 py-3">
+                      {booking.ground?.type}
                     </td>
                     <td className="px-4 sm:px-6 py-3">
                       ₹{booking.amount || 0}

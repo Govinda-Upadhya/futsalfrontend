@@ -52,6 +52,7 @@ const BookingPage: React.FC = () => {
     const foundGround = await axios.get(
       `${base_url}/users/seegrounds/${groundId}`
     );
+    console.log();
     setGround(foundGround.data);
     setGroundLoading(false);
   }
@@ -261,7 +262,7 @@ const BookingPage: React.FC = () => {
                             );
 
                             if (exists) {
-                              // remove it if already exists
+                              // Remove if already selected
                               return prev.filter(
                                 (time) =>
                                   !(
@@ -270,22 +271,24 @@ const BookingPage: React.FC = () => {
                                   )
                               );
                             } else {
-                              // add if not exists
+                              // Add if not selected
                               return [...prev, hour];
                             }
                           });
-                          console.log(selectedTimeSlot);
                         }}
                         className={`p-3 rounded-lg border text-sm font-medium transition-all
-        ${
-          selectedTimeSlot.some(
-            (time) => time.start === hour.start && time.end === hour.end
-          )
-            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-            : "border-gray-300 hover:border-emerald-300 hover:bg-emerald-50"
-        }
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200
-      `}
+            ${
+              selectedTimeSlot.some(
+                (time) => time.start === hour.start && time.end === hour.end
+              )
+                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                : bookedTime.some(
+                    (time) => time.start === hour.start && time.end === hour.end
+                  )
+                ? "border-gray-300 bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "border-gray-300 hover:border-emerald-300 hover:bg-emerald-50"
+            }
+          `}
                       >
                         {hour.start}-{hour.end}
                       </button>
