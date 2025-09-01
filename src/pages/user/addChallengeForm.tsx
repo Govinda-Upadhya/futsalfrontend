@@ -139,12 +139,26 @@ const AddChallengeForm: React.FC = () => {
           <p className="text-red-500 text-xs">{errors.members.message}</p>
         )}
 
-        <input
-          type="text"
-          placeholder="Contact Number"
-          {...register("contact", { required: "Contact is required" })}
-          className="w-full border rounded p-2 bg-white"
-        />
+        <div className="mb-5">
+          <input
+            type="text"
+            {...register("contact", {
+              required: "Contact is required",
+              pattern: {
+                value: /^(77|17)[0-9]{6}$/, // starts with 77 or 17, followed by 6 digits, no letters allowed
+                message:
+                  "Contact must start with 77 or 17, contain 8 digits, and no letters",
+              },
+            })}
+            className="w-full px-4 bg-white py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            placeholder="Enter your 8-digit contact number"
+          />
+          {errors.contact && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.contact.message}
+            </p>
+          )}
+        </div>
         {errors.contact && (
           <p className="text-red-500 text-xs">{errors.contact.message}</p>
         )}

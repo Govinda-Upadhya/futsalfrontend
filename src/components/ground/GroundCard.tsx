@@ -69,10 +69,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
 
         {/* Available Hours */}
         <div className="flex items-center text-gray-600 mb-4">
-          <Clock className="h-4 w-4 mr-2" />
-          <span className="text-sm">
-            {ground.availability.length} slots available
-          </span>
+          <span className="text-sm">{ground.capacity} players</span>
         </div>
 
         {/* Price and Book Button */}

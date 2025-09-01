@@ -163,6 +163,7 @@ const Addground = () => {
             type="text"
             {...register("location", { required: "Location is required" })}
             className="w-full border rounded p-2 text-sm"
+            placeholder="street name, village, gewog, dzongkha"
           />
           {errors.location && (
             <p className="text-red-500 text-sm">{errors.location.message}</p>

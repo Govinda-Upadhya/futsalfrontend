@@ -53,7 +53,7 @@ const Adminsignup = () => {
       }
     } catch (err) {
       console.error("Error during signup:", err);
-      alert("Something went wrong. Check console for details.");
+      alert(err.response.data.msg);
     }
   };
 
@@ -122,9 +122,16 @@ const Adminsignup = () => {
           </label>
           <input
             type="text"
-            {...register("contact", { required: "Contact is required" })}
+            {...register("contact", {
+              required: "Contact is required",
+              pattern: {
+                value: /^(77|17)[0-9]{6}$/, // starts with 77 or 17, followed by 6 digits, no letters allowed
+                message:
+                  "Contact must start with 77 or 17, contain 8 digits, and no letters",
+              },
+            })}
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            placeholder="Enter your contact number"
+            placeholder="Enter your 8-digit contact number"
           />
           {errors.contact && (
             <p className="text-red-500 text-sm mt-1">

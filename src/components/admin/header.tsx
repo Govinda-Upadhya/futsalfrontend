@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { base_url } from "../../types/ground";
-
+import logo from "../../assets/logo.svg";
 export default function Header({ active, setActive }) {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState<{ name: string; image: string }>();
@@ -26,7 +27,16 @@ export default function Header({ active, setActive }) {
     <header className="bg-gray-900 text-white p-2 sm:p-4 sticky top-0 z-50 shadow-md w-full">
       <div className="container mx-auto flex flex-col sm:flex-row justify-around items-center gap-2">
         <div className="flex w-full sm:w-auto justify-between items-center">
-          <h1 className="text-lg sm:text-2xl font-bold">ThangGo</h1>
+          <NavLink to="/" className="flex items-center gap-2 text-white">
+            <img
+              src={logo}
+              alt="ThangGo Logo"
+              className="h-10 w-10 rounded-full object-cover"
+            />
+
+            <span className="text-2xl font-bold">ThangGo</span>
+          </NavLink>
+
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="sm:hidden text-gray-400 focus:outline-none"

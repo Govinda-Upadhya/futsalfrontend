@@ -162,7 +162,7 @@ const HomePage: React.FC = () => {
               <span className="block">Sports Ground</span>
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
-              Play Smarter – Book Your Ground Faster. ThangGO at your service 😉
+              Play Smarter – Book Your Ground Faster. ThangGo at your service 😉
             </p>
           </div>
         </div>
@@ -233,7 +233,7 @@ const HomePage: React.FC = () => {
 
         {/* Rivals Section */}
         {activeTab === "rivals" && (
-          <div className="py-8">
+          <div className="py-8 flex flex-col justify-center ">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Challenges</h2>
               <button
@@ -243,6 +243,14 @@ const HomePage: React.FC = () => {
                 <Plus size={20} />
                 Add Challenge
               </button>
+            </div>
+            <div className="w-full flex justify-center">
+              <p className="text-gray-600 mb-4 max-w-2xl">
+                🔥 The Ultimate Sports Challenge 🔥 Where strangers become
+                rivals, and rivals become legends. Compete hard, play fair, and
+                cheer louder! Challenge your friends, build teamwork, and
+                respect every opponent. Are you ready to step up and play?
+              </p>
             </div>
 
             {/* Search Bar for Challenges */}

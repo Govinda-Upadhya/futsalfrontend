@@ -66,9 +66,9 @@ const Groundetails = () => {
           type: ground.type || "Football",
           location: ground.location || "",
           pricePerHour: ground.pricePerHour || 0,
-          rating: ground.rating || 4,
-          features: ground.features || [""],
 
+          features: ground.features || [""],
+          capacity: ground.capacity,
           availability: ground.availability || [{ start: "", end: "" }],
           description: ground.description,
           admin: ground.admin,
@@ -142,19 +142,21 @@ const Groundetails = () => {
         },
         { withCredentials: true }
       );
+      alert("update done");
       reset();
       setExistingImages(finalImages);
       setImages([]);
       setPreviews([]);
     } catch (err) {
+      alert("please try again");
       console.error("Error updating ground:", err);
     }
   };
 
   return (
-  <div className="max-w-2xl w-full mx-auto bg-white shadow-md rounded-xl p-4 sm:p-6">
+    <div className="max-w-2xl w-full mx-auto bg-white shadow-md rounded-xl p-4 sm:p-6">
       <h2 className="text-xl font-bold mb-4">Edit Ground</h2>
-  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Ground Name */}
         <div>
           <label className="block font-medium">Ground Name</label>
@@ -230,7 +232,10 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Facility</label>
           {featureFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col sm:flex-row gap-2 mb-2">
+            <div
+              key={field.id}
+              className="flex flex-col sm:flex-row gap-2 mb-2"
+            >
               <input
                 type="text"
                 {...register(`features.${index}`, {
@@ -284,7 +289,10 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Upload New Images</label>
           {images.map((_, index) => (
-            <div key={index} className="flex flex-col sm:flex-row items-center gap-2 mb-2">
+            <div
+              key={index}
+              className="flex flex-col sm:flex-row items-center gap-2 mb-2"
+            >
               <input
                 type="file"
                 accept="image/*"
@@ -320,7 +328,10 @@ const Groundetails = () => {
         <div>
           <label className="block font-medium">Availability (24h HH:mm)</label>
           {timeFields.map((field, index) => (
-            <div key={field.id} className="flex flex-col sm:flex-row gap-2 mb-2">
+            <div
+              key={field.id}
+              className="flex flex-col sm:flex-row gap-2 mb-2"
+            >
               <input
                 type="text"
                 placeholder="HH:mm"
