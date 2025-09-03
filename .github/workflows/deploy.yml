@@ -22,5 +22,4 @@ jobs:
             cd /root/app/futsalfrontend  # path where your app lives
             git pull origin main
             npm install
-            npm run dev
             pm2 restart fe
