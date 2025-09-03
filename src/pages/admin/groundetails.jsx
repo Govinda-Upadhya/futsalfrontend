@@ -132,11 +132,13 @@ const Groundetails = () => {
         newImageUrls.push(uploadUrl[i].imageUrl);
       }
       const finalImages = [...existingImages, ...newImageUrls];
+      data.images = finalImages;
+      console.log(data);
       await axios.put(
         `${base_url}/admin/updateground/${id}`,
         {
           ...data,
-          images: finalImages,
+
           newImageUrls,
           removedImages: removedImage,
         },

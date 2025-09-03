@@ -61,10 +61,14 @@ const AddChallengeForm: React.FC = () => {
       headers: { "Content-Type": photo.type },
     });
 
-    const addChallenge = await axios.post(`${base_url}/users/createChallenge`, {
-      ...data,
-      imageUrl: res.data.imageUrl,
-    });
+    const addChallenge = await axios.post(
+      `${base_url}/users/createChallenge`,
+      {
+        ...data,
+        imageUrl: res.data.imageUrl,
+      },
+      { withCredentials: true }
+    );
 
     if (addChallenge.status === 200) {
       alert("challenge made");
