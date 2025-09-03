@@ -389,7 +389,7 @@ const BookingPage: React.FC = () => {
                   )}
                   <div className="flex justify-between text-lg font-bold text-emerald-600 pt-2 border-t">
                     <span>Total Amount:</span>
-                    <span>₹{getTotalAmount()}</span>
+                    <span>Nu.{getTotalAmount()}</span>
                   </div>
                 </div>
               </div>

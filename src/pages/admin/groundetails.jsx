@@ -149,6 +149,7 @@ const Groundetails = () => {
       setExistingImages(finalImages);
       setImages([]);
       setPreviews([]);
+      navigate("/admin/dashboard");
     } catch (err) {
       alert("please try again");
       console.error("Error updating ground:", err);

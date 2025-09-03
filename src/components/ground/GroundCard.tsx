@@ -75,7 +75,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
         {/* Price and Book Button */}
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold  text-green-700">
-            ₹{ground.pricePerHour}
+            Nu.{ground.pricePerHour}
             <span className="text-sm text-green-700 font-normal">/hour</span>
           </div>
           <button
