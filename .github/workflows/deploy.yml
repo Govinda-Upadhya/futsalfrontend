@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
+            export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.18.0/bin
             cd /home/${{ secrets.VPS_USER }}/app/futsalfrontend   # path where your app lives
             git pull origin main
             npm install
