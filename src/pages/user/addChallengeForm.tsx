@@ -67,7 +67,7 @@ const AddChallengeForm: React.FC = () => {
         ...data,
         imageUrl: res.data.imageUrl,
       },
-      { withCredentials: true }
+      
     );
 
     if (addChallenge.status === 200) {

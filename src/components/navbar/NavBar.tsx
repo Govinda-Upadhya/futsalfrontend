@@ -79,11 +79,11 @@ const Navbar: React.FC = () => {
               Contact Us
             </NavLink>
             <NavLink
-              to="/owner-login"
+              to="/admin/signin"
               className={getMobileNavLinkClass}
               onClick={() => setIsOpen(false)}
             >
-              Ground Owner Login
+              Login
             </NavLink>
           </div>
         </div>

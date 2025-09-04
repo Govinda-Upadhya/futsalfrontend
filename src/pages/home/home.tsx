@@ -264,6 +264,7 @@ const HomePage: React.FC = () => {
               />
               <input
                 type="date"
+                placeholder="date"
                 value={challengeDateSearch}
                 onChange={(e) => setChallengeDateSearch(e.target.value)}
                 className="w-full sm:w-1/3 border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"

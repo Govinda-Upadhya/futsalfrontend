@@ -89,12 +89,14 @@ const AcceptChallenge: React.FC = () => {
               {...register("phone", {
                 required: "Phone number is required",
                 pattern: {
-                  value: /^[0-9]{7,15}$/,
-                  message: "Invalid phone number",
+                  value: /^(77|17)[0-9]{6}$/,
+                  message:
+                    "Phone number must start with 77 or 17 and be 8 digits",
                 },
               })}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              placeholder="Enter your phone number"
+              placeholder="Enter your 8-digit phone number"
+              maxLength={8} // prevents typing more than 8 characters
             />
             {errors.phone && (
               <p className="text-red-500 text-sm mt-1">

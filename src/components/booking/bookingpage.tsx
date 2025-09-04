@@ -338,19 +338,26 @@ const BookingPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Phone className="h-4 w-4 inline mr-1" />
+                    <label className="block text-gray-700 font-medium mb-1">
                       Phone Number
                     </label>
                     <input
                       type="tel"
-                      {...register("phone", { required: true })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                      placeholder="Enter your phone number"
+                      {...register("phone", {
+                        required: "Phone number is required",
+                        pattern: {
+                          value: /^(77|17)[0-9]{6}$/,
+                          message:
+                            "Phone number must start with 77 or 17 and be 8 digits",
+                        },
+                      })}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      placeholder="Enter your 8-digit phone number"
+                      maxLength={8} // prevents typing more than 8 characters
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">
-                        Please enter your phone number
+                        {errors.phone.message}
                       </p>
                     )}
                   </div>

@@ -24,6 +24,6 @@ export interface Booking {
   status: "confirmed" | "pending" | "cancelled";
 }
 
-export const base_url = "/api";
+export const base_url = "http://localhost:3002/";
 export const upload_base_url = "http://localhost:3002/upload";
 export const uploads_base_url = "http://localhost:3002/uploads";
