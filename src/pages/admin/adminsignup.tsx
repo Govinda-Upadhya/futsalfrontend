@@ -41,7 +41,7 @@ const Adminsignup = () => {
         email: data.email,
         contact: data.contact,
         password: data.password,
-        profile: imagepath.url,
+        profile: imagepath.data.url,
       };
 
       const saveRes = await axios.post(`${base_url}/admin/signup`, signupData, {
