@@ -16,7 +16,7 @@ const Adminsignup = () => {
     console.log(data);
     const file = data.profile[0];
     if (!file) return alert("Please select a file");
-
+    const usermail = data.email.split("@")[0];
     try {
       // 1. Get presigned URL from backend
       const res = await axios.post(`${base_url}/admin/getpresignedurl/signup`, {
@@ -28,8 +28,8 @@ const Adminsignup = () => {
 
       // 2. Upload file directly to S3
       const imagepath: { url: string; message: string } = await axios.post(
-        `${upload_base_url}/admin/upload`,
-        file,
+        `${upload_base_url}/admin/signup/upload`,
+        { file, usermail },
         {
           headers: {
             "Content-Type": file.type,
