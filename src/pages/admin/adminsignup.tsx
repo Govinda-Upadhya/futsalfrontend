@@ -19,14 +19,6 @@ const Adminsignup = () => {
     if (!file) return alert("Please select a file");
     const usermail = data.email.split("@")[0];
     try {
-      // 1. Get presigned URL from backend
-      const res = await axios.post(`${base_url}/admin/getpresignedurl/signup`, {
-        fileName: file.name,
-        fileType: file.type,
-      });
-      const { url, imageUrl } = res.data;
-      console.log("Presigned URL:", url, "Image URL:", imageUrl);
-
       const formData = new FormData();
       formData.append("file", file);
 
@@ -34,8 +26,7 @@ const Adminsignup = () => {
         `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
         formData
       );
-      console.log(imagepath);
-      // 3. Save signup data
+
       const signupData = {
         name: data.name,
         email: data.email,

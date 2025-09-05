@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { base_url } from "../../types/ground";
+import { base_url, upload_base_url } from "../../types/ground";
 const Addground = () => {
   const {
     register,
@@ -77,23 +77,9 @@ const Addground = () => {
     const submitData = { ...data, images };
     console.log("submitteddata", submitData);
     const uploadUrl = [];
-    for (const photo of submitData.images) {
-      const res = await axios.post(
-        `${base_url}/admin/createground/uploadpic`,
-        { fileType: photo.type, fileName: photo.name },
-        { withCredentials: true }
-      );
-      uploadUrl.push(res.data);
-    }
-    const imageurl = [];
-    for (let i = 0; i < uploadUrl.length; i++) {
-      await axios.put(uploadUrl[i].url, submitData.images[i], {
-        headers: {
-          "Content-Type": submitData.images[i].type,
-        },
-      });
-      imageurl.push(uploadUrl[i].imageUrl);
-    }
+    const formData = new FormData();
+    formData.append("files", submitData.images);
+    const urls = await axios.post(`${upload_base_url}/admin/uploads`, formData);
 
     const sendtobackend = await axios.post(
       `${base_url}/admin/createground`,
@@ -107,7 +93,7 @@ const Addground = () => {
         capacity: submitData.capacity,
         availability: submitData.availability,
         description: submitData.description,
-        image: imageurl,
+        image: urls.data.urls,
         admin: submitData.admin,
       },
       { withCredentials: true }
