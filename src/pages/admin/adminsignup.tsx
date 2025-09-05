@@ -27,7 +27,7 @@ const Adminsignup = () => {
       console.log("Presigned URL:", url, "Image URL:", imageUrl);
 
       const formData = new FormData();
-      formData.append("file", file); // the key must match uploadone.single("file")
+      formData.append("file", file);
       formData.append("usermail", usermail);
 
       const imagepath: { url: string; message: string } = await axios.post(
