@@ -26,13 +26,16 @@ const Adminsignup = () => {
       const { url, imageUrl } = res.data;
       console.log("Presigned URL:", url, "Image URL:", imageUrl);
 
-      // 2. Upload file directly to S3
+      const formData = new FormData();
+      formData.append("file", file); // the key must match uploadone.single("file")
+      formData.append("usermail", usermail);
+
       const imagepath: { url: string; message: string } = await axios.post(
         `${upload_base_url}/admin/signup/upload`,
-        { file, usermail },
+        formData,
         {
           headers: {
-            "Content-Type": file.type,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
