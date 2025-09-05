@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { base_url, upload_base_url } from "../../types/ground";
+import { ImagePlay } from "lucide-react";
 
 const Adminsignup = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Adminsignup = () => {
         `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
         formData
       );
-
+      console.log(imagepath);
       // 3. Save signup data
       const signupData = {
         name: data.name,
