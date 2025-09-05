@@ -116,6 +116,7 @@ const Groundetails = () => {
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
+      console.log(images);
       images.forEach((img) => {
         formData.append("files", img);
       });
