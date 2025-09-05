@@ -32,12 +32,7 @@ const Adminsignup = () => {
 
       const imagepath: { url: string; message: string } = await axios.post(
         `${upload_base_url}/admin/signup/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
 
       // 3. Save signup data
