@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { base_url } from "../../types/ground";
+import { base_url, upload_base_url } from "../../types/ground";
 
 const Adminsignup = () => {
   const navigate = useNavigate();
@@ -27,11 +27,15 @@ const Adminsignup = () => {
       console.log("Presigned URL:", url, "Image URL:", imageUrl);
 
       // 2. Upload file directly to S3
-      await axios.put(url, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
+      const imagepath: { url: string; message: string } = await axios.post(
+        `${upload_base_url}/admin/upload`,
+        file,
+        {
+          headers: {
+            "Content-Type": file.type,
+          },
+        }
+      );
 
       // 3. Save signup data
       const signupData = {
@@ -39,7 +43,7 @@ const Adminsignup = () => {
         email: data.email,
         contact: data.contact,
         password: data.password,
-        profile: imageUrl,
+        profile: imagepath.url,
       };
 
       const saveRes = await axios.post(`${base_url}/admin/signup`, signupData, {
