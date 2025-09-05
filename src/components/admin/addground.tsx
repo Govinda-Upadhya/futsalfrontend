@@ -78,7 +78,10 @@ const Addground = () => {
     console.log("submitteddata", submitData);
     const uploadUrl = [];
     const formData = new FormData();
-    formData.append("files", submitData.images);
+    submitData.images.forEach((img) => {
+      formData.append("files", img);
+    });
+
     const urls = await axios.post(`${upload_base_url}/admin/uploads`, formData);
 
     const sendtobackend = await axios.post(
