@@ -28,10 +28,9 @@ const Adminsignup = () => {
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("usermail", usermail);
 
       const imagepath: { url: string; message: string } = await axios.post(
-        `${upload_base_url}/admin/signup/upload`,
+        `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
         formData
       );
 
