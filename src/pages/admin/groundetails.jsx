@@ -117,7 +117,7 @@ const Groundetails = () => {
     try {
       const formData = new FormData();
       const newImageUrls = [];
-      console.log(images);
+      console.log("images", images);
       if (images.length != 0) {
         images.forEach((img) => {
           formData.append("files", img);
