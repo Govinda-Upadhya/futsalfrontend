@@ -125,7 +125,7 @@ const Groundetails = () => {
 
         const uploads = await axios.post(
           `${upload_base_url}/admin/uploads`,
-          FormData,
+          formData,
           { withCredentials: true }
         );
         newImageUrls = uploads.data.urls;
