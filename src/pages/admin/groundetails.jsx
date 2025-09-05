@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { base_url } from "../../types/ground";
+import { base_url, upload_base_url } from "../../types/ground";
 // Base URL for API
 
 const Groundetails = () => {
@@ -115,22 +115,18 @@ const Groundetails = () => {
 
   const onSubmit = async (data) => {
     try {
-      const uploadUrl = [];
-      for (const photo of images.filter(Boolean)) {
-        const res = await axios.post(
-          `${base_url}/admin/createground/uploadpic`,
-          { fileType: photo.type, fileName: photo.name },
-          { withCredentials: true }
-        );
-        uploadUrl.push(res.data);
-      }
+      const formData = new FormData();
+      images.forEach((img) => {
+        formData.append("files", img);
+      });
       const newImageUrls = [];
-      for (let i = 0; i < uploadUrl.length; i++) {
-        await axios.put(uploadUrl[i].url, images[i], {
-          headers: { "Content-Type": images[i].type },
-        });
-        newImageUrls.push(uploadUrl[i].imageUrl);
-      }
+      const uploads = await axios.post(
+        `${upload_base_url}/admin/uploads`,
+        FormData,
+        { withCredentials: true }
+      );
+      newImageUrls = uploads.data.urls;
+      console.log(newImageUrls);
       const finalImages = [...existingImages, ...newImageUrls];
       data.images = finalImages;
       console.log(data);
