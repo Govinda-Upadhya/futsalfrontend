@@ -116,21 +116,25 @@ const Groundetails = () => {
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      console.log(images);
-      images.forEach((img) => {
-        formData.append("files", img);
-      });
       const newImageUrls = [];
-      const uploads = await axios.post(
-        `${upload_base_url}/admin/uploads`,
-        FormData,
-        { withCredentials: true }
-      );
-      newImageUrls = uploads.data.urls;
+      console.log(images);
+      if (images.length != 0) {
+        images.forEach((img) => {
+          formData.append("files", img);
+        });
+
+        const uploads = await axios.post(
+          `${upload_base_url}/admin/uploads`,
+          FormData,
+          { withCredentials: true }
+        );
+        newImageUrls = uploads.data.urls;
+      }
+
       console.log(newImageUrls);
       const finalImages = [...existingImages, ...newImageUrls];
       data.images = finalImages;
-      console.log(data);
+      console.log("removed images", removedImage);
       await axios.put(
         `${base_url}/admin/updateground/${id}`,
         {
