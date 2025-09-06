@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Calendar } from "lucide-react";
-import { base_url } from "../../types/ground";
+import { base_url, upload_base_url } from "../../types/ground";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -48,27 +48,16 @@ const AddChallengeForm: React.FC = () => {
 
   const submitHandler = async (data: ChallengeFormData) => {
     const photo = data.teamImage?.[0];
-    console.log(data);
+    const formData = new FormData();
+
     if (!photo) return;
+    formData.append("file", photo);
+    const res = await axios.post(`${upload_base_url}/user/upload`, formData);
 
-    const res = await axios.post(
-      `${base_url}/admin/createground/uploadpic`,
-      { fileType: photo.type, fileName: photo.name },
-      { withCredentials: true }
-    );
-
-    await axios.put(res.data.url, photo, {
-      headers: { "Content-Type": photo.type },
+    const addChallenge = await axios.post(`${base_url}/users/createChallenge`, {
+      ...data,
+      imageUrl: res.data.url,
     });
-
-    const addChallenge = await axios.post(
-      `${base_url}/users/createChallenge`,
-      {
-        ...data,
-        imageUrl: res.data.imageUrl,
-      },
-      
-    );
 
     if (addChallenge.status === 200) {
       alert("challenge made");
