@@ -20,40 +20,44 @@ import ForgotPassword from "./pages/admin/changePassword";
 import ChangePasswordLink from "./pages/admin/changePasswordLink";
 import AdminLayout from "./layout/adminLayout";
 import UserLayout from "./layout/userlayout";
-import AdminProtectedRoute from "./components/auth/protectRoutes";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<UserLayout />}>
-        <Route index element={<HomePage />} /> {/* The homepage */}
-        <Route path="booking/:groundId" element={<BookingPage />} />
-        <Route path="addChallenge" element={<AddChallengeForm />} />
-        <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
-        <Route path="users/booking/:booking_id" element={<BookingPending />} />
-        <Route path="aboutus" element={<AboutUs />} />
-        <Route path="contactus" element={<ContactUs />} />
-      </Route>
+    <div className="min-h-screen flex flex-col">
+      <Routes>
+        {/* User Routes */}
+        <Route path="/" element={<UserLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="booking/:groundId" element={<BookingPage />} />
+          <Route path="addChallenge" element={<AddChallengeForm />} />
+          <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
+          <Route
+            path="users/booking/:booking_id"
+            element={<BookingPending />}
+          />
+          <Route path="aboutus" element={<AboutUs />} />
+          <Route path="contactus" element={<ContactUs />} />
+        </Route>
 
-      <Route path="/admin/signin" element={<Adminsignin />} />
-      <Route path="/admin/signup" element={<Adminsignup />} />
-      <Route path="/admin/changePassword" element={<ForgotPassword />} />
-      <Route
-        path="/admin/changePassword/:id"
-        element={<ChangePasswordLink />}
-      />
+        {/* Admin Auth Routes */}
+        <Route path="/admin/signin" element={<Adminsignin />} />
+        <Route path="/admin/signup" element={<Adminsignup />} />
+        <Route path="/admin/changePassword" element={<ForgotPassword />} />
+        <Route
+          path="/admin/changePassword/:id"
+          element={<ChangePasswordLink />}
+        />
 
-      <Route element={<AdminProtectedRoute />}>
+        {/* Admin Dashboard Routes (now unprotected) */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Admin />} />
           <Route path="ground/:id" element={<Groundetails />} />
-          {/* Add any other routes that require admin authentication here */}
         </Route>
-      </Route>
 
-      {/* You can also have routes that don't belong to any layout, like a 404 page */}
-      {/* <Route path="*" element={<NotFoundPage />} /> */}
-    </Routes>
+        {/* 404 Route (optional) */}
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+    </div>
   );
 }
 

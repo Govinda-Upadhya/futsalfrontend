@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { base_url } from "../../types/ground";
 
 interface TimeRange {
@@ -41,6 +41,14 @@ const Booking: React.FC = () => {
   );
   const [rejecting, setRejecting] = useState(false);
 
+  // Detail view modal
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
+  // Animation states
+  const [animateRow, setAnimateRow] = useState<string | null>(null);
+
+  // ✅ Load dummy bookings
   useEffect(() => {
     async function fetchBookings() {
       try {
@@ -59,6 +67,7 @@ const Booking: React.FC = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
+    setAnimateRow(id);
     const confirmed = window.confirm(
       "Are you sure you want to delete this booking?"
     );
@@ -82,29 +91,30 @@ const Booking: React.FC = () => {
   };
 
   const handleAction = async (id: string, status: "CONFIRMED" | "REJECTED") => {
-    try {
-      if (status === "CONFIRMED") {
-        const accept = await axios.post(
-          `${base_url}/admin/bookings/acceptbooking`,
-          { bookingId: id },
-          { withCredentials: true }
-        );
-        if (accept.data.status === 404) {
-          return alert("Cannot find the id");
-        }
-        alert("Booking confirmed");
-      } else if (status === "REJECTED") {
-        setSelectedBookingId(id);
-        setShowRejectModal(true);
-        return;
+    if (status === "CONFIRMED") {
+      const accept = await axios.post(
+        `${base_url}/admin/bookings/acceptbooking`,
+        { bookingId: id },
+        { withCredentials: true }
+      );
+      if (accept.data.status === 404) {
+        return alert("Cannot find the id");
       }
+    }
+    if (status === "REJECTED") {
+      setSelectedBookingId(id);
+      setShowRejectModal(true);
+      return;
+    }
 
+    // Animation for status change
+    setAnimateRow(id);
+    setTimeout(() => {
       setBookings((prev) =>
         prev.map((b) => (b._id === id ? { ...b, status } : b))
       );
-    } catch (error) {
-      console.error(`Error updating booking ${id}:`, error);
-    }
+      setAnimateRow(null);
+    }, 300);
   };
 
   const confirmReject = async () => {
@@ -139,24 +149,38 @@ const Booking: React.FC = () => {
     }
   };
 
+  const openDetailModal = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setShowDetailModal(true);
+  };
+
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500">Loading bookings...</div>
+      <div className="flex justify-center items-center h-64">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-emerald-200 rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-4 border-transparent rounded-full absolute top-0 border-t-4 border-t-emerald-500 animate-ping"></div>
+        </div>
+      </div>
     );
   }
 
   // Filter bookings by ID, name, email, contact AND date
+  // Filtering logic
   const filteredBookings = bookings.filter((b) => {
     const lower = searchTerm.toLowerCase();
+
+    // ✅ Safe string checks for all fields
     const matchesText = lower
-      ? b._id.toLowerCase().includes(lower) ||
+      ? (b._id || "").toLowerCase().includes(lower) ||
         (b.name || "").toLowerCase().includes(lower) ||
-        b.email.toLowerCase().includes(lower) ||
-        b.contact.toLowerCase().includes(lower)
+        (b.email || "").toLowerCase().includes(lower) ||
+        (b.contact || "").toLowerCase().includes(lower)
       : true;
 
+    // ✅ Date check that works with <input type="date">
     const matchesDate = searchDate
-      ? new Date(b.date).toISOString().split("T")[0] === searchDate
+      ? new Date(b.date).toLocaleDateString("en-CA") === searchDate
       : true;
 
     return matchesText && matchesDate;
@@ -164,229 +188,717 @@ const Booking: React.FC = () => {
 
   return (
     <div className="max-w-7xl w-full mx-auto p-2 sm:p-6">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
-        All Bookings
-      </h1>
-
-      {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
-        <div className="flex flex-col w-full sm:w-1/2">
-          <label className="text-sm font-medium text-gray-600 mb-1">
-            Search by ID, Name, Email, or Contact
-          </label>
-          <input
-            type="text"
-            placeholder="Enter keyword..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-400 outline-none"
-          />
-        </div>
-
-        <div className="flex flex-col w-full sm:w-1/2">
-          <label className="text-sm font-medium text-gray-600 mb-1">
-            Filter by Date
-          </label>
-          <input
-            type="date"
-            value={searchDate}
-            onChange={(e) => setSearchDate(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-400 outline-none"
-          />
-        </div>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-emerald-800 tracking-wide">
+          Booking Management
+        </h1>
+        <p className="text-emerald-600">
+          Manage all ground bookings in one place
+        </p>
       </div>
 
-      {(searchTerm || searchDate) && (
-        <button
-          onClick={() => {
-            setSearchTerm("");
-            setSearchDate("");
-          }}
-          className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm text-gray-700"
-        >
-          Reset Filters
-        </button>
-      )}
+      {/* Search & Filter Bar */}
+      <div className="bg-gradient-to-r from-emerald-50 to-green-50 p-4 sm:p-6 rounded-2xl shadow-md mb-8 border border-emerald-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              Search by ID, Name, Email, or Contact
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  className="h-5 w-5 text-emerald-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Enter keyword..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 w-full border border-emerald-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-emerald-700 mb-2">
+              Filter by Date
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  className="h-5 w-5 text-emerald-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="date"
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)}
+                className="pl-10 w-full border border-emerald-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300"
+              />
+            </div>
+          </div>
+        </div>
+
+        {(searchTerm || searchDate) && (
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setSearchDate("");
+              }}
+              className="flex items-center px-4 py-2 bg-white text-emerald-700 border border-emerald-300 rounded-xl hover:bg-emerald-50 transition-all duration-300 shadow-sm"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              Reset Filters
+            </button>
+          </div>
+        )}
+      </div>
 
       {filteredBookings.length === 0 ? (
-        <div className="text-gray-500 text-center">No bookings found</div>
+        <div className="text-center py-12 bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl shadow-md border border-emerald-100">
+          <svg
+            className="w-16 h-16 mx-auto text-emerald-300 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+          <h3 className="text-xl font-medium text-emerald-800 mb-2">
+            No bookings found
+          </h3>
+          <p className="text-emerald-600">Try adjusting your search criteria</p>
+        </div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl shadow-md w-full">
-          <table className="min-w-full border-collapse text-xs sm:text-base">
-            <thead className="bg-emerald-600 text-white">
-              <tr>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Booking ID
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Name
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Email
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Contact
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Ground
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Sports
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Amount
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Date
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Time
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Status
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left font-semibold">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBookings
-                .sort(
-                  (a, b) =>
-                    new Date(a.date).getTime() - new Date(b.date).getTime()
-                )
-                .map((booking) => (
-                  <tr
-                    key={booking._id}
-                    className="border-t hover:bg-gray-50 transition"
-                  >
-                    <td className="px-4 sm:px-6 py-3 break-words max-w-[150px]">
-                      {booking._id}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">{booking.name || "-"}</td>
-                    <td className="px-4 sm:px-6 py-3 break-words max-w-[180px]">
-                      {booking.email}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">{booking.contact}</td>
-                    <td className="px-4 sm:px-6 py-3">
-                      {booking.ground?.name}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      {booking.ground?.type}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      ₹{booking.amount || 0}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3 whitespace-nowrap">
-                      {new Date(booking.date).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {booking.time.map((t, idx) => (
-                          <span
-                            key={idx}
-                            className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs"
-                          >
-                            {t.start} - {t.end}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === "CONFIRMED"
-                            ? "bg-green-100 text-green-700"
-                            : booking.status === "PENDING"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {booking.status}
-                      </span>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      {booking.status === "PENDING" && (
-                        <div className="flex flex-col sm:flex-row gap-2 w-full">
-                          <button
-                            onClick={() =>
-                              handleAction(booking._id, "CONFIRMED")
-                            }
-                            className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md text-xs"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleAction(booking._id, "REJECTED")
-                            }
-                            className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-xs"
-                          >
-                            Reject
-                          </button>
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-emerald-100">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    ID & Customer
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    Ground & Sport
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    Date & Time
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-emerald-100">
+                {filteredBookings
+                  .sort(
+                    (a, b) =>
+                      new Date(a.date).getTime() - new Date(b.date).getTime()
+                  )
+                  .map((booking) => (
+                    <tr
+                      key={booking._id}
+                      className={`transition-all duration-300 hover:bg-emerald-50 ${
+                        animateRow === booking._id
+                          ? "opacity-0 transform -translate-x-4"
+                          : "opacity-100"
+                      } ${
+                        booking.status === "PENDING"
+                          ? "bg-yellow-50 hover:bg-yellow-100"
+                          : ""
+                      }`}
+                    >
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <svg
+                              className="h-6 w-6 text-emerald-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              />
+                            </svg>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {booking.name || "No Name"}
+                            </div>
+                            <div className="text-sm text-emerald-600">
+                              {booking.email}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ID: {booking._id}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Contact: {booking.contact}
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      {booking.status === "CONFIRMED" && (
-                        <button
-                          onClick={() => handleDelete(booking._id)}
-                          className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded-md text-xs"
+                      </td>
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {booking.ground?.name}
+                        </div>
+                        <div className="text-sm text-emerald-600">
+                          {booking.ground?.type}
+                        </div>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="text-sm text-gray-900">
+                          {new Date(booking.date).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </div>
+                        <div className="text-sm text-emerald-600">
+                          {booking.time[0].start} -{" "}
+                          {booking.time[booking.time.length - 1].end}
+                          {booking.time.length > 1 && (
+                            <span className="text-xs bg-emerald-100 text-emerald-800 ml-1 px-1 rounded">
+                              +{booking.time.length - 1} more
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="text-sm font-medium text-emerald-700">
+                          ₹{booking.amount || 0}
+                        </div>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            booking.status === "CONFIRMED"
+                              ? "bg-green-100 text-green-800"
+                              : booking.status === "PENDING"
+                              ? "bg-yellow-100 text-yellow-800 animate-pulse"
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
-                          Remove
-                        </button>
+                          {booking.status === "CONFIRMED" && (
+                            <svg
+                              className="w-4 h-4 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td className="px-4 sm:px-6 py-4">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => openDetailModal(booking)}
+                            className="text-emerald-600 hover:text-emerald-900 transition-colors duration-300"
+                            title="View Details"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                              />
+                            </svg>
+                          </button>
+
+                          {booking.status === "PENDING" && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleAction(booking._id, "CONFIRMED")
+                                }
+                                className="text-green-600 hover:text-green-900 transition-colors duration-300"
+                                title="Accept Booking"
+                              >
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() =>
+                                  handleAction(booking._id, "REJECTED")
+                                }
+                                className="text-red-600 hover:text-red-900 transition-colors duration-300"
+                                title="Reject Booking"
+                              >
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                  />
+                                </svg>
+                              </button>
+                            </>
+                          )}
+                          {booking.status === "CONFIRMED" && (
+                            <button
+                              onClick={() => handleDelete(booking._id)}
+                              className="text-gray-500 hover:text-gray-900 transition-colors duration-300"
+                              title="Remove Booking"
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Detail View Modal */}
+      {showDetailModal && selectedBooking && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-2 sm:px-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-emerald-800">
+                Booking Details
+              </h2>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-emerald-50 p-4 rounded-xl">
+                <h3 className="text-lg font-semibold text-emerald-800 mb-3">
+                  Customer Information
+                </h3>
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Name:
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedBooking.name || "Not provided"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Email:
+                    </span>
+                    <p className="text-gray-900">{selectedBooking.email}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Contact:
+                    </span>
+                    <p className="text-gray-900">{selectedBooking.contact}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Booking ID:
+                    </span>
+                    <p className="text-gray-900 font-mono">
+                      {selectedBooking._id}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-emerald-50 p-4 rounded-xl">
+                <h3 className="text-lg font-semibold text-emerald-800 mb-3">
+                  Booking Information
+                </h3>
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Ground:
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedBooking.ground.name}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Sport:
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedBooking.ground.type}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Date:
+                    </span>
+                    <p className="text-gray-900">
+                      {new Date(selectedBooking.date).toLocaleDateString(
+                        "en-GB",
+                        {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
                       )}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Time Slots:
+                    </span>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      {selectedBooking.time.map((t, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-emerald-500 text-white px-2 py-1 rounded-md text-xs font-medium"
+                        >
+                          {t.start} - {t.end}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-emerald-50 p-4 rounded-xl">
+                <h3 className="text-lg font-semibold text-emerald-800 mb-3">
+                  Payment Information
+                </h3>
+                <div className="space-y-2">
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Amount:
+                    </span>
+                    <p className="text-2xl font-bold text-emerald-700">
+                      ₹{selectedBooking.amount || 0}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Status:
+                    </span>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        selectedBooking.status === "CONFIRMED"
+                          ? "bg-green-100 text-green-800"
+                          : selectedBooking.status === "PENDING"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {selectedBooking.status}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-emerald-700">
+                      Booked On:
+                    </span>
+                    <p className="text-gray-900">
+                      {new Date(selectedBooking.createdAt).toLocaleDateString(
+                        "en-GB",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-emerald-50 p-4 rounded-xl">
+                <h3 className="text-lg font-semibold text-emerald-800 mb-3">
+                  Actions
+                </h3>
+                <div className="space-y-3">
+                  {selectedBooking.status === "PENDING" && (
+                    <>
+                      <button
+                        onClick={() => {
+                          handleAction(selectedBooking._id, "CONFIRMED");
+                          setShowDetailModal(false);
+                        }}
+                        className={`w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-300 `}
+                      >
+                        <svg
+                          className="w-5 h-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        Accept Booking
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBookingId(selectedBooking._id);
+                          setShowRejectModal(true);
+                          setShowDetailModal(false);
+                        }}
+                        className="w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors duration-300"
+                      >
+                        <svg
+                          className="w-5 h-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                        Reject Booking
+                      </button>
+                    </>
+                  )}
+                  {selectedBooking.status === "CONFIRMED" && (
+                    <button
+                      onClick={() => {
+                        handleDelete(selectedBooking._id);
+                        setShowDetailModal(false);
+                      }}
+                      className="w-full flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors duration-300"
+                    >
+                      <svg
+                        className="w-5 h-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                      Remove Booking
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowDetailModal(false)}
+                    className="w-full flex items-center justify-center px-4 py-2 bg-white text-emerald-700 border border-emerald-300 rounded-xl hover:bg-emerald-50 transition-colors duration-300"
+                  >
+                    Close Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-2 sm:px-4">
-          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 w-full max-w-md relative">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Reject Booking
-            </h2>
-            <p className="text-gray-600 text-sm mb-3">
-              Please provide a reason for rejecting this booking:
-            </p>
-            <textarea
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Enter reason..."
-              className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-400 focus:outline-none"
-              rows={4}
-            />
-            <div className="mt-5 flex flex-col sm:flex-row justify-end gap-3">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-2 sm:px-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-all duration-300 scale-95 animate-scale-in">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Reject Booking
+              </h2>
               <button
                 onClick={() => {
                   setShowRejectModal(false);
                   setRejectReason("");
                   setSelectedBookingId(null);
                 }}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100"
+                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-red-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">
+                    Please provide a reason for rejecting this booking. This
+                    will be sent to the customer.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Enter reason for rejection..."
+              className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all duration-300"
+              rows={4}
+            />
+
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectReason("");
+                  setSelectedBookingId(null);
+                }}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors duration-300 font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmReject}
                 disabled={!rejectReason.trim() || rejecting}
-                className={`px-4 py-2 rounded-lg text-white flex items-center justify-center gap-2 ${
+                className={`px-4 py-2 rounded-xl text-white font-medium flex items-center justify-center transition-all duration-300 ${
                   !rejectReason.trim() || rejecting
                     ? "bg-red-300 cursor-not-allowed"
-                    : "bg-red-500 hover:bg-red-600"
+                    : "bg-red-600 hover:bg-red-700 transform hover:scale-105"
                 }`}
               >
                 {rejecting && (
                   <svg
-                    className="animate-spin h-4 w-4 text-white"
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -406,7 +918,7 @@ const Booking: React.FC = () => {
                     ></path>
                   </svg>
                 )}
-                {rejecting ? "Rejecting..." : "Confirm Reject"}
+                {rejecting ? "Rejecting..." : "Confirm Rejection"}
               </button>
             </div>
           </div>

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { base_url } from "../../types/ground";
 import {
   ArrowLeft,
   MapPin,
-  Star,
-  Clock,
   Calendar,
+  Clock,
   User,
   Mail,
-  Phone,
   CreditCard,
   Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  ImageIcon,
 } from "lucide-react";
-import { Ground } from "../../types/ground";
-import axios from "axios";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { base_url } from "../../types/ground";
 
 type TimeSlot = { start: string; end: string };
 
@@ -26,6 +28,190 @@ interface BookingFormData {
   phone: string;
   availability: TimeSlot[];
 }
+
+interface Ground {
+  _id: string;
+  name: string;
+  location: string;
+  description: string;
+  pricePerHour: number;
+  features: string[];
+  availability: TimeSlot[];
+  images: string[];
+}
+
+// Component for each ground card with its own independent gallery
+const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
+  // Each card has its own independent state for gallery
+  const [showGallery, setShowGallery] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Gallery functions specific to this card
+  const openImageGallery = (index: number) => {
+    setCurrentImageIndex(index);
+    setShowGallery(true);
+  };
+
+  const closeImageGallery = () => {
+    setShowGallery(false);
+  };
+
+  const navigateImage = (direction: "next" | "prev") => {
+    if (direction === "next") {
+      setCurrentImageIndex((prev) =>
+        prev === ground.image.length - 1 ? 0 : prev + 1
+      );
+    } else {
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? ground.image.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const selectImage = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border border-gray-100">
+      {/* Independent Gallery Modal for this card */}
+      {showGallery && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-4xl w-full max-h-[90vh]">
+            <button
+              onClick={closeImageGallery}
+              className="absolute top-4 right-4 z-10 text-white bg-black bg-opacity-50 rounded-full p-3 hover:bg-opacity-75 transition-all"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <button
+              onClick={() => navigateImage("prev")}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 text-white bg-black bg-opacity-50 rounded-full p-3 hover:bg-opacity-75 transition-all"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+
+            <button
+              onClick={() => navigateImage("next")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 text-white bg-black bg-opacity-50 rounded-full p-3 hover:bg-opacity-75 transition-all"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+
+            <img
+              src={ground.image[currentImageIndex]}
+              alt={`${ground.name} - Image ${currentImageIndex + 1}`}
+              className="w-full h-full max-h-[70vh] object-contain rounded-lg"
+            />
+
+            {/* Thumbnail Gallery */}
+            <div className="flex gap-2 mt-4 justify-center">
+              {ground.image.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => selectImage(index)}
+                  className={`w-12 h-12 rounded border-2 overflow-hidden transition-all ${
+                    index === currentImageIndex
+                      ? "border-white scale-110"
+                      : "border-gray-400 hover:border-white"
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+
+            <div className="text-white text-center mt-3">
+              {currentImageIndex + 1} / {ground.image.length}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Image with Gallery */}
+      <div className="relative">
+        <img
+          src={ground.image[0]}
+          alt={ground.name}
+          className="w-full h-72 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+          onClick={() => openImageGallery(0)}
+        />
+
+        {/* Gallery Indicator */}
+        {ground.image.length > 1 && (
+          <div className="absolute top-4 right-4">
+            <button
+              onClick={() => openImageGallery(0)}
+              className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center gap-2 text-sm font-medium text-gray-700 hover:bg-white transition-colors"
+            >
+              <ImageIcon className="h-4 w-4" />
+              View Gallery ({ground.image.length})
+            </button>
+          </div>
+        )}
+
+        {/* Image Navigation Dots */}
+        {ground.image.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+            {ground.image.map((_, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openImageGallery(index);
+                }}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === 0
+                    ? "bg-white scale-125"
+                    : "bg-white/50 hover:bg-white/80"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-3">Ground Details</h3>
+        <p className="text-gray-600 mb-4 leading-relaxed">
+          {ground.description}
+        </p>
+
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-2xl font-bold text-emerald-700">
+            Nu.{ground.pricePerHour}
+            <span className="text-lg font-normal text-gray-500">/hour</span>
+          </div>
+
+          <div className="flex items-center bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
+            <span className="text-sm font-medium">Available Now</span>
+          </div>
+        </div>
+
+        <h4 className="font-semibold text-gray-900 mb-3">
+          Facilities & Features
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
+          {ground.features.map((feature, index) => (
+            <div
+              key={index}
+              className="flex items-center text-gray-700 bg-gray-50 px-3 py-2 rounded-lg"
+            >
+              <Check className="h-4 w-4 text-emerald-600 mr-2 flex-shrink-0" />
+              <span className="text-sm">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const BookingPage: React.FC = () => {
   const [groundloading, setGroundLoading] = useState(false);
@@ -68,6 +254,19 @@ const BookingPage: React.FC = () => {
     data.availability = selectedTimeSlot;
     console.log(data);
     setIsBooking(true);
+    const bookingPayload = {
+      amount: ground.pricePerHour * selectedTimeSlot.length,
+      contact: data.phone,
+      date: data.date,
+      email: data.email,
+      ground: { _id: ground._id, name: ground.name },
+      name: data.name,
+      status: "PENDING",
+      time: selectedTimeSlot,
+    };
+
+    // Store the booking data in local storage
+    localStorage.setItem("latestBooking", JSON.stringify(bookingPayload));
     const booking = await axios.post(
       `${base_url}/users/bookground/${groundId}`,
       {
@@ -105,62 +304,53 @@ const BookingPage: React.FC = () => {
   useEffect(() => {
     getTime();
   }, [selectedDate]);
+  // Phone number validation
+  const validatePhone = (value: string) => {
+    const phoneRegex = /^\d{8}$/;
+    return phoneRegex.test(value) || "Phone number must be exactly 8 digits";
+  };
 
-  if (groundloading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-          <p className="text-gray-600 text-lg font-medium">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Name validation
+  const validateName = (value: string) => {
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    return nameRegex.test(value) || "Name should not contain numbers";
+  };
+
+  // Email validation
+  const validateEmail = (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value) || "Please enter a valid email address";
+  };
 
   if (!ground) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Ground not found
-          </h2>
-          <button
-            onClick={() => navigate("/")}
-            className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            Back to Home
-          </button>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg font-medium">
+            Loading ground details...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Header */}
-      {/* Header */}
-      <div className="bg-white ">
+      <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Back Button */}
           <button
             onClick={() => navigate("/")}
-            className="flex items-center text-[#1AA148] font-semibold hover:text-green-700 transition-colors mb-4"
+            className="flex items-center text-emerald-600 font-semibold hover:text-emerald-700 transition-colors mb-4"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Back to Grounds
           </button>
-
-          {/* Ground Info */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {ground.name}
-              </h1>
-              <div className="flex items-center mt-2 text-gray-600 text-lg">
-                <MapPin className="h-5 w-5 mr-2 text-gray-500" />
-                <span>{ground.location}</span>
-              </div>
-            </div>
+          <h1 className="text-3xl font-bold text-gray-900">{ground.name}</h1>
+          <div className="flex items-center mt-2 text-gray-600 text-lg">
+            <MapPin className="h-5 w-5 mr-2 text-gray-500" />
+            <span>{ground.location}</span>
           </div>
         </div>
       </div>
@@ -169,68 +359,43 @@ const BookingPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Ground Details */}
           <div>
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
-              <img
-                src={ground.image[0]}
-                alt={ground.name}
-                className="w-full h-64 object-cover"
-              />
-
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Ground Details
-                </h3>
-
-                <p className="text-gray-600 mb-4">{ground.description}</p>
-                <div className="mt-4 md:mt-0">
-                  <div className="text-l font-bold text-gray-500 mb-2">
-                    Nu.{ground.pricePerHour}
-                    <span className="text-lg text-gray-500">/hour</span>
-                  </div>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-3">Facilities</h4>
-
-                <div className="grid grid-cols-2 gap-2">
-                  {ground.features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center text-gray-600"
-                    >
-                      <Check className="h-4 w-4 text-emerald-600 mr-2" />
-                      <span className="text-sm">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <GroundCard ground={ground} />
           </div>
 
           {/* Booking Form */}
           <div>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="bg-white rounded-xl shadow-lg p-6"
+              className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
             >
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
                 Book This Ground
               </h3>
 
               {/* Date Selection */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Calendar className="h-4 w-4 inline mr-1" />
+                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <Calendar className="h-4 w-4 mr-2 text-emerald-600" />
                   Select Date
                 </label>
                 <input
                   type="date"
-                  {...register("date", { required: true })}
+                  {...register("date", {
+                    required: "Please select a date",
+                  })}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                    errors.date
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
+                  }`}
                 />
                 {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">
-                    Please select a date
-                  </p>
+                  <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>{errors.date.message}</span>
+                  </div>
                 )}
               </div>
 
@@ -296,125 +461,150 @@ const BookingPage: React.FC = () => {
 
               {/* Customer Information */}
               <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-4">
+                <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
+                  <User className="h-5 w-5 mr-2 text-emerald-600" />
                   Customer Information
                 </h4>
-
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <User className="h-4 w-4 inline mr-1" />
-                      Full Name
-                    </label>
                     <input
                       type="text"
-                      {...register("name", { required: true })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                      placeholder="Enter your full name"
+                      placeholder="Full Name"
+                      {...register("name", {
+                        required: "Name is required",
+                        validate: validateName,
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                        errors.name
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
+                      }`}
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">
-                        Please enter your name
-                      </p>
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        <span>{errors.name.message}</span>
+                      </div>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Mail className="h-4 w-4 inline mr-1" />
-                      Email Address
-                    </label>
                     <input
                       type="email"
-                      {...register("email", { required: true })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                      placeholder="Enter your email"
+                      placeholder="Email Address"
+                      {...register("email", {
+                        required: "Email is required",
+                        validate: validateEmail,
+                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                        errors.email
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
+                      }`}
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
-                        Please enter your email
-                      </p>
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        <span>{errors.email.message}</span>
+                      </div>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 font-medium mb-1">
-                      Phone Number
-                    </label>
                     <input
                       type="tel"
+                      placeholder="Phone Number (8 digits)"
+                      maxLength={8}
                       {...register("phone", {
                         required: "Phone number is required",
-                        pattern: {
-                          value: /^(77|17)[0-9]{6}$/,
-                          message:
-                            "Phone number must start with 77 or 17 and be 8 digits",
-                        },
+                        validate: validatePhone,
                       })}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                      placeholder="Enter your 8-digit phone number"
-                      maxLength={8} // prevents typing more than 8 characters
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
+                        errors.phone
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
+                      }`}
                     />
                     {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.phone.message}
-                      </p>
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        <span>{errors.phone.message}</span>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
               {/* Booking Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3">
+              <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-5 mb-6 border border-emerald-200">
+                <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
+                  <CreditCard className="h-5 w-5 mr-2 text-emerald-600" />
                   Booking Summary
                 </h4>
-                <div className="space-y-2 text-sm">
+
+                <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Ground:</span>
                     <span className="font-medium">{ground.name}</span>
                   </div>
+
                   {selectedDate && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Date:</span>
                       <span className="font-medium">
-                        {new Date(selectedDate).toLocaleDateString()}
+                        {new Date(selectedDate).toLocaleDateString("en-US", {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </span>
                     </div>
                   )}
+
                   {selectedTimeSlot.length > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Time:</span>
-                      <span className="font-medium">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-600">Time Slots:</span>
+                        <span className="font-medium">
+                          {selectedTimeSlot.length} hour(s)
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-500">
                         {selectedTimeSlot.map((hour, key) => (
-                          <p key={key}>
-                            {hour.start}-{hour.end}
-                          </p>
+                          <div key={key} className="flex justify-between">
+                            <span></span>
+                            <span>
+                              {hour.start}-{hour.end}
+                            </span>
+                          </div>
                         ))}
-                      </span>
+                      </div>
                     </div>
                   )}
-                  <div className="flex justify-between text-lg font-bold text-emerald-600 pt-2 border-t">
-                    <span>Total Amount:</span>
-                    <span>Nu.{getTotalAmount()}</span>
+
+                  <div className="border-t border-emerald-200 pt-2 mt-2">
+                    <div className="flex justify-between text-lg font-bold text-emerald-700">
+                      <span>Total Amount:</span>
+                      <span>Nu.{getTotalAmount()}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Book Button */}
               <button
                 type="submit"
-                disabled={isBooking || !selectedTimeSlot.length}
-                className="w-full  bg-[#1AA148] text-white py-4 px-6 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-700 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+                disabled={isBooking || selectedTimeSlot.length === 0}
+                className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-4 px-6 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
                 {isBooking ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Processing...
                   </>
                 ) : (
                   <>
-                    <CreditCard className="h-5 w-5 mr-2" />
+                    <CreditCard className="h-5 w-5" />
                     Confirm Booking - Nu.{getTotalAmount()}
                   </>
                 )}

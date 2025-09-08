@@ -2,6 +2,7 @@ import React from "react";
 import Groundcard from "./groundcard";
 
 const Futsalcomponent = ({ grounds }) => {
+  
   return (
   <main className="container mx-auto p-2 sm:p-4 flex-grow w-full">
   <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 my-4 sm:my-8 text-center">
