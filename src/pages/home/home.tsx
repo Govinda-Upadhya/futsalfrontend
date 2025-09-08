@@ -25,9 +25,8 @@ import axios from "axios";
 import GoogleLoader from "../../components/Loader";
 
 const HomePage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [searchDate, setSearchDate] = useState("");
   const [availableGroundIds, setAvailableGroundIds] = useState<string[]>([]);
   const [searchName, setSearchName] = useState("");
@@ -67,9 +66,6 @@ const HomePage: React.FC = () => {
     fetchGrounds();
     fetchChallenges();
   }, []);
-  if (loading) {
-    return <GoogleLoader />;
-  }
 
   function handleAccept(id: string) {
     navigate(`/acceptChallenge/${id}`);
@@ -242,7 +238,9 @@ We use cookies for several purposes:
 You can set your browser to refuse all or some browser cookies, or to alert you when websites set or access cookies. If you disable or refuse cookies, please note that some parts of our website may become inaccessible or not function properly.`,
     },
   };
-
+  if (loading) {
+    return <GoogleLoader />;
+  }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Premium Sports Hero Section */}
