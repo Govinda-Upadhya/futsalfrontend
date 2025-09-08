@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   Plus,
   ChevronDown,
@@ -21,8 +22,11 @@ import SearchBar from "../../components/search/SearchBar";
 import GroundCard from "../../components/ground/GroundCard";
 import ChallengeCard from "../../components/challenge/challengeCard";
 import axios from "axios";
+import GoogleLoader from "../../components/Loader";
 
 const HomePage: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const [searchDate, setSearchDate] = useState("");
   const [availableGroundIds, setAvailableGroundIds] = useState<string[]>([]);
@@ -37,25 +41,35 @@ const HomePage: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [activePolicy, setActivePolicy] = useState<string | null>(null);
   async function fetchGrounds() {
+    setLoading(true);
     const res = await axios.get(`${base_url}/users/getgrounds`, {
       withCredentials: true,
     });
     setGrounds(res.data.ground);
     console.log(res.data.ground);
     setAvailableGroundIds(res.data.ground.map((g) => g._id));
+
+    setLoading(false);
   }
-  async function fetchChallenges(params: type) {
+  async function fetchChallenges() {
     try {
+      setLoading(true);
       const res = await axios.get(`${base_url}/users/getChallenge`);
       console.log(res.data.challenges);
       setChallenges(res.data.challenges);
     } catch (error) {
       console.error("Error fetching challenges:", error);
+    } finally {
+      setLoading(false);
     }
   }
   useEffect(() => {
     fetchGrounds();
+    fetchChallenges();
   }, []);
+  if (loading) {
+    return <GoogleLoader />;
+  }
 
   function handleAccept(id: string) {
     navigate(`/acceptChallenge/${id}`);
