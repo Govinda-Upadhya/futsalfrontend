@@ -336,7 +336,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                   {/* Animated counter circle */}
                   <div className="relative mb-4 w-20 h-20 flex items-center justify-center">
                     {/* Background circle with pulse animation */}
-                    <div className="absolute inset-0 bg-green-700 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 animate-ping"></div>
+                    <div className="absolute inset-0 bg-green-700 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 md:animate-ping"></div>
 
                     {/* Main circle */}
                     <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-500 group-hover:from-emerald-500 group-hover:to-green-600 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg group-hover:shadow-2xl">
