@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Send, 
-  CheckCircle, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  CheckCircle,
   AlertCircle,
   MessageSquare,
   User,
@@ -14,8 +14,10 @@ import {
   Star,
   Users,
   Calendar,
-  Trophy
+  Trophy,
 } from "lucide-react";
+import axios from "axios";
+import { base_url } from "../../types/ground";
 
 type FormValues = {
   name: string;
@@ -44,11 +46,11 @@ const ContactUs: React.FC = () => {
     try {
       console.log("Form data:", data);
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await axios.post(`${base_url}/users/contactus`, data);
+
       setIsSubmitted(true);
       reset();
-      
-      // Reset success message after 5 seconds
+
       setTimeout(() => setIsSubmitted(false), 5000);
     } catch (error) {
       console.error("Submission error:", error);
@@ -60,26 +62,26 @@ const ContactUs: React.FC = () => {
       icon: Mail,
       title: "Email Us",
       content: "support@thanggo.com",
-      description: "Send us an email anytime"
+      description: "Send us an email anytime",
     },
     {
       icon: Phone,
       title: "Call Us",
       content: "+975-7712-3456",
-      description: "Mon-Fri from 8am to 6pm"
+      description: "Mon-Fri from 8am to 6pm",
     },
     {
       icon: MapPin,
       title: "Visit Us",
       content: "Thimphu, Bhutan",
-      description: "Come say hello at our office"
+      description: "Come say hello at our office",
     },
     {
       icon: Clock,
       title: "Response Time",
       content: "Within 24 hours",
-      description: "We'll get back to you quickly"
-    }
+      description: "We'll get back to you quickly",
+    },
   ];
 
   return (
@@ -99,43 +101,72 @@ const ContactUs: React.FC = () => {
             <div
               key={i}
               className="absolute w-full h-1 bg-white animate-line-appear"
-              style={{ 
+              style={{
                 top: `${i * 10}%`,
-                animationDelay: `${i * 0.1}s`
+                animationDelay: `${i * 0.1}s`,
               }}
             ></div>
           ))}
-          <div className="absolute top-1/2 left-0 w-full h-2 bg-white transform -translate-y-1/2 animate-line-appear" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-1/2 w-40 h-40 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-circle-appear" style={{ animationDelay: '1.2s' }}></div>
+          <div
+            className="absolute top-1/2 left-0 w-full h-2 bg-white transform -translate-y-1/2 animate-line-appear"
+            style={{ animationDelay: "1s" }}
+          ></div>
+          <div
+            className="absolute top-1/2 left-1/2 w-40 h-40 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-circle-appear"
+            style={{ animationDelay: "1.2s" }}
+          ></div>
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
-          <h1 className={`text-5xl md:text-6xl font-bold mb-6 transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            CONNECT WITH <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-400 animate-text-shimmer">THANGGO</span>
+          <h1
+            className={`text-5xl md:text-6xl font-bold mb-6 transition-all duration-1000 ${
+              mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
+          >
+            CONNECT WITH{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-400 animate-text-shimmer">
+              THANGGO
+            </span>
           </h1>
-          <p className={`text-xl md:text-2xl max-w-3xl mx-auto mb-8 leading-relaxed transition-all duration-1000 delay-300 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            Your gateway to exceptional sports experiences. We're here to help you play, book, and enjoy.
+          <p
+            className={`text-xl md:text-2xl max-w-3xl mx-auto mb-8 leading-relaxed transition-all duration-1000 delay-300 ${
+              mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
+          >
+            Your gateway to exceptional sports experiences. We're here to help
+            you play, book, and enjoy.
           </p>
-          
+
           {/* Stats counter */}
-          <div className={`flex justify-center space-x-8 md:space-x-12 lg:space-x-16 mb-12 transition-all duration-1000 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            {[
-              { number: "10K+", label: "Happy Players", icon: Users },
-              { number: "50+", label: "Premium Grounds", icon: Trophy },
-              { number: "24/7", label: "Support", icon: Clock },
-              { number: "4.9", label: "Rating", icon: Star }
-            ].map((stat, index) => (
-              <div key={index} className="text-center animate-stats-appear" style={{ animationDelay: `${0.7 + index * 0.2}s` }}>
-                <div className="flex items-center justify-center mb-2">
-                  <stat.icon className="h-5 w-5 text-emerald-300 mr-2" />
-                  <div className="text-2xl md:text-3xl font-bold text-emerald-300">{stat.number}</div>
+          <div
+            className={`flex justify-center space-x-8 md:space-x-12 lg:space-x-16 mb-12 transition-all duration-1000 delay-500 ${
+              mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
+          >
+            {[{ number: "24/7", label: "Support", icon: Clock }].map(
+              (stat, index) => (
+                <div
+                  key={index}
+                  className="text-center animate-stats-appear"
+                  style={{ animationDelay: `${0.7 + index * 0.2}s` }}
+                >
+                  <div className="flex items-center justify-center mb-2">
+                    <stat.icon className="h-5 w-5 text-emerald-300 mr-2" />
+                    <div className="text-2xl md:text-3xl font-bold text-emerald-300">
+                      {stat.number}
+                    </div>
+                  </div>
+                  <div className="text-sm text-emerald-200">{stat.label}</div>
                 </div>
-                <div className="text-sm text-emerald-200">{stat.label}</div>
-              </div>
-            ))}
+              )
+            )}
           </div>
 
-          <div className={`animate-bounce transition-all duration-1000 delay-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          <div
+            className={`animate-bounce transition-all duration-1000 delay-1000 ${
+              mounted ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <ChevronDown className="h-8 w-8 mx-auto text-emerald-300 opacity-80" />
           </div>
         </div>
@@ -209,8 +240,8 @@ const ContactUs: React.FC = () => {
             Get in <span className="text-emerald-600">Touch</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Have questions or feedback? We'd love to hear from you. Fill out the form below 
-            and we'll get back to you as soon as possible.
+            Have questions or feedback? We'd love to hear from you. Fill out the
+            form below and we'll get back to you as soon as possible.
           </p>
         </div>
 
@@ -218,9 +249,11 @@ const ContactUs: React.FC = () => {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Contact Information
+              </h2>
               <p className="text-gray-600 mb-8">
-                We're here to help you with any questions about our platform, 
+                We're here to help you with any questions about our platform,
                 bookings, or partnerships. Reach out through any channel below.
               </p>
             </div>
@@ -232,8 +265,12 @@ const ContactUs: React.FC = () => {
                     <item.icon className="h-6 w-6 text-emerald-600 group-hover:text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                    <p className="text-emerald-600 font-medium">{item.content}</p>
+                    <h3 className="font-semibold text-gray-900">
+                      {item.title}
+                    </h3>
+                    <p className="text-emerald-600 font-medium">
+                      {item.content}
+                    </p>
                     <p className="text-gray-500 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -267,7 +304,9 @@ const ContactUs: React.FC = () => {
                 <MessageSquare className="h-6 w-6 text-emerald-600" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Send us a Message</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Send us a Message
+                </h2>
                 <p className="text-gray-600">We'll respond within 24 hours</p>
               </div>
             </div>
@@ -275,7 +314,9 @@ const ContactUs: React.FC = () => {
             {isSubmitted && (
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6 flex items-center">
                 <CheckCircle className="h-5 w-5 text-emerald-600 mr-2" />
-                <span className="text-emerald-700">Message sent successfully! We'll get back to you soon.</span>
+                <span className="text-emerald-700">
+                  Message sent successfully! We'll get back to you soon.
+                </span>
               </div>
             )}
 
@@ -287,17 +328,17 @@ const ContactUs: React.FC = () => {
                   Full Name
                 </label>
                 <input
-                  {...register("name", { 
+                  {...register("name", {
                     required: "Name is required",
                     minLength: {
                       value: 2,
-                      message: "Name must be at least 2 characters"
-                    }
+                      message: "Name must be at least 2 characters",
+                    },
                   })}
                   type="text"
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                    errors.name 
-                      ? "border-red-500 focus:ring-red-500 bg-red-50" 
+                    errors.name
+                      ? "border-red-500 focus:ring-red-500 bg-red-50"
                       : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
                   }`}
                   placeholder="Enter your full name"
@@ -320,14 +361,15 @@ const ContactUs: React.FC = () => {
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
-                      value: /^[a-zA-Z00-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                      value:
+                        /^[a-zA-Z00-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                       message: "Please enter a valid email address",
                     },
                   })}
                   type="email"
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                    errors.email 
-                      ? "border-red-500 focus:ring-red-500 bg-red-50" 
+                    errors.email
+                      ? "border-red-500 focus:ring-red-500 bg-red-50"
                       : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
                   }`}
                   placeholder="your.email@example.com"
@@ -390,17 +432,17 @@ const ContactUs: React.FC = () => {
                   Your Message
                 </label>
                 <textarea
-                  {...register("message", { 
+                  {...register("message", {
                     required: "Message is required",
                     minLength: {
                       value: 10,
-                      message: "Message must be at least 10 characters"
-                    }
+                      message: "Message must be at least 10 characters",
+                    },
                   })}
                   rows={5}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                    errors.message 
-                      ? "border-red-500 focus:ring-red-500 bg-red-50" 
+                    errors.message
+                      ? "border-red-500 focus:ring-red-500 bg-red-50"
                       : "border-gray-300 focus:ring-emerald-500 focus:border-emerald-500"
                   }`}
                   placeholder="Tell us how we can help you..."

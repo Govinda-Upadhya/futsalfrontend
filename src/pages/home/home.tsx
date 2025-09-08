@@ -310,30 +310,18 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               ></div>
             </button>
 
-            <button className="group bg-transparent border-2 border-white hover:bg-white text-white hover:text-green-800 font-bold py-4 px-8 rounded-full transform hover:scale-105 transition-all duration-300 shadow-xl flex items-center justify-center">
+            {/* <button className="group bg-transparent border-2 border-white hover:bg-white text-white hover:text-green-800 font-bold py-4 px-8 rounded-full transform hover:scale-105 transition-all duration-300 shadow-xl flex items-center justify-center">
               <span className="flex items-center">
                 WATCH VIDEO
                 <Play className="ml-2 h-4 w-4 fill-current" />
               </span>
-            </button>
+            </button> */}
           </div>
 
           {/* Enhanced Interactive Stats Bar */}
           <div className="absolute bottom-10 left-0 right-0 animate-fade-in-up animation-delay-700">
             <div className="flex flex-col md:flex-row justify-center items-center md:items-start space-y-8 md:space-y-0 md:space-x-4 lg:space-x-12 xl:space-x-20 2xl:space-x-28">
               {[
-                {
-                  number: "50+",
-                  label: "PREMIUM GROUNDS",
-                  icon: Trophy,
-                  description: "Professional quality fields & facilities",
-                },
-                {
-                  number: "1K+",
-                  label: "ACTIVE PLAYERS",
-                  icon: Users,
-                  description: "Join our growing sports community",
-                },
                 {
                   number: "24/7",
                   label: "BOOKING",
