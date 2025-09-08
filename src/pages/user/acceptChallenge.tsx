@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { base_url } from "../../types/ground";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { Trophy, Users, Mail, Phone, Send, ArrowLeft, CheckCircle } from "lucide-react";
+import {
+  Trophy,
+  Users,
+  Mail,
+  Phone,
+  Send,
+  ArrowLeft,
+  CheckCircle,
+} from "lucide-react";
 
 interface AcceptChallengeForm {
   name: string;
@@ -20,12 +28,19 @@ const AcceptChallenge: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<AcceptChallengeForm>();
   const params = useParams();
-  
+
   const onSubmit = async (data: AcceptChallengeForm) => {
-    console.log(data);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitted(true);
+    let res = await axios.post(`${base_url}/users/acceptChallenge`, {
+      data,
+      id: params.id,
+    });
+    if (res.status == 200) {
+      alert("subitted the request successfully");
+      setIsSubmitted(true);
+      navigate("/");
+    } else {
+      alert("there was some error please try again");
+    }
   };
 
   if (isSubmitted) {
@@ -37,9 +52,12 @@ const AcceptChallenge: React.FC = () => {
               <CheckCircle className="h-12 w-12 text-emerald-600" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-emerald-700 mb-4">Request Sent Successfully!</h2>
+          <h2 className="text-2xl font-bold text-emerald-700 mb-4">
+            Request Sent Successfully!
+          </h2>
           <p className="text-gray-600 mb-6">
-            Your challenge request has been sent. The challenger will contact you shortly.
+            Your challenge request has been sent. The challenger will contact
+            you shortly.
           </p>
           <button
             onClick={() => navigate("/")}
@@ -56,7 +74,7 @@ const AcceptChallenge: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8 px-4">
       <div className="max-w-lg mx-auto">
         {/* Back button */}
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="flex items-center text-emerald-700 hover:text-emerald-900 mb-6 transition-all duration-300 transform hover:-translate-x-1"
         >
@@ -68,9 +86,13 @@ const AcceptChallenge: React.FC = () => {
           <div className="text-center mb-6">
             <div className="flex items-center justify-center mb-3">
               <Trophy className="h-8 w-8 text-emerald-600 mr-2" />
-              <h2 className="text-2xl font-bold text-emerald-800">Accept Challenge</h2>
+              <h2 className="text-2xl font-bold text-emerald-800">
+                Accept Challenge
+              </h2>
             </div>
-            <p className="text-emerald-600">Join the competition and showcase your skills!</p>
+            <p className="text-emerald-600">
+              Join the competition and showcase your skills!
+            </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -88,7 +110,9 @@ const AcceptChallenge: React.FC = () => {
               />
               <Users className="absolute left-3 top-10 h-5 w-5 text-emerald-400" />
               {errors.name && (
-                <p className="text-red-500 text-sm mt-1 animate-shake">{errors.name.message}</p>
+                <p className="text-red-500 text-sm mt-1 animate-shake">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
@@ -112,7 +136,9 @@ const AcceptChallenge: React.FC = () => {
               />
               <Mail className="absolute left-3 top-10 h-5 w-5 text-emerald-400" />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1 animate-shake">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1 animate-shake">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -128,7 +154,8 @@ const AcceptChallenge: React.FC = () => {
                   required: "Phone number is required",
                   pattern: {
                     value: /^(77|17)[0-9]{6}$/,
-                    message: "Phone number must start with 77 or 17 and be 8 digits",
+                    message:
+                      "Phone number must start with 77 or 17 and be 8 digits",
                   },
                 })}
                 className="w-full border border-emerald-200 rounded-lg px-4 py-3 pl-10 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all bg-green-50"
@@ -137,7 +164,9 @@ const AcceptChallenge: React.FC = () => {
               />
               <Phone className="absolute left-3 top-10 h-5 w-5 text-emerald-400" />
               {errors.phone && (
-                <p className="text-red-500 text-sm mt-1 animate-shake">{errors.phone.message}</p>
+                <p className="text-red-500 text-sm mt-1 animate-shake">
+                  {errors.phone.message}
+                </p>
               )}
             </div>
 
@@ -149,9 +178,25 @@ const AcceptChallenge: React.FC = () => {
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Sending...
                 </>
@@ -167,9 +212,9 @@ const AcceptChallenge: React.FC = () => {
           {/* Note */}
           <div className="mt-6 text-sm text-emerald-700 text-center border-t border-emerald-100 pt-4">
             <p>
-              <strong>Note:</strong> Once the request is sent, the challenge post
-              will no longer be shown in the web app. The person who posted the
-              challenge will contact you directly.
+              <strong>Note:</strong> Once the request is sent, the challenge
+              post will no longer be shown in the web app. The person who posted
+              the challenge will contact you directly.
             </p>
           </div>
         </div>

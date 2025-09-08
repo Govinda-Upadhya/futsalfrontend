@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Calendar, Plus, X, Upload, Trophy, ArrowLeft } from "lucide-react";
-import { base_url } from "../../types/ground";
+import { base_url, upload_base_url } from "../../types/ground";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -48,18 +48,32 @@ const AddChallengeForm: React.FC = () => {
   });
 
   const submitHandler = async (data: ChallengeFormData) => {
-    console.log(data);
-    // Your submission logic here
+    const photo = data.teamImage?.[0];
+    const formData = new FormData();
+
+    if (!photo) return;
+    formData.append("file", photo);
+    const res = await axios.post(`${upload_base_url}/user/upload`, formData);
+
+    const addChallenge = await axios.post(`${base_url}/users/createChallenge`, {
+      ...data,
+      imageUrl: res.data.url,
+    });
+
+    if (addChallenge.status === 200) {
+      alert("challenge made");
+      navigate("/");
+    }
   };
 
   // Function to handle team name input (only letters and spaces)
   const handleTeamNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
   };
 
   // Function to handle contact input (only numbers, max 8 digits)
   const handleContactInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 8);
+    e.target.value = e.target.value.replace(/\D/g, "").slice(0, 8);
   };
 
   return (
@@ -77,13 +91,17 @@ const AddChallengeForm: React.FC = () => {
           <div className="flex-grow text-center">
             <div className="flex items-center justify-center mb-4">
               <Trophy className="h-10 w-10 text-emerald-600 mr-2" />
-              <h1 className="text-3xl font-bold text-emerald-800">Create Challenge</h1>
+              <h1 className="text-3xl font-bold text-emerald-800">
+                Create Challenge
+              </h1>
             </div>
           </div>
           <div className="w-20"></div> {/* Spacer to balance the back button */}
         </div>
 
-        <p className="text-emerald-600 text-center mb-8">Challenge other teams and showcase your skills!</p>
+        <p className="text-emerald-600 text-center mb-8">
+          Challenge other teams and showcase your skills!
+        </p>
 
         <form
           onSubmit={handleSubmit(submitHandler)}
@@ -107,7 +125,9 @@ const AddChallengeForm: React.FC = () => {
               <input
                 type="file"
                 accept="image/*"
-                {...register("teamImage", { required: "Team image is required" })}
+                {...register("teamImage", {
+                  required: "Team image is required",
+                })}
                 className="absolute top-0 left-0 w-40 h-40 opacity-0 cursor-pointer"
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
@@ -122,7 +142,9 @@ const AddChallengeForm: React.FC = () => {
               {isUploading ? "Uploading..." : "Click to upload your team image"}
             </p>
             {errors.teamImage && (
-              <p className="text-red-500 text-xs mt-2">{errors.teamImage.message}</p>
+              <p className="text-red-500 text-xs mt-2">
+                {errors.teamImage.message}
+              </p>
             )}
           </div>
 
@@ -133,18 +155,21 @@ const AddChallengeForm: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Team Name"
-                  {...register("teamName", { 
+                  {...register("teamName", {
                     required: "Team name is required",
                     pattern: {
                       value: /^[a-zA-Z\s]+$/,
-                      message: "Team name should only contain letters and spaces"
-                    }
+                      message:
+                        "Team name should only contain letters and spaces",
+                    },
                   })}
                   onInput={handleTeamNameInput}
                   className="w-full border border-emerald-200 rounded-lg p-3 bg-green-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
                 {errors.teamName && (
-                  <p className="text-red-500 text-xs mt-1">{errors.teamName.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.teamName.message}
+                  </p>
                 )}
               </div>
 
@@ -152,17 +177,19 @@ const AddChallengeForm: React.FC = () => {
                 <input
                   type="email"
                   placeholder="Email Address"
-                  {...register("email", { 
+                  {...register("email", {
                     required: "Email is required",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address"
-                    }
+                      message: "Invalid email address",
+                    },
                   })}
                   className="w-full border border-emerald-200 rounded-lg p-3 bg-green-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -172,17 +199,19 @@ const AddChallengeForm: React.FC = () => {
                 <input
                   type="number"
                   placeholder="Number of Players"
-                  {...register("members", { 
-                    required: "Members required", 
+                  {...register("members", {
+                    required: "Members required",
                     min: {
                       value: 1,
-                      message: "At least 1 player is required"
-                    }
+                      message: "At least 1 player is required",
+                    },
                   })}
                   className="w-full border border-emerald-200 rounded-lg p-3 bg-green-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
                 {errors.members && (
-                  <p className="text-red-500 text-xs mt-1">{errors.members.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.members.message}
+                  </p>
                 )}
               </div>
 
@@ -193,20 +222,23 @@ const AddChallengeForm: React.FC = () => {
                     required: "Contact is required",
                     pattern: {
                       value: /^[0-9]{8}$/,
-                      message: "Contact must contain exactly 8 digits"
+                      message: "Contact must contain exactly 8 digits",
                     },
                     validate: {
-                      startsWithValid: value => 
-                        value.startsWith('77') || value.startsWith('17') || 
-                        "Contact must start with 77 or 17"
-                    }
+                      startsWithValid: (value) =>
+                        value.startsWith("77") ||
+                        value.startsWith("17") ||
+                        "Contact must start with 77 or 17",
+                    },
                   })}
                   onInput={handleContactInput}
                   className="w-full border border-emerald-200 rounded-lg p-3 bg-green-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="Enter your 8-digit contact number"
                 />
                 {errors.contact && (
-                  <p className="text-red-500 text-xs mt-1">{errors.contact.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.contact.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -224,7 +256,9 @@ const AddChallengeForm: React.FC = () => {
                 <option value="Volleyball">Volleyball</option>
               </select>
               {errors.sport && (
-                <p className="text-red-500 text-xs mt-1">{errors.sport.message}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sport.message}
+                </p>
               )}
             </div>
 
@@ -280,11 +314,15 @@ const AddChallengeForm: React.FC = () => {
             <div>
               <textarea
                 placeholder="Tell something about when you will be available"
-                {...register("description", { required: "Description required" })}
+                {...register("description", {
+                  required: "Description required",
+                })}
                 className="w-full border border-emerald-200 rounded-lg p-3 h-24 bg-green-50 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
               />
               {errors.description && (
-                <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description.message}
+                </p>
               )}
             </div>
 
@@ -303,9 +341,25 @@ const AddChallengeForm: React.FC = () => {
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Processing...
                   </span>
