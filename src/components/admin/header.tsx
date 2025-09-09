@@ -170,7 +170,7 @@ export default function Header({ active, setActive }: HeaderProps) {
               </button>
             </li>
             {/* Statistics Button */}
-            <li className="w-full sm:w-auto">
+            {/* <li className="w-full sm:w-auto">
               <button
                 onClick={() => handleSetActive("statistics")}
                 className={`w-full sm:w-auto text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 ${
@@ -181,7 +181,7 @@ export default function Header({ active, setActive }: HeaderProps) {
               >
                 Statistics
               </button>
-            </li>
+            </li> */}
             <li className="w-full sm:w-auto">
               <button
                 onClick={() => {

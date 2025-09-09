@@ -571,7 +571,7 @@ const Groundcard = ({ ground, onUpdate }) => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="pricePerHour"
                   >
-                    Price Per Hour ($)
+                    Price Per Hour (Nu)
                   </label>
                   <input
                     type="number"

@@ -414,7 +414,7 @@ const Booking: React.FC = () => {
                       </td>
                       <td className="px-4 sm:px-6 py-4">
                         <div className="text-sm font-medium text-emerald-700">
-                          ₹{booking.amount || 0}
+                          Nu.{booking.amount || 0}
                         </div>
                       </td>
                       <td className="px-4 sm:px-6 py-4">
