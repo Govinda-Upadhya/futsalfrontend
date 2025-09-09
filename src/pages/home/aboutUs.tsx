@@ -13,8 +13,10 @@ import {
   Play,
   Trophy,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AboutUs: React.FC = () => {
+  const navigate = useNavigate();
   const [scrollPosition, setScrollPosition] = useState(0);
   const statsRef = useRef<HTMLDivElement>(null);
   const [animatedStats, setAnimatedStats] = useState([0, 0, 0, 0]);
@@ -236,10 +238,16 @@ const AboutUs: React.FC = () => {
             owner wanting to reach more customers, we've got you covered.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <button
+              onClick={() => navigate("/")}
+              className="px-8 py-4 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
               Start Booking Now
             </button>
-            <button className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-emerald-600 transition-all duration-300 transform hover:scale-105">
+            <button
+              onClick={() => navigate("/contactus")}
+              className="px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-emerald-600 transition-all duration-300 transform hover:scale-105"
+            >
               List Your Ground
             </button>
           </div>
