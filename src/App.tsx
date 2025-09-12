@@ -21,7 +21,7 @@ import ChangePasswordLink from "./pages/admin/changePasswordLink";
 import AdminLayout from "./layout/adminLayout";
 import UserLayout from "./layout/userlayout";
 import AdminConfig from "./pages/admin/adminConfig";
-import AdminProtectedRoute from "../../src/components/auth/protectRoutes";
+import AdminProtectedRoute from "./components/auth/protectRoutes";
 import NotFound from "./components/pageNotFound";
 
 function App() {
