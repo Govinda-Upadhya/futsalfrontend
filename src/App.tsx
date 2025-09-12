@@ -55,7 +55,7 @@ function App() {
         <Route element={<AdminProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Admin />} />
-            <Route path="/config" element={<AdminConfig />} />
+            <Route path="config" element={<AdminConfig />} />
             <Route path="ground/:id" element={<Groundetails />} />
           </Route>
         </Route>
