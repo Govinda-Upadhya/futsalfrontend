@@ -120,7 +120,8 @@ const AdminConfig = () => {
     const userInfo = await axios.get(`${base_url}/admin/getAdmin`, {
       withCredentials: true,
     });
-    setUser(userInfo.data.info);
+    setUser(userInfo.data);
+    console.log(userInfo.data);
   }
   useEffect(() => {
     fetchAdmin();
