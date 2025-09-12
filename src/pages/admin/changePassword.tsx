@@ -36,6 +36,7 @@ const ForgotPassword = () => {
       alert(
         "Password reset link for the account will reach you shortly in your registered email."
       );
+      navigate("/admin/signin");
     } catch (error) {
       console.log(error.response.data.msg);
       alert(error.response.data.msg);
