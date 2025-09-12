@@ -61,7 +61,7 @@ const AdminConfig = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const imagepath = await axios.post(
+        const imagepath = await axios.put(
           `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
           formData
         );
@@ -96,7 +96,7 @@ const AdminConfig = () => {
           profile: user?.profile,
         };
 
-        const saveRes = await axios.post(
+        const saveRes = await axios.put(
           `${base_url}/admin/update`,
           { newInfo: signupData },
           {
