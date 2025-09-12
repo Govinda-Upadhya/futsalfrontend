@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { base_url, upload_base_url } from "../../types/ground";
 import {
@@ -128,17 +128,16 @@ const Addground = () => {
     const [time, setTime] = useState(value ? to12HourFormat(value) : "");
 
     const generateTimeOptions = () => {
-      const options = [];
+      const options: JSX.Element[] = []; // 👈 explicitly say it's JSX
 
-      // Add 30-minute intervals from 6:00 AM to 10:00 PM
-      for (let hour = 6; hour <= 22; hour++) {
-        for (let minute = 0; minute < 60; minute += 30) {
-          const period = hour >= 12 ? "PM" : "AM";
-          const displayHour = hour % 12 || 12;
-          const timeString = `${displayHour}:${minute
+      for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 30) {
+          const time24 = `${h.toString().padStart(2, "0")}:${m
             .toString()
-            .padStart(2, "0")} ${period}`;
-          const time24 = to24HourFormat(timeString);
+            .padStart(2, "0")}`;
+          const timeString = `${h % 12 || 12}:${m
+            .toString()
+            .padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
 
           options.push(
             <div
@@ -157,6 +156,7 @@ const Addground = () => {
           );
         }
       }
+
       return options;
     };
 
