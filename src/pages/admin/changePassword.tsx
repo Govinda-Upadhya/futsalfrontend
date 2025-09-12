@@ -33,9 +33,12 @@ const ForgotPassword = () => {
       const res = await axios.post(`${base_url}/admin/changePassword`, {
         email: data.email,
       });
+      alert(
+        "Password reset link for the account will reach you shortly in your registered email."
+      );
     } catch (error) {
-      console.log(error);
-      alert("An error occurred. Please try again.");
+      console.log(error.response.data.msg);
+      alert(error.response.data.msg);
     }
   };
 
