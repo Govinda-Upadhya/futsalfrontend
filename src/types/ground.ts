@@ -23,6 +23,12 @@ export interface Booking {
   totalAmount: number;
   status: "confirmed" | "pending" | "cancelled";
 }
-
+export interface Admin extends Document {
+  name: string;
+  email: string;
+  profile?: string;
+  contact: string;
+  password: string;
+}
 export const base_url = "/api";
 export const upload_base_url = "/api/photo";

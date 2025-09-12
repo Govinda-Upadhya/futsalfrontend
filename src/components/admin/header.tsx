@@ -109,7 +109,10 @@ export default function Header({ active, setActive }: HeaderProps) {
 
         {/* Admin Profile Section */}
         {admin && (
-          <div className="hidden sm:flex items-center space-x-2 bg-emerald-800/60 py-1 px-3 rounded-full hover:bg-emerald-800 transition-colors duration-300 cursor-pointer group">
+          <div
+            onClick={() => navigate("/admin/config")}
+            className="hidden sm:flex items-center hover:cursor-pointer space-x-2 bg-emerald-800/60 py-1 px-3 rounded-full hover:bg-emerald-800 transition-colors duration-300 cursor-pointer group"
+          >
             <div className="relative">
               <div className="absolute inset-0 bg-emerald-400 rounded-full opacity-0 group-hover:opacity-30 animate-ping group-hover:animate-none transition-opacity duration-300"></div>
               <img

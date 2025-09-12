@@ -20,6 +20,9 @@ import ForgotPassword from "./pages/admin/changePassword";
 import ChangePasswordLink from "./pages/admin/changePasswordLink";
 import AdminLayout from "./layout/adminLayout";
 import UserLayout from "./layout/userlayout";
+import AdminConfig from "./pages/admin/adminConfig";
+import AdminProtectedRoute from "../../src/components/auth/protectRoutes";
+import NotFound from "./components/pageNotFound";
 
 function App() {
   return (
@@ -49,13 +52,16 @@ function App() {
         />
 
         {/* Admin Dashboard Routes (now unprotected) */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<Admin />} />
-          <Route path="ground/:id" element={<Groundetails />} />
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<Admin />} />
+            <Route path="/config" element={<AdminConfig />} />
+            <Route path="ground/:id" element={<Groundetails />} />
+          </Route>
         </Route>
 
         {/* 404 Route (optional) */}
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
