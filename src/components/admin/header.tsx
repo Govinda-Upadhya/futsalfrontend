@@ -23,7 +23,7 @@ export default function Header({ active, setActive }: HeaderProps) {
           withCredentials: true,
         });
         setAdmin(res.data.admin);
-        console.log(res.data.admin);
+        console.log(res.data);
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
       }
@@ -116,7 +116,7 @@ export default function Header({ active, setActive }: HeaderProps) {
             <div className="relative">
               <div className="absolute inset-0 bg-emerald-400 rounded-full opacity-0 group-hover:opacity-30 animate-ping group-hover:animate-none transition-opacity duration-300"></div>
               <img
-                src={admin.image}
+                src={admin.profile}
                 alt={admin.name}
                 className="w-8 h-8 rounded-full object-cover relative z-10 border-2 border-emerald-400 group-hover:border-white transition-colors duration-300"
               />
