@@ -194,7 +194,10 @@ const AdminConfig = () => {
           <input
             type="email"
             readOnly
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 focus:outline-none transition-all duration-300"
+            {...register("email")}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg 
+           bg-gray-100 cursor-not-allowed 
+           focus:ring-0 focus:border-gray-300 focus:outline-none transition-all duration-300"
             placeholder="Enter your email"
           />
         </div>
