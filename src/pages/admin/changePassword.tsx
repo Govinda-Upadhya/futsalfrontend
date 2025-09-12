@@ -29,6 +29,7 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log(data);
       const res = await axios.post(`${base_url}/admin/changePassword`, {
         email: data.email,
       });
