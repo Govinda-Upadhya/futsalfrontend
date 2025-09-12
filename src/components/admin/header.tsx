@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { base_url } from "../../types/ground";
 import logo from "../../assets/logo.svg";
 
@@ -12,7 +11,7 @@ interface HeaderProps {
 
 export default function Header({ active, setActive }: HeaderProps) {
   const navigate = useNavigate();
-  const [admin, setAdmin] = useState<{ name: string; image: string }>();
+  const [admin, setAdmin] = useState<{ name: string; profile: string }>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -23,7 +22,6 @@ export default function Header({ active, setActive }: HeaderProps) {
           withCredentials: true,
         });
         setAdmin(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
       }
@@ -41,7 +39,6 @@ export default function Header({ active, setActive }: HeaderProps) {
   }, []);
 
   const handleSetActive = (newActive: string) => {
-    console.log("Setting active to:", newActive);
     setActive(newActive);
     setIsMenuOpen(false);
   };
@@ -107,11 +104,11 @@ export default function Header({ active, setActive }: HeaderProps) {
           </button>
         </div>
 
-        {/* Admin Profile Section */}
+        {/* Admin Profile Section - Desktop */}
         {admin && (
           <div
             onClick={() => navigate("/admin/config")}
-            className=" sm:flex items-center hover:cursor-pointer space-x-2 bg-emerald-800/60 py-1 px-3 rounded-full hover:bg-emerald-800 transition-colors duration-300 cursor-pointer group"
+            className="hidden sm:flex items-center hover:cursor-pointer space-x-2 bg-emerald-800/60 py-1 px-3 rounded-full hover:bg-emerald-800 transition-colors duration-300 cursor-pointer group"
           >
             <div className="relative">
               <div className="absolute inset-0 bg-emerald-400 rounded-full opacity-0 group-hover:opacity-30 animate-ping group-hover:animate-none transition-opacity duration-300"></div>
@@ -136,6 +133,28 @@ export default function Header({ active, setActive }: HeaderProps) {
           }`}
         >
           <ul className="flex flex-col sm:flex-row w-full sm:w-auto gap-2 sm:gap-4 items-center py-4 sm:py-0">
+            {/* Admin Profile Section - Mobile */}
+            {admin && (
+              <li className="w-full sm:hidden flex justify-center mb-2">
+                <div
+                  onClick={() => {
+                    navigate("/admin/config");
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center space-x-2 bg-emerald-800/60 py-1 px-3 rounded-full hover:bg-emerald-800 transition-colors duration-300 cursor-pointer group"
+                >
+                  <img
+                    src={admin.profile}
+                    alt={admin.name}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-emerald-400 group-hover:border-white transition-colors duration-300"
+                  />
+                  <span className="text-sm font-medium group-hover:text-emerald-200 transition-colors duration-300">
+                    {admin.name}
+                  </span>
+                </div>
+              </li>
+            )}
+
             <li className="w-full sm:w-auto">
               <button
                 onClick={() => handleSetActive("dashboard")}
@@ -172,19 +191,6 @@ export default function Header({ active, setActive }: HeaderProps) {
                 Add Ground
               </button>
             </li>
-            {/* Statistics Button */}
-            {/* <li className="w-full sm:w-auto">
-              <button
-                onClick={() => handleSetActive("statistics")}
-                className={`w-full sm:w-auto text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 ${
-                  active === "statistics"
-                    ? "bg-white text-emerald-700 font-bold shadow-lg"
-                    : "bg-emerald-700/50 hover:bg-emerald-700 text-white"
-                }`}
-              >
-                Statistics
-              </button>
-            </li> */}
             <li className="w-full sm:w-auto">
               <button
                 onClick={() => {
