@@ -54,7 +54,8 @@ const Adminsignup = () => {
 
   const onSubmit = async (data) => {
     const file = data.profile[0];
-
+    const scannerFile = data.scanner[0];
+    console.log(scannerFile);
     if (!file) return alert("Please select a file");
     const usermail = data.email.split("@")[0];
     try {
@@ -230,6 +231,51 @@ const Adminsignup = () => {
           {errors.profile && (
             <p className="text-red-500 text-sm mt-1 flex items-center">
               <XCircle className="h-4 w-4 mr-1" /> {errors.profile.message}
+            </p>
+          )}
+        </div>
+        {/* Scanner Upload with Preview */}
+        <div className="mb-5">
+          <label className="block text-gray-700 font-medium mb-1">
+            Bank Scanner
+          </label>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-2 border-dashed border-emerald-300 flex items-center justify-center overflow-hidden bg-green-50">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ImagePlay className="h-6 w-6 text-emerald-400" />
+                )}
+              </div>
+              {imagePreview && (
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 text-white" />
+                </div>
+              )}
+            </div>
+            <label className="flex-1 cursor-pointer">
+              <div className="px-4 py-2 bg-green-50 text-emerald-700 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors duration-300 text-center">
+                Choose Image
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                {...register("scanner", {
+                  required: "Sacnner picture is required",
+                  onChange: (e) => handleImageChange(e),
+                })}
+                className="hidden"
+              />
+            </label>
+          </div>
+          {errors.scanner && (
+            <p className="text-red-500 text-sm mt-1 flex items-center">
+              <XCircle className="h-4 w-4 mr-1" /> {errors.scanner.message}
             </p>
           )}
         </div>
