@@ -22,7 +22,7 @@ export default function Header({ active, setActive }: HeaderProps) {
         const res = await axios.get(`${base_url}/admin/getAdmin`, {
           withCredentials: true,
         });
-        setAdmin(res.data.admin);
+        setAdmin(res.data);
         console.log(res.data);
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
