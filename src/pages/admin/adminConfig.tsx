@@ -22,10 +22,9 @@ const AdminConfig = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const [user, setUser] = useState<Admin>();
-  const [showPassword, setShowPassword] = useState(false);
+
   const [imagePreview, setImagePreview] = useState(null);
   const [contactValue, setContactValue] = useState("");
-  const password = watch("password", "");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,7 +52,7 @@ const AdminConfig = () => {
   };
 
   const onSubmit = async (data) => {
-    const file = data.profile[0];
+    const file = data.profile?.[0];
 
     try {
       if (file) {
@@ -127,30 +126,13 @@ const AdminConfig = () => {
     fetchAdmin();
     return () => {};
   }, []);
-
-  // Password strength checker
-  const getPasswordStrength = () => {
-    if (!password) return { strength: 0, label: "" };
-
-    let strength = 0;
-    if (password.length >= 6) strength += 1;
-    if (password.length >= 8) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-
-    const labels = [
-      "Very Weak",
-      "Weak",
-      "Fair",
-      "Good",
-      "Strong",
-      "Very Strong",
-    ];
-    return { strength, label: labels[strength] };
-  };
-
-  const passwordStrength = getPasswordStrength();
+  useEffect(() => {
+    if (user) {
+      setValue("name", user.name);
+      setValue("email", user.email);
+      setValue("contact", user.contact);
+    }
+  }, [user, setValue]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-2 sm:p-4 flex items-center justify-center">
@@ -194,7 +176,6 @@ const AdminConfig = () => {
           <label className="block text-gray-700 font-medium mb-1">Name</label>
           <input
             type="text"
-            value={user?.name}
             {...register("name", { required: "Name is required" })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 focus:outline-none transition-all duration-300"
             placeholder="Enter your full name"
@@ -210,7 +191,6 @@ const AdminConfig = () => {
         <div className="mb-5">
           <label className="block text-gray-700 font-medium mb-1">Email</label>
           <input
-            value={user?.email}
             type="email"
             readOnly
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 focus:outline-none transition-all duration-300"
@@ -228,8 +208,14 @@ const AdminConfig = () => {
               <div className="w-16 h-16 rounded-full border-2 border-dashed border-emerald-300 flex items-center justify-center overflow-hidden bg-green-50">
                 {imagePreview ? (
                   <img
-                    src={user?.profile}
+                    src={imagePreview}
                     alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : user?.profile ? (
+                  <img
+                    src={user.profile}
+                    alt="Current Profile"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -271,7 +257,6 @@ const AdminConfig = () => {
           </label>
           <input
             type="text"
-            value={user?.contact}
             {...register("contact", {
               required: "Contact is required",
               pattern: {
