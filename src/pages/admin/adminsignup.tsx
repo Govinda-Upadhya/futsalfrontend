@@ -24,6 +24,7 @@ const Adminsignup = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const [scannerImagePreview, setScannermagePreview] = useState(null);
   const [contactValue, setContactValue] = useState("");
   const password = watch("password", "");
 
@@ -111,6 +112,16 @@ const Adminsignup = () => {
     ];
     return { strength, label: labels[strength] };
   };
+  function handleScannerImage(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScannermagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   const passwordStrength = getPasswordStrength();
 
@@ -242,9 +253,9 @@ const Adminsignup = () => {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <div className="w-16 h-16 rounded-full border-2 border-dashed border-emerald-300 flex items-center justify-center overflow-hidden bg-green-50">
-                {imagePreview ? (
+                {scannerImagePreview ? (
                   <img
-                    src={imagePreview}
+                    src={scannerImagePreview}
                     alt="Preview"
                     className="w-full h-full object-cover"
                   />
@@ -252,7 +263,7 @@ const Adminsignup = () => {
                   <ImagePlay className="h-6 w-6 text-emerald-400" />
                 )}
               </div>
-              {imagePreview && (
+              {scannerImagePreview && (
                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="h-4 w-4 text-white" />
                 </div>
@@ -266,8 +277,8 @@ const Adminsignup = () => {
                 type="file"
                 accept="image/*"
                 {...register("scanner", {
-                  required: "Sacnner picture is required",
-                  onChange: (e) => handleImageChange(e),
+                  required: "Scanner picture is required",
+                  onChange: (e) => handleScannerImage(e),
                 })}
                 className="hidden"
               />
