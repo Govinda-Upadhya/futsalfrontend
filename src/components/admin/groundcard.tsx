@@ -155,28 +155,33 @@ const Groundcard = ({ ground, onUpdate }) => {
   const handleImageUpload = async (e) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    const formData = new FormData();
-    formData.append("file", files[0]);
-    console.log("new fiels", files[0]);
+
     setUploadingImages(true);
 
     try {
-      // In a real application, you would upload to a server
-      // This is a simulation that creates a data URL
-      const uploads = await axios.post(
-        `${upload_base_url}/admin/upload`,
-        formData,
-        { withCredentials: true }
-      );
+      const uploadedUrls: string[] = [];
 
-      const newImageUrls = uploads.data.url;
-      setNewImagesUrls(newImageUrls);
-      console.log(newImageUrls);
-      setEditFormData({
-        ...editFormData,
-        images: [...editFormData.images, newImageUrls],
-      });
-      console.log("Updated state:", editFormData.images);
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append("file", files[i]);
+
+        const uploads = await axios.post(
+          `${upload_base_url}/admin/upload`,
+          formData,
+          { withCredentials: true }
+        );
+
+        uploadedUrls.push(uploads.data.url);
+      }
+
+      // ✅ Store both preview and send to API later
+      setNewImagesUrls((prev) => [...prev, ...uploadedUrls]);
+
+      // ✅ Add to form data so preview appears immediately
+      setEditFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...uploadedUrls],
+      }));
 
       showNotification("Images uploaded successfully!", "success");
     } catch (error) {
