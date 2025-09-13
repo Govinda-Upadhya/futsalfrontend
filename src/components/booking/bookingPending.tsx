@@ -38,7 +38,7 @@ const BookingPending = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [countdown, setCountdown] = useState(300);
-
+  const [scanner, setScanner] = useState(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   // Dummy data
@@ -49,6 +49,7 @@ const BookingPending = () => {
       );
       console.log(info.data);
       setBookingInfo(info.data.info);
+      setScanner(info.data.scanner);
     }
     fetchBooking();
   }, []);
@@ -274,6 +275,10 @@ const BookingPending = () => {
               <h3 className="font-bold text-gray-900 mb-3 text-lg">
                 Payment Instructions
               </h3>
+              <div>
+                <p>Owner Bank Qr</p>
+                <img src={scanner ? scanner : ""} alt="payment Qr" />
+              </div>
 
               <div className="bg-white rounded-lg p-4 mb-4">
                 <div className="flex justify-between items-center mb-2">
