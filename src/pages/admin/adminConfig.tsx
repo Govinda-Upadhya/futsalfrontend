@@ -24,6 +24,7 @@ const AdminConfig = () => {
   const [user, setUser] = useState<Admin>();
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [scannerPreview, setScannerPreview] = useState(null);
   const [contactValue, setContactValue] = useState("");
 
   const handleImageChange = (e) => {
@@ -52,70 +53,67 @@ const AdminConfig = () => {
   };
 
   const onSubmit = async (data) => {
-    const file = data.profile?.[0];
-
     try {
-      if (file) {
-        const usermail = data.email.split("@")[0];
-        console.log("file exits", file);
-        const formData = new FormData();
-        formData.append("file", file);
+      let profileUrl = user?.profile;
+      let scannerUrl = user?.scanner;
 
-        const imagepath = await axios.post(
-          `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
+      if (data.profile?.[0]) {
+        const formData = new FormData();
+        formData.append("file", data.profile[0]);
+        const res = await axios.post(
+          `${upload_base_url}/admin/signup/upload?usermail=${
+            data.email.split("@")[0]
+          }`,
           formData
         );
-        const signupData = {
-          name: data.name,
+        profileUrl = res.data.url;
+      }
 
-          contact: data.contact,
-
-          profile: imagepath.data.url,
-        };
-
-        const saveRes = await axios.put(
-          `${base_url}/admin/update`,
-          { newInfo: signupData },
-          {
-            withCredentials: true,
-          }
+      if (data.scanner?.[0]) {
+        const formData = new FormData();
+        formData.append("file", data.scanner[0]);
+        const res = await axios.post(
+          `${upload_base_url}/admin/signup/upload?usermail=${
+            data.email.split("@")[0]
+          }`,
+          formData
         );
+        scannerUrl = res.data.url;
+      }
 
-        if (saveRes.status === 200) {
-          alert("updated successfully");
-          navigate("/admin/dashboard");
-        } else {
-          alert("Signup failed");
-        }
-      } else {
-        const signupData = {
-          name: data.name,
+      const updatedData = {
+        name: data.name,
+        contact: data.contact,
+        profile: profileUrl,
+        scanner: scannerUrl,
+      };
 
-          contact: data.contact,
+      const saveRes = await axios.put(
+        `${base_url}/admin/update`,
+        { newInfo: updatedData },
+        { withCredentials: true }
+      );
 
-          profile: user?.profile,
-        };
-
-        const saveRes = await axios.put(
-          `${base_url}/admin/update`,
-          { newInfo: signupData },
-          {
-            withCredentials: true,
-          }
-        );
-
-        if (saveRes.status === 200) {
-          alert("updated successfully");
-          navigate("/admin/dashboard");
-        } else {
-          alert("Signup failed");
-        }
+      if (saveRes.status === 200) {
+        alert("Updated successfully");
+        navigate("/admin/dashboard");
       }
     } catch (err) {
-      console.error("Error during signup:", err);
-      alert(err.response?.data?.msg || "An error occurred during signup");
+      console.error(err);
+      alert("Error updating admin");
     }
   };
+  function handleScannerImage(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScannerPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   async function fetchAdmin() {
     const userInfo = await axios.get(`${base_url}/admin/getAdmin`, {
       withCredentials: true,
@@ -240,7 +238,7 @@ const AdminConfig = () => {
                 type="file"
                 accept="image/*"
                 {...register("profile", {
-                  required: "Profile picture is required",
+                  required: !user?.profile,
                   onChange: (e) => handleImageChange(e),
                 })}
                 className="hidden"
@@ -250,6 +248,57 @@ const AdminConfig = () => {
           {errors.profile && (
             <p className="text-red-500 text-sm mt-1 flex items-center">
               <XCircle className="h-4 w-4 mr-1" /> {errors.profile.message}
+            </p>
+          )}
+        </div>
+        {/* Scanner Upload with Preview */}
+        <div className="mb-5">
+          <label className="block text-gray-700 font-medium mb-1">
+            Scanner Picture
+          </label>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-2 border-dashed border-emerald-300 flex items-center justify-center overflow-hidden bg-green-50">
+                {scannerPreview ? (
+                  <img
+                    src={scannerPreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : user?.scanner ? (
+                  <img
+                    src={user.scanner}
+                    alt="Current Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ImagePlay className="h-6 w-6 text-emerald-400" />
+                )}
+              </div>
+              {scannerPreview && (
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 text-white" />
+                </div>
+              )}
+            </div>
+            <label className="flex-1 cursor-pointer">
+              <div className="px-4 py-2 bg-green-50 text-emerald-700 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors duration-300 text-center">
+                Choose Image
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                {...register("scanner", {
+                  required: !user?.scanner,
+                  onChange: (e) => handleScannerImage(e),
+                })}
+                className="hidden"
+              />
+            </label>
+          </div>
+          {errors.scanner && (
+            <p className="text-red-500 text-sm mt-1 flex items-center">
+              <XCircle className="h-4 w-4 mr-1" /> {errors.scanner.message}
             </p>
           )}
         </div>

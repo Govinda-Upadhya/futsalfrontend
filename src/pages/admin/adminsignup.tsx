@@ -67,13 +67,19 @@ const Adminsignup = () => {
         `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
         formData
       );
-
+      const newFormData = new FormData();
+      newFormData.append("file", scannerFile);
+      const newImage = await axios.post(
+        `${upload_base_url}/admin/signup/upload?usermail=${usermail}`,
+        newFormData
+      );
       const signupData = {
         name: data.name,
         email: data.email,
         contact: data.contact,
         password: data.password,
         profile: imagepath.data.url,
+        scanner: newImage.data.url,
       };
 
       const saveRes = await axios.post(`${base_url}/admin/signup`, signupData, {
