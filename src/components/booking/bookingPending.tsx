@@ -55,11 +55,24 @@ const BookingPending = () => {
     fetchBooking();
   }, []);
 
+  async function cancelBooking() {
+    const res = await axios.post(`${base_url}/user/cancelBooking`, {
+      id: booking_id,
+    });
+    if (res.status == 400) {
+      alert(
+        "You booking reservation has been canceled as you havent submitted the screenshoot"
+      );
+      navigate("/");
+    }
+  }
   // Countdown timer
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
+    } else {
+      cancelBooking();
     }
   }, [countdown]);
 
