@@ -116,6 +116,7 @@ const Groundcard = ({ ground, onUpdate }) => {
 
       setShowEditModal(false);
       showNotification("Ground updated successfully!", "success");
+      window.location.reload();
     } catch (error) {
       console.error("Error updating ground:", error);
       alert(error.response.data);
@@ -184,7 +185,6 @@ const Groundcard = ({ ground, onUpdate }) => {
       }));
 
       showNotification("Images uploaded successfully!", "success");
-      window.location.reload();
     } catch (error) {
       console.error("Error uploading images:", error);
       showNotification("Failed to upload images. Please try again.", "error");
