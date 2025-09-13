@@ -173,7 +173,7 @@ const Groundcard = ({ ground, onUpdate }) => {
 
         uploadedUrls.push(uploads.data.url);
       }
-
+      console.log("uplaoded urls", uploadedUrls);
       // ✅ Store both preview and send to API later
       setNewImagesUrls((prev) => [...prev, ...uploadedUrls]);
 
