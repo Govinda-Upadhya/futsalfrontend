@@ -93,7 +93,7 @@ const Groundcard = ({ ground, onUpdate }) => {
       }
       if (formattedData.features.length == 0) {
         alert("there has to be one facility");
-        removedImageUrls;
+
         return;
       }
       if (formattedData.availability.length == 0) {
@@ -108,6 +108,7 @@ const Groundcard = ({ ground, onUpdate }) => {
           withCredentials: true,
         }
       );
+      console.log(response.data);
 
       if (onUpdate) {
         onUpdate(response.data);
