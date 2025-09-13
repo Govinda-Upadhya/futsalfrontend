@@ -87,7 +87,7 @@ const Groundcard = ({ ground, onUpdate }) => {
       };
       console.log(formattedData);
 
-      if (formattedData.image.length == 0) {
+      if (formattedData.images.length == 0) {
         alert("there has to be one image");
         return;
       }
