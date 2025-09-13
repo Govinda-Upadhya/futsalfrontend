@@ -47,7 +47,7 @@ const BookingPending = () => {
       const info = await axios.get(
         `${base_url}/users/bookinginfo/${booking_id}`
       );
-      console.log(info.data);
+      console.log(info);
       setBookingInfo(info.data.info);
       setScanner(info.data.scanner);
     }
