@@ -26,7 +26,7 @@ const Groundcard = ({ ground, onUpdate }) => {
     capacity: ground.capacity || 0,
     pricePerHour: ground.pricePerHour || 0,
     features: ground.features || [],
-    image: ground.image || [],
+    images: ground.image || [],
     availability: ground.availability || [],
     description: ground.description || "",
   });
@@ -174,9 +174,9 @@ const Groundcard = ({ ground, onUpdate }) => {
       console.log(newImageUrls);
       setEditFormData({
         ...editFormData,
-        image: [...editFormData.image, newImageUrls],
+        images: [...editFormData.images, newImageUrls],
       });
-      console.log("Updated state:", editFormData.image);
+      console.log("Updated state:", editFormData.images);
 
       showNotification("Images uploaded successfully!", "success");
     } catch (error) {
@@ -188,13 +188,13 @@ const Groundcard = ({ ground, onUpdate }) => {
   };
 
   const handleRemoveImage = async (index) => {
-    const updatedImages = [...editFormData.image];
+    const updatedImages = [...editFormData.images];
     console.log(updatedImages[index]);
     setRemovedImageUrls([...removedImageUrls, updatedImages[index]]);
     updatedImages.splice(index, 1);
     setEditFormData({
       ...editFormData,
-      image: updatedImages,
+      images: updatedImages,
     });
   };
 
@@ -646,7 +646,7 @@ const Groundcard = ({ ground, onUpdate }) => {
                   Existing Images
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
-                  {editFormData.image.map((image, index) => (
+                  {editFormData.images.map((image, index) => (
                     <div key={index} className="relative group">
                       <img
                         src={image}
