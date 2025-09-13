@@ -262,11 +262,12 @@ const BookingPage: React.FC = () => {
       ground: { _id: ground._id, name: ground.name },
       name: data.name,
       status: "PENDING",
+      screenshot: false,
       time: selectedTimeSlot,
     };
 
     // Store the booking data in local storage
-    localStorage.setItem("latestBooking", JSON.stringify(bookingPayload));
+
     const booking = await axios.post(
       `${base_url}/users/bookground/${groundId}`,
       {

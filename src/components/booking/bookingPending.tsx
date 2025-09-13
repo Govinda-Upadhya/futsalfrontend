@@ -16,6 +16,7 @@ import { base_url } from "../../types/ground";
 type TimeSlot = { start: string; end: string };
 
 interface BookingInfoType {
+  _id: string;
   name: string;
   email: string;
   contact: string;
@@ -56,7 +57,7 @@ const BookingPending = () => {
   }, []);
 
   async function cancelBooking() {
-    const res = await axios.post(`${base_url}/user/cancelBooking`, {
+    const res = await axios.post(`${base_url}/users/cancelBooking`, {
       id: booking_id,
     });
     if (res.status == 400) {
@@ -162,6 +163,7 @@ const BookingPending = () => {
     formData.append("groundId", bookingInfo?.ground._id || "");
     formData.append("contactInfo", bookingInfo?.contact || "");
     formData.append("email", bookingInfo?.email || "");
+    formData.append("bookingId", bookingInfo?._id || "");
     await axios.post(
       `${base_url}/users/bookinginfo/send_screentshot`,
       formData,
