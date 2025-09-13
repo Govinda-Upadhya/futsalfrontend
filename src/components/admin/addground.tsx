@@ -234,7 +234,7 @@ const Addground = () => {
       }
     }
 
-    if (hasError) return; // Exit early if validation failed
+    if (hasError) return Promise.reject(); // Exit early if validation failed
 
     const submitData = { ...data, images };
 
