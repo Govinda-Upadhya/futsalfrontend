@@ -8,6 +8,7 @@ import {
   CreditCard,
   AlertCircle,
 } from "lucide-react";
+import { Download } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../../types/ground";
@@ -100,6 +101,13 @@ const BookingPending = () => {
     if (errors[name as keyof ValidationErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
+  };
+  const handleDownload = () => {
+    if (!scanner) return;
+    const link = document.createElement("a");
+    link.href = scanner;
+    link.download = "payment-qr.png";
+    link.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -275,9 +283,31 @@ const BookingPending = () => {
               <h3 className="font-bold text-gray-900 mb-3 text-lg">
                 Payment Instructions
               </h3>
-              <div>
-                <p>Owner Bank Qr</p>
-                <img src={scanner ? scanner : ""} alt="payment Qr" />
+              <div className="bg-white shadow-md rounded-xl p-4 w-full max-w-sm mx-auto text-center border border-gray-200">
+                <p className="text-gray-700 font-medium mb-3">Owner Bank QR</p>
+
+                <div className="relative">
+                  {scanner ? (
+                    <img
+                      src={scanner}
+                      alt="Payment QR"
+                      className="w-40 h-40 mx-auto rounded-lg border border-gray-300 shadow-sm object-contain bg-gray-50"
+                    />
+                  ) : (
+                    <div className="w-40 h-40 mx-auto flex items-center justify-center rounded-lg border border-dashed border-gray-400 bg-gray-50 text-gray-500">
+                      No QR Available
+                    </div>
+                  )}
+
+                  {scanner && (
+                    <button
+                      onClick={handleDownload}
+                      className="absolute bottom-2 right-2 p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg transition-colors"
+                    >
+                      <Download className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="bg-white rounded-lg p-4 mb-4">
