@@ -37,6 +37,19 @@ const AdminConfig = () => {
       reader.readAsDataURL(file);
     }
   };
+  async function handlePasswordChange(email: string) {
+    try {
+      const res = await axios.post(`${base_url}/admin/changePassword`, {
+        email: email,
+      });
+      alert(
+        "Password reset link for the account will reach you shortly in your registered email."
+      );
+    } catch (error) {
+      console.log(error);
+      alert("sorry some error occurred please try again");
+    }
+  }
 
   // Handle contact input change with validation
   const handleContactChange = (e) => {
@@ -339,7 +352,7 @@ const AdminConfig = () => {
           </div>
         </div>
         <div
-          onClick={() => navigate("/admin/changePassword")}
+          onClick={() => handlePasswordChange(user?.email)}
           className="flex justify-center items-center w-full py-3 mb-2 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
         >
           Click to change password
