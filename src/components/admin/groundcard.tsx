@@ -81,8 +81,8 @@ const Groundcard = ({ ground, onUpdate }) => {
       const formattedData = {
         ...editFormData,
         capacity: parseInt(editFormData.capacity),
-        removedImageUrls,
-        newImagesUrls,
+        removedImages: removedImageUrls,
+        newImageUrls: newImagesUrls,
         pricePerHour: parseFloat(editFormData.pricePerHour),
       };
       console.log(formattedData);
@@ -93,6 +93,7 @@ const Groundcard = ({ ground, onUpdate }) => {
       }
       if (formattedData.features.length == 0) {
         alert("there has to be one facility");
+        removedImageUrls;
         return;
       }
       if (formattedData.availability.length == 0) {
@@ -302,6 +303,7 @@ const Groundcard = ({ ground, onUpdate }) => {
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                 />
               </svg>
+              removedImageUrls
             </button>
           </div>
         </div>
