@@ -340,7 +340,7 @@ const AdminConfig = () => {
         </div>
         <button
           onClick={() => navigate("/admin/changePassword")}
-          className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-500 text-white font-medium rounded-lg shadow-md hover:from-green-700 hover:to-emerald-600 transition duration-200"
+          className="w-full py-3 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
         >
           Click to change password
         </button>
