@@ -338,12 +338,12 @@ const AdminConfig = () => {
             <p className="text-gray-500 text-sm">{contactValue.length}/8</p>
           </div>
         </div>
-        <button
+        <div
           onClick={() => navigate("/admin/changePassword")}
           className="w-full py-3 mb-2 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
         >
           Click to change password
-        </button>
+        </div>
 
         <button
           type="submit"
