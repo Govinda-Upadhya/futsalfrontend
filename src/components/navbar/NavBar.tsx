@@ -42,8 +42,9 @@ const Navbar: React.FC = () => {
   };
 
   const getNavLinkClass = ({ isActive }: { isActive: boolean }): string => {
-    const baseClasses = "font-semibold transition-all duration-300 px-3 py-2 rounded-lg relative group";
-    
+    const baseClasses =
+      "font-semibold transition-all duration-300 px-3 py-2 rounded-lg relative group";
+
     if (isScrolled || !isHomePage) {
       return `${baseClasses} ${
         isActive
@@ -59,7 +60,11 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const getMobileNavLinkClass = ({ isActive }: { isActive: boolean }): string => {
+  const getMobileNavLinkClass = ({
+    isActive,
+  }: {
+    isActive: boolean;
+  }): string => {
     return `block font-semibold transition-all duration-300 py-3 px-4 rounded-lg transform transition-transform ${
       isActive
         ? "text-emerald-600 bg-emerald-50 scale-105"
@@ -82,8 +87,8 @@ const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <NavLink 
-              to="/" 
+            <NavLink
+              to="/"
               className="flex items-center gap-3 group relative"
               onClick={() => setIsOpen(false)}
             >
@@ -91,14 +96,16 @@ const Navbar: React.FC = () => {
                 <img
                   src={logo}
                   alt="ThangGo Logo"
-                  className="h-10 w-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
+                  className="h-10 w-10 object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-6"
                 />
                 {/* Subtle shine effect on hover */}
                 <div className="absolute inset-0 -left-16 bg-gradient-to-r from-transparent via-white/40 to-transparent transform skew-x-12 group-hover:animate-shine opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
               </div>
-              <span className={`text-2xl font-bold transition-all duration-500 ${
-                isScrolled || !isHomePage ? "text-emerald-700" : "text-white"
-              } group-hover:text-emerald-600 relative`}>
+              <span
+                className={`text-2xl font-bold transition-all duration-500 ${
+                  isScrolled || !isHomePage ? "text-emerald-700" : "text-white"
+                } group-hover:text-emerald-600 relative`}
+              >
                 ThangGo
                 {/* Underline animation */}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 transition-all duration-500 group-hover:w-full"></span>
@@ -107,29 +114,25 @@ const Navbar: React.FC = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
-              <NavLink 
-                to="/aboutus" 
-                className={getNavLinkClass}
-              >
+              <NavLink to="/aboutus" className={getNavLinkClass}>
                 About Us
                 {/* Hover underline effect */}
                 <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
               </NavLink>
-              <NavLink 
-                to="/contactus" 
-                className={getNavLinkClass}
-              >
+              <NavLink to="/contactus" className={getNavLinkClass}>
                 Contact Us
                 {/* Hover underline effect */}
                 <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
               </NavLink>
-              
-              <div className={`h-6 w-px mx-2 transition-all duration-500 ${
-                isScrolled || !isHomePage ? "bg-gray-300" : "bg-white/40"
-              }`}></div>
-              
-              <NavLink 
-                to="/admin/signin" 
+
+              <div
+                className={`h-6 w-px mx-2 transition-all duration-500 ${
+                  isScrolled || !isHomePage ? "bg-gray-300" : "bg-white/40"
+                }`}
+              ></div>
+
+              <NavLink
+                to="/admin/signin"
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-500 transform hover:scale-105 shadow-md hover:shadow-lg relative overflow-hidden group ${
                   isScrolled || !isHomePage
                     ? "bg-emerald-600 text-white hover:bg-emerald-700"
@@ -163,9 +166,11 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}>
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
+            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
           <div className="bg-white/95 backdrop-blur-lg border-t border-gray-200/50 shadow-xl px-4 pt-2 pb-6 space-y-2">
             <NavLink
               to="/aboutus"
@@ -181,9 +186,9 @@ const Navbar: React.FC = () => {
             >
               Contact Us
             </NavLink>
-            
+
             <div className="border-t border-gray-200 my-2 transition-all duration-500"></div>
-            
+
             <NavLink
               to="/admin/signin"
               className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all duration-300 mt-4 transform hover:scale-105"
@@ -239,7 +244,7 @@ const Navbar: React.FC = () => {
           }
         `}</style>
       </nav>
-      
+
       {/* Spacer to prevent content overlap - Only show on non-home pages */}
       {!isHomePage && (
         <div style={{ height: `${navbarHeight}px` }} className="w-full"></div>
