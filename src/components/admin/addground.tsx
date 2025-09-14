@@ -96,6 +96,33 @@ const Addground = () => {
   const handleStarClick = (ratingValue) => {
     setValue("rating", ratingValue, { shouldValidate: true });
   };
+  const generateTimeSlots = (startTime, endTime) => {
+    const slots = [];
+    let [startHour, startMin] = startTime.split(":").map(Number);
+    let [endHour, endMin] = endTime.split(":").map(Number);
+
+    while (
+      startHour < endHour ||
+      (startHour === endHour && startMin < endMin)
+    ) {
+      let nextHour = startHour + 1;
+      let nextMin = startMin;
+
+      const startStr = `${String(startHour).padStart(2, "0")}:${String(
+        startMin
+      ).padStart(2, "0")}`;
+      const endStr = `${String(nextHour).padStart(2, "0")}:${String(
+        nextMin
+      ).padStart(2, "0")}`;
+
+      slots.push({ start: startStr, end: endStr });
+
+      startHour = nextHour;
+      startMin = nextMin;
+    }
+
+    return slots;
+  };
 
   // Convert 24h time to 12h format
   const to12HourFormat = (time24) => {
@@ -124,7 +151,7 @@ const Addground = () => {
   };
 
   // Time Picker Component for 12-hour format
-  const TimePicker = ({ value, onChange, name, index, type, error }) => {
+  const TimePicker = ({ value, index, onChange, name, type, error }) => {
     const [time, setTime] = useState(value ? to12HourFormat(value) : "");
 
     const generateTimeOptions = () => {
@@ -204,29 +231,15 @@ const Addground = () => {
   };
 
   const onSubmit = async (data) => {
-    // Clear previous availability errors
-    clearErrors("availability");
     const availability = data.availability.filter((a) => a.start && a.end);
+    if (availability.length === 0) return alert("Please select availability");
 
-    // 1. Start < End
-    let hasError = false;
-    for (let i = 0; i < availability.length; i++) {
-      if (availability[i].start >= availability[i].end) {
-        return alert("start time should be earlier then the end time");
-      }
+    if (availability[0].start >= availability[0].end) {
+      return alert("Start time should be earlier than the end time");
     }
 
-    // 2. No overlap
-    const sorted = [...availability].sort((a, b) =>
-      a.start.localeCompare(b.start)
-    );
-    for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i].start < sorted[i - 1].end) {
-        return alert("time slots cannot overlap");
-      }
-    }
-
-    const submitData = { ...data, images };
+    const slots = generateTimeSlots(availability[0].start, availability[0].end);
+    const submitData = { ...data, availability: slots, images };
 
     try {
       // Upload images first
@@ -602,70 +615,26 @@ const Addground = () => {
             Availability Schedule
           </label>
           <p className="text-sm text-gray-500 mb-3">
-            Add time slots when the ground is available (6:00 AM to 10:00 PM)
+            Select start and end time — slots will be auto generated (1 hour
+            each).
           </p>
-
-          <div className="space-y-4">
-            {timeFields.map((field, index) => (
-              <div
-                key={field.id}
-                className="flex flex-col sm:flex-row items-start gap-3 p-3 bg-white rounded-lg border border-green-100"
-              >
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Start Time
-                  </label>
-                  <TimePicker
-                    value={watch(`availability.${index}.start`)}
-                    onChange={(value) =>
-                      setValue(`availability.${index}.start`, value)
-                    }
-                    index={index}
-                    type="start"
-                    error={errors.availability?.[index]?.start}
-                  />
-                </div>
-
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    End Time
-                  </label>
-                  <TimePicker
-                    value={watch(`availability.${index}.end`)}
-                    onChange={(value) =>
-                      setValue(`availability.${index}.end`, value)
-                    }
-                    index={index}
-                    type="end"
-                    error={errors.availability?.[index]?.end}
-                  />
-                  {errors.availability?.message && (
-                    <p className="text-red-500 text-sm mt-2">
-                      {errors.availability.message}
-                    </p>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => removeTime(index)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg self-end mt-5"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <TimePicker
+              value={watch("availability.0.start")}
+              onChange={(value) => setValue("availability.0.start", value)}
+              index={0}
+              type="start"
+              error={errors.availability?.[0]?.start}
+            />
+            <TimePicker
+              value={watch("availability.0.end")}
+              onChange={(value) => setValue("availability.0.end", value)}
+              index={0}
+              type="end"
+              error={errors.availability?.[0]?.end}
+            />
           </div>
-
-          <button
-            type="button"
-            onClick={() => addTime({ start: "", end: "" })}
-            className="mt-3 flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
-          >
-            <Plus className="h-4 w-4" /> Add Time Slot
-          </button>
         </div>
-
         {/* Description */}
         <div>
           <label className="block font-medium text-gray-700 mb-2">
