@@ -244,16 +244,16 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Premium Sports Hero Section */}
-      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-green-900 via-green-800 to-emerald-900">
+      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-green-900 via-green-800 to-emerald-900">
         {/* Animated background elements */}
         <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute top-0 left-0 w-40 h-40 sm:w-72 sm:h-72 bg-green-600 rounded-full filter blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/4 right-0 w-56 h-56 sm:w-96 sm:h-96 bg-emerald-500 rounded-full filter blur-3xl animate-pulse animation-delay-2000"></div>
-          <div className="absolute bottom-0 left-1/3 w-48 h-48 sm:w-80 sm:h-80 bg-green-700 rounded-full filter blur-3xl animate-pulse animation-delay-4000"></div>
+          <div className="absolute top-0 left-0 w-72 h-72 bg-green-600 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/4 right-0 w-96 h-96 bg-emerald-500 rounded-full filter blur-3xl animate-pulse animation-delay-2000"></div>
+          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-green-700 rounded-full filter blur-3xl animate-pulse animation-delay-4000"></div>
         </div>
 
         {/* Animated soccer field lines */}
-        <div className="absolute inset-0 z-0 opacity-10 hidden sm:block">
+        <div className="absolute inset-0 z-0 opacity-10">
           {[...Array(10)].map((_, i) => (
             <div
               key={i}
@@ -262,14 +262,14 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             ></div>
           ))}
           <div className="absolute top-1/2 left-0 w-full h-2 bg-white transform -translate-y-1/2"></div>
-          <div className="absolute top-1/2 left-1/2 w-24 h-24 sm:w-40 sm:h-40 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-1/2 left-1/2 w-40 h-40 border-4 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center min-h-screen text-center px-4">
-          {/* Main headline */}
-          <div className="mb-6 sm:mb-8 overflow-hidden">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6 text-white uppercase tracking-tighter animate-slide-up leading-tight">
+        <div className="relative z-10 flex flex-col justify-center items-center h-full text-center px-4">
+          {/* Main headline with animation */}
+          <div className="mb-8 overflow-hidden">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 text-white uppercase tracking-tighter animate-slide-up">
               <span className="block">PLAY</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-400">
                 LIKE A PRO
@@ -278,30 +278,30 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
           </div>
 
           {/* Subheadline */}
-          <div className="mb-8 sm:mb-12 animate-fade-in-up animation-delay-300">
-            <p className="text-lg sm:text-xl md:text-2xl font-medium text-green-100 mb-2 sm:mb-4">
+          <div className="mb-12 animate-fade-in-up animation-delay-300">
+            <p className="text-xl md:text-2xl font-medium text-green-100 mb-4">
               Book premium sports grounds. Challenge worthy opponents.
             </p>
-            <p className="text-sm sm:text-lg text-green-200 max-w-xl sm:max-w-2xl mx-auto">
+            <p className="text-lg text-green-200 max-w-2xl mx-auto">
               Experience the thrill of competition on the best fields in town
             </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-12 sm:mb-16 animate-fade-in-up animation-delay-500 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-6 mb-16 animate-fade-in-up animation-delay-500">
             <button
               onClick={() =>
                 document
                   .getElementById("search-section")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="group relative bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-full transform hover:scale-105 transition-all duration-300 shadow-2xl flex items-center justify-center overflow-hidden"
+              className="group relative bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full transform hover:scale-105 transition-all duration-300 shadow-2xl flex items-center justify-center overflow-hidden"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <span className="relative z-10 flex items-center text-sm sm:text-base">
+              <span className="relative z-10 flex items-center">
                 FIND GROUNDS
-                <ChevronDown className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:animate-bounce" />
+                <ChevronDown className="ml-2 h-5 w-5 group-hover:animate-bounce" />
               </span>
               <div
                 className={`absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 transform ${
@@ -309,11 +309,18 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                 } transition-transform duration-500`}
               ></div>
             </button>
+
+            {/* <button className="group bg-transparent border-2 border-white hover:bg-white text-white hover:text-green-800 font-bold py-4 px-8 rounded-full transform hover:scale-105 transition-all duration-300 shadow-xl flex items-center justify-center">
+              <span className="flex items-center">
+                WATCH VIDEO
+                <Play className="ml-2 h-4 w-4 fill-current" />
+              </span>
+            </button> */}
           </div>
 
-          {/* Stats Bar */}
-          <div className="relative md:absolute md:bottom-10 md:left-0 md:right-0 animate-fade-in-up md:animation-delay-700">
-            <div className="flex flex-wrap justify-center items-center space-y-6 sm:space-y-0 sm:space-x-8 md:space-x-12 lg:space-x-20 xl:space-x-28 px-4">
+          {/* Enhanced Interactive Stats Bar */}
+          <div className="absolute bottom-10 left-0 right-0 animate-fade-in-up animation-delay-700">
+            <div className="flex flex-col md:flex-row justify-center items-center md:items-start space-y-8 md:space-y-0 md:space-x-4 lg:space-x-12 xl:space-x-20 2xl:space-x-28">
               {[
                 {
                   number: "24/7",
@@ -324,38 +331,51 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="m-2 sm:m-4 text-center group cursor-pointer transform hover:scale-110 transition-all duration-500 flex flex-col items-center w-32 sm:w-40"
+                  className="m-4 text-center group cursor-pointer transform hover:scale-110 transition-all duration-500 flex flex-col items-center w-40"
                 >
-                  <div className="relative mb-3 sm:mb-4 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                  {/* Animated counter circle */}
+                  <div className="relative mb-4 w-20 h-20 flex items-center justify-center">
+                    {/* Background circle with pulse animation */}
                     <div className="absolute inset-0 bg-green-700 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 md:animate-ping"></div>
+
+                    {/* Main circle */}
                     <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-500 group-hover:from-emerald-500 group-hover:to-green-600 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg group-hover:shadow-2xl">
-                      <stat.icon className="h-6 w-6 sm:h-8 sm:w-8 text-white transform group-hover:scale-110 transition-transform duration-300" />
+                      <stat.icon className="h-8 w-8 text-white transform group-hover:scale-110 transition-transform duration-300" />
                     </div>
+
+                    {/* Progress ring effect on hover */}
                     <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                       <circle
                         cx="50%"
                         cy="50%"
-                        r="28"
+                        r="38"
                         stroke="currentColor"
                         strokeWidth="2"
                         fill="none"
-                        strokeDasharray="176"
-                        strokeDashoffset="176"
+                        strokeDasharray="239"
+                        strokeDashoffset="239"
                         className="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"
                       />
                     </svg>
                   </div>
-                  <div className="relative overflow-hidden h-8 sm:h-10 mb-1 sm:mb-2">
-                    <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white group-hover:text-emerald-300 transition-colors duration-500 transform">
+
+                  {/* Animated numbers with counting effect */}
+                  <div className="relative overflow-hidden h-10 mb-2">
+                    <div className="text-3xl md:text-4xl font-black text-white group-hover:text-emerald-300 transition-colors duration-500 transform group-hover:translate-y-0 translate-y-0">
                       {stat.number}
                     </div>
                   </div>
-                  <div className="text-xs sm:text-sm font-semibold text-green-200 group-hover:text-white transition-colors duration-500 mb-1 sm:mb-2 uppercase tracking-wide">
+
+                  {/* Label with hover effect */}
+                  <div className="text-sm font-semibold text-green-200 group-hover:text-white transition-colors duration-500 mb-2 uppercase tracking-wide">
                     {stat.label}
                   </div>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 sm:mb-3 w-40 sm:w-48 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
+
+                  {/* Description that appears on hover */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-48 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
                     <div className="bg-white text-green-900 text-xs font-medium py-2 px-3 rounded-lg shadow-xl">
                       {stat.description}
+                      {/* Tooltip arrow */}
                       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full border-4 border-transparent border-t-white"></div>
                     </div>
                   </div>
@@ -364,9 +384,9 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             </div>
           </div>
 
-          {/* Scroll indicator */}
+          {/* Scroll indicator - moved down slightly */}
           <div className="absolute bottom-2 animate-bounce">
-            <ChevronDown className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
+            <ChevronDown className="h-8 w-8 text-white opacity-70" />
           </div>
         </div>
       </div>
