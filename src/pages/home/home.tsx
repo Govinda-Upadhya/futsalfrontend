@@ -331,7 +331,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               ].map((stat, index) => (
                 <div
                   key={index}
-                  className="text-center group cursor-pointer transform hover:scale-110 transition-all duration-500 flex flex-col items-center w-40"
+                  className="m-4 text-center group cursor-pointer transform hover:scale-110 transition-all duration-500 flex flex-col items-center w-40"
                 >
                   {/* Animated counter circle */}
                   <div className="relative mb-4 w-20 h-20 flex items-center justify-center">
@@ -560,7 +560,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                       type="date"
                       value={challengeDateSearch}
                       onChange={(e) => setChallengeDateSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 bg-white shadow-sm transition-all duration-200"
+                      className="w-full min-h-[48px] pl-10 pr-4 py-3 border border-gray-200 rounded-lg bg-white text-base appearance-none shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition-all duration-200"
                     />
                   </div>
                 </div>
