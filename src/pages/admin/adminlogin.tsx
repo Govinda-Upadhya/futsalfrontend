@@ -203,7 +203,7 @@ const Adminsignin = () => {
             >
               Forgot your password?
             </a>
-            <div className="text-sm text-gray-600">
+            {/* <div className="text-sm text-gray-600">
               Don't have an account?{" "}
               <button
                 type="button"
@@ -212,7 +212,7 @@ const Adminsignin = () => {
               >
                 Sign Up
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

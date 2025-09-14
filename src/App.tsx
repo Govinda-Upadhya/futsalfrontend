@@ -44,7 +44,7 @@ function App() {
 
         {/* Admin Auth Routes */}
         <Route path="/admin/signin" element={<Adminsignin />} />
-        <Route path="/admin/signup" element={<Adminsignup />} />
+        {/* <Route path="/admin/signup" element={<Adminsignup />} /> */}
         <Route path="/admin/changePassword" element={<ForgotPassword />} />
         <Route
           path="/admin/changePassword/:id"
