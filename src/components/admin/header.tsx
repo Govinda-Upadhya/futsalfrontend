@@ -56,7 +56,7 @@ export default function Header({ active, setActive }: HeaderProps) {
               <img
                 src={logo}
                 alt="ThangGo Logo"
-                className="h-10 w-10 rounded-full object-cover relative z-10 transform group-hover:scale-110 transition-transform duration-300"
+                className="h-10 w-10 object-cover relative z-10 transform group-hover:scale-110 transition-transform duration-300"
               />
             </div>
             <span className="text-2xl font-bold tracking-tighter group-hover:tracking-wide transition-all duration-300">
