@@ -53,7 +53,6 @@ export default function Header({ active, setActive }: HeaderProps) {
         <div className="flex w-full sm:w-auto justify-between items-center">
           <NavLink to="/" className="flex items-center gap-2 text-white group">
             <div className="relative">
-              <div className="absolute -inset-1 bg-white/30 rounded-full blur-sm group-hover:bg-white/40 group-hover:blur-md transition-all duration-300"></div>
               <img
                 src={logo}
                 alt="ThangGo Logo"

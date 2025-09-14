@@ -688,53 +688,6 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               </ul>
             </div>
 
-            {/* Sports */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Sports</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="/sports/football"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Football
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/sports/basketball"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Basketball
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/sports/tennis"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Tennis
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/sports/cricket"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Cricket
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/sports/badminton"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Badminton
-                  </a>
-                </li>
-              </ul>
-            </div>
-
             {/* Contact Info */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
