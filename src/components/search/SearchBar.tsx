@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Search, Calendar, Filter, MapPin } from "lucide-react";
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 
 interface SearchBarProps {
   onSearch: (
@@ -12,10 +12,7 @@ interface SearchBarProps {
   className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ 
-  onSearch, 
-  className = ""
-}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = "" }) => {
   const [searchName, setSearchName] = useState("");
   const [searchType, setSearchType] = useState("");
   const [searchDate, setSearchDate] = useState("");
@@ -27,12 +24,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const performSearch = useCallback(() => {
     setIsSearching(true);
     onSearch(searchName, searchType, searchDate, searchLocation);
-    
+
     // Clear searching state after a short delay for smooth UI
     const timeout = setTimeout(() => {
       setIsSearching(false);
     }, 150);
-    
+
     return () => clearTimeout(timeout);
   }, [searchName, searchType, searchDate, searchLocation, onSearch]);
 
@@ -71,7 +68,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
     "Badminton",
   ];
 
-  const hasActiveFilters = searchName || searchType || searchDate || searchLocation;
+  const hasActiveFilters =
+    searchName || searchType || searchDate || searchLocation;
 
   return (
     <div className={`bg-white rounded-2xl shadow-lg p-6 ${className}`}>
@@ -180,8 +178,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
               type="date"
               value={searchDate}
               onChange={(e) => setSearchDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+              min={new Date().toISOString().split("T")[0]}
+              className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors appearance-none bg-white"
             />
             {searchDate && (
               <button

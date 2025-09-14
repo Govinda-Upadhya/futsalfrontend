@@ -319,7 +319,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
           </div>
 
           {/* Enhanced Interactive Stats Bar */}
-          <div className="absolute bottom-10 left-0 right-0 animate-fade-in-up animation-delay-700">
+          <div className="relative md:absolute md:bottom-10 md:left-0 md:right-0 animate-fade-in-up md:animation-delay-700">
             <div className="flex flex-col md:flex-row justify-center items-center md:items-start space-y-8 md:space-y-0 md:space-x-4 lg:space-x-12 xl:space-x-20 2xl:space-x-28">
               {[
                 {
@@ -333,17 +333,11 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                   key={index}
                   className="m-4 text-center group cursor-pointer transform hover:scale-110 transition-all duration-500 flex flex-col items-center w-40"
                 >
-                  {/* Animated counter circle */}
                   <div className="relative mb-4 w-20 h-20 flex items-center justify-center">
-                    {/* Background circle with pulse animation */}
                     <div className="absolute inset-0 bg-green-700 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 md:animate-ping"></div>
-
-                    {/* Main circle */}
                     <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-500 group-hover:from-emerald-500 group-hover:to-green-600 rounded-full flex items-center justify-center transition-all duration-500 shadow-lg group-hover:shadow-2xl">
                       <stat.icon className="h-8 w-8 text-white transform group-hover:scale-110 transition-transform duration-300" />
                     </div>
-
-                    {/* Progress ring effect on hover */}
                     <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                       <circle
                         cx="50%"
@@ -358,24 +352,17 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                       />
                     </svg>
                   </div>
-
-                  {/* Animated numbers with counting effect */}
                   <div className="relative overflow-hidden h-10 mb-2">
                     <div className="text-3xl md:text-4xl font-black text-white group-hover:text-emerald-300 transition-colors duration-500 transform group-hover:translate-y-0 translate-y-0">
                       {stat.number}
                     </div>
                   </div>
-
-                  {/* Label with hover effect */}
                   <div className="text-sm font-semibold text-green-200 group-hover:text-white transition-colors duration-500 mb-2 uppercase tracking-wide">
                     {stat.label}
                   </div>
-
-                  {/* Description that appears on hover */}
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-48 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
                     <div className="bg-white text-green-900 text-xs font-medium py-2 px-3 rounded-lg shadow-xl">
                       {stat.description}
-                      {/* Tooltip arrow */}
                       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full border-4 border-transparent border-t-white"></div>
                     </div>
                   </div>
