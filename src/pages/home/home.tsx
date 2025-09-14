@@ -632,12 +632,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                 >
                   <Facebook className="h-6 w-6" />
                 </a>
-                {/* <a
-                  href="https://wa.me/97517979996"
-                  className="text-green-300 hover:text-white transition-colors"
-                >
-                  <Whatsapp className="h-6 w-6" />
-                </a> */}
+
                 <a
                   href="https://www.instagram.com/thanggodotcom?igsh=cGlrM2lnbTRjc2Zo"
                   className="text-green-300 hover:text-white transition-colors"
@@ -668,11 +663,12 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                   </a>
                 </li>
                 <li
-                  onClick={setActiveTab("rivals")}
-                  className="text-green-200 hover:text-white transition-colors"
+                  onClick={() => setActiveTab("rivals")}
+                  className="text-green-200 hover:text-white transition-colors cursor-pointer"
                 >
                   Challenges
                 </li>
+
                 <li>
                   <a
                     href="/aboutus"
