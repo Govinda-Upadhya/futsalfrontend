@@ -545,8 +545,8 @@ const Groundcard = ({ ground, onUpdate }) => {
                 </label>
                 <input
                   type="text"
-                  id="address"
-                  name="address"
+                  id="location"
+                  name="location"
                   value={editFormData.location}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
