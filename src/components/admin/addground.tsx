@@ -405,6 +405,9 @@ const Addground = () => {
                 {...register("type", { required: "Type is required" })}
                 className="w-full border border-gray-300 rounded-lg p-3 pl-10 appearance-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
               >
+                <option value="" disabled selected>
+                  Choose a sport
+                </option>
                 <option value="Football">Football</option>
                 <option value="Cricket">Cricket</option>
                 <option value="Basketball">Basketball</option>
@@ -655,7 +658,13 @@ const Addground = () => {
           </label>
           <input
             type="text"
-            {...register("admin", { required: "Admin contact is required" })}
+            {...register("admin", {
+              required: "Contact is required",
+              pattern: {
+                value: /^(77|17)[0-9]{6}$/,
+                message: "Contact must be 8 digits and start with 77 or 17",
+              },
+            })}
             className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
             placeholder="Admin name or contact information"
           />

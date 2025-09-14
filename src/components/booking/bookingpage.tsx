@@ -473,7 +473,15 @@ const BookingPage: React.FC = () => {
                       placeholder="Full Name"
                       {...register("name", {
                         required: "Name is required",
-                        validate: validateName,
+                        validate: (value) => {
+                          const hasInvalidChars = /[^a-zA-Z\s]/.test(value);
+
+                          if (hasInvalidChars) {
+                            return "Name cannot contain numbers or special characters.";
+                          }
+
+                          return true;
+                        },
                       })}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                         errors.name
@@ -517,8 +525,12 @@ const BookingPage: React.FC = () => {
                       placeholder="Phone Number (8 digits)"
                       maxLength={8}
                       {...register("phone", {
-                        required: "Phone number is required",
-                        validate: validatePhone,
+                        required: "Contact is required",
+                        pattern: {
+                          value: /^(77|17)[0-9]{6}$/,
+                          message:
+                            "Contact must be 8 digits and start with 77 or 17",
+                        },
                       })}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                         errors.phone
