@@ -627,19 +627,19 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               </p>
               <div className="flex space-x-4">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/share/16H5v2eMph/"
                   className="text-green-300 hover:text-white transition-colors"
                 >
                   <Facebook className="h-6 w-6" />
                 </a>
-                <a
-                  href="#"
+                {/* <a
+                  href="https://wa.me/97517979996"
                   className="text-green-300 hover:text-white transition-colors"
                 >
-                  <Twitter className="h-6 w-6" />
-                </a>
+                  <Whatsapp className="h-6 w-6" />
+                </a> */}
                 <a
-                  href="#"
+                  href="https://www.instagram.com/thanggodotcom?igsh=cGlrM2lnbTRjc2Zo"
                   className="text-green-300 hover:text-white transition-colors"
                 >
                   <Instagram className="h-6 w-6" />
@@ -661,19 +661,17 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                 </li>
                 <li>
                   <a
-                    href="/booking"
+                    href="/"
                     className="text-green-200 hover:text-white transition-colors"
                   >
                     Grounds
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="/challenges"
-                    className="text-green-200 hover:text-white transition-colors"
-                  >
-                    Challenges
-                  </a>
+                <li
+                  onClick={setActiveTab("rivals")}
+                  className="text-green-200 hover:text-white transition-colors"
+                >
+                  Challenges
                 </li>
                 <li>
                   <a
@@ -747,15 +745,19 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               <div className="space-y-3">
                 <div className="flex items-center">
                   <MapPin className="h-5 w-5 text-green-400 mr-3" />
-                  <span className="text-green-200">Thimphu, Bhutan</span>
+                  <span className="text-green-200">
+                    Zilukha, Thimphu, Bhutan
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Phone className="h-5 w-5 text-green-400 mr-3" />
-                  <span className="text-green-200">+975 77 123 456</span>
+                  <span className="text-green-200">+975 17495130</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="h-5 w-5 text-green-400 mr-3" />
-                  <span className="text-green-200">info@thanggo.com</span>
+                  <span className="text-green-200">
+                    thanggodotcom@gmail.com
+                  </span>
                 </div>
               </div>
             </div>

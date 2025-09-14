@@ -48,7 +48,6 @@ const Booking: React.FC = () => {
   // Animation states
   const [animateRow, setAnimateRow] = useState<string | null>(null);
 
-  // ✅ Load dummy bookings
   useEffect(() => {
     async function fetchBookings() {
       try {

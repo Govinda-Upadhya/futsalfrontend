@@ -61,19 +61,19 @@ const ContactUs: React.FC = () => {
     {
       icon: Mail,
       title: "Email Us",
-      content: "support@thanggo.com",
+      content: "thanggodotcom@gmail.com",
       description: "Send us an email anytime",
     },
     {
       icon: Phone,
       title: "Call Us",
-      content: "+975-7712-3456",
+      content: "+975-17495130",
       description: "Mon-Fri from 8am to 6pm",
     },
     {
       icon: MapPin,
       title: "Visit Us",
-      content: "Thimphu, Bhutan",
+      content: "Zilukha, Thimphu, Bhutan",
       description: "Come say hello at our office",
     },
     {
@@ -294,6 +294,10 @@ const ContactUs: React.FC = () => {
                   • Become a partner ground
                 </li>
               </ul>
+              <h2 className="font-semibold text-gray-900 mb-4">
+                You can contact us if you have any query related to above
+                mentioned things.
+              </h2>
             </div>
           </div>
 
