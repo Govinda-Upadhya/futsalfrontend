@@ -319,7 +319,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
           </div>
 
           {/* Enhanced Interactive Stats Bar */}
-          <div className="absolute bottom-10 left-0 right-0 animate-fade-in-up animation-delay-700">
+          <div className=" animate-fade-in-up animation-delay-700">
             <div className="flex flex-col md:flex-row justify-center items-center md:items-start space-y-8 md:space-y-0 md:space-x-4 lg:space-x-12 xl:space-x-20 2xl:space-x-28">
               {[
                 {
