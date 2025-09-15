@@ -10,6 +10,8 @@ import {
   CheckCircle,
   XCircle,
   Activity,
+  ArrowLeft,
+  X,
 } from "lucide-react";
 
 const AdminConfig = () => {
@@ -67,12 +69,9 @@ const AdminConfig = () => {
 
   const onSubmit = async (data) => {
     try {
-      let newEmail = false;
       let profileUrl = user?.profile;
       let scannerUrl = user?.scanner;
-      if (data.email != user?.email) {
-        newEmail = true;
-      }
+
       if (data.profile?.[0]) {
         const formData = new FormData();
         formData.append("file", data.profile[0]);
@@ -102,8 +101,6 @@ const AdminConfig = () => {
         contact: data.contact,
         profile: profileUrl,
         scanner: scannerUrl,
-        email: data.email,
-        newEmail,
       };
 
       const saveRes = await axios.put(
@@ -113,19 +110,19 @@ const AdminConfig = () => {
       );
 
       if (saveRes.status === 200) {
-        if (data.email != user?.email) {
-          alert("Updated successfully,please signin again.");
-          navigate("/admin/signin");
-        } else {
-          alert("Admin updated successfully.");
-          navigate("/admin/dashboard");
-        }
+        alert("Updated successfully");
+        navigate("/admin/dashboard");
       }
     } catch (err) {
       console.error(err);
       alert("Error updating admin");
     }
   };
+
+  const handleCancel = () => {
+    navigate("/admin/dashboard");
+  };
+
   function handleScannerImage(e) {
     const file = e.target.files[0];
     if (file) {
@@ -178,20 +175,34 @@ const AdminConfig = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-4 sm:p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-green-200 relative overflow-hidden transform transition-all duration-300 hover:shadow-green-200/40 z-10"
+        className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-green-200 relative overflow-hidden transform transition-all duration-300 hover:shadow-green-200/40 z-10"
       >
         {/* Animated header stripe */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse"></div>
 
-        <div className="flex items-center justify-center mb-6">
+        {/* Back button */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="absolute top-4 left-4 p-1 rounded-full hover:bg-green-100 transition-colors duration-200"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-5 w-5 text-emerald-600" />
+        </button>
+
+        <div className="flex items-center justify-center mb-6 mt-2">
           <div className="relative">
             <Activity className="h-10 w-10 text-emerald-600 mr-2" />
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-ping"></div>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
-            Admin <span className="text-emerald-600">Config</span>
+            Admin <span className="text-emerald-600">Configuration</span>
           </h2>
         </div>
+
+        <p className="text-center text-gray-600 mb-6">
+          Update your profile information and settings
+        </p>
 
         {/* Name */}
         <div className="mb-5 relative">
@@ -214,12 +225,14 @@ const AdminConfig = () => {
           <label className="block text-gray-700 font-medium mb-1">Email</label>
           <input
             type="email"
+            readOnly
             {...register("email")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg 
-           bg-gray-100 
+           bg-gray-100 cursor-not-allowed 
            focus:ring-0 focus:border-gray-300 focus:outline-none transition-all duration-300"
             placeholder="Enter your email"
           />
+          <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
         </div>
 
         {/* Profile Upload with Preview */}
@@ -273,6 +286,7 @@ const AdminConfig = () => {
             </p>
           )}
         </div>
+
         {/* Scanner Upload with Preview */}
         <div className="mb-5">
           <label className="block text-gray-700 font-medium mb-1">
@@ -360,34 +374,51 @@ const AdminConfig = () => {
             <p className="text-gray-500 text-sm">{contactValue.length}/8</p>
           </div>
         </div>
-        <div
-          onClick={() => handlePasswordChange(user?.email)}
-          className="flex justify-center items-center w-full py-3 mb-2 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-        >
-          Click to change password
+
+        {/* Password Change Button */}
+        <div className="mb-6">
+          <div
+            onClick={() => handlePasswordChange(user?.email)}
+            className="flex justify-center items-center w-full py-3 text-emerald-700 font-semibold rounded-lg border border-emerald-300 transition-all duration-300 transform hover:scale-[1.02] bg-white hover:bg-green-50 cursor-pointer"
+          >
+            Change Password
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-2">
+            A password reset link will be sent to your email
+          </p>
         </div>
 
-        <button
-          type="submit"
-          className={`w-full py-3 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] ${
-            isSubmitting
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-          }`}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              Submitting...
-            </div>
-          ) : (
-            "Apply Changes"
-          )}
-        </button>
+        {/* Button Group */}
+        <div className="flex gap-4">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="flex-1 py-3 text-gray-700 font-semibold rounded-lg border border-gray-300 transition-all duration-300 transform hover:scale-[1.02] bg-white hover:bg-gray-50 flex items-center justify-center"
+          >
+            <X className="h-4 w-4 mr-2" /> Cancel
+          </button>
+          <button
+            type="submit"
+            className={`flex-1 py-3 text-white font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] ${
+              isSubmitting
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+            } flex items-center justify-center`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Saving...
+              </>
+            ) : (
+              "Apply Changes"
+            )}
+          </button>
+        </div>
 
         <p className="text-center text-sm text-gray-600 mt-4">
-          Click to signin{" "}
+          Need to sign in?{" "}
           <button
             type="button"
             onClick={() => navigate("/admin/signin")}
