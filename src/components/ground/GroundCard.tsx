@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import {
   MapPin,
   Users,
-  Star,
-  Clock,
-  Calendar,
-  Eye,
   ChevronLeft,
   ChevronRight,
   X,
   Heart,
   Share2,
+  Eye,
+  Map,
 } from "lucide-react";
 import { type Ground } from "../../types/ground.ts";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface GroundCardProps {
   ground: Ground;
@@ -61,8 +59,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
     return icons[type as keyof typeof icons] || "🏟️";
   };
 
-  const handleCardClick = () => {};
-
   const handleViewDetailsClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowGallery(true);
@@ -98,7 +94,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Implement share functionality
     if (navigator.share) {
       navigator.share({
         title: ground.name,
@@ -109,6 +104,15 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
       navigator.clipboard.writeText(window.location.href);
       alert("Link copied to clipboard!");
     }
+  };
+
+  // ✅ Google Maps handler
+  const handleViewMapClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      ground.location
+    )}`;
+    window.open(mapsUrl, "_blank");
   };
 
   const images =
@@ -127,9 +131,8 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
 
-          {/* Top left section - Sport type and rating */}
+          {/* Top left section - Sport type */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {/* Sport type badge */}
             <span
               className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm ${getSportColor(
                 ground.type
@@ -140,9 +143,16 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             </span>
           </div>
 
-          {/* Top right section - Favorite and share buttons */}
+          {/* Top right section - Favorite, Share, Map */}
           <div className="absolute top-3 right-3 flex flex-col gap-2">
-            {/* Favorite button */}
+            {/* ✅ Google Maps button */}
+            <button
+              onClick={handleViewMapClick}
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-green-50 transition-colors"
+            >
+              <Map className="h-4 w-4 text-gray-600" />
+            </button>
+
             <button
               onClick={toggleFavorite}
               className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-50 transition-colors"
@@ -154,7 +164,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
               />
             </button>
 
-            {/* Share button */}
             <button
               onClick={handleShare}
               className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-green-50 transition-colors"
@@ -169,10 +178,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
               {images.map((_, index) => (
                 <button
                   key={index}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentImageIndex(index);
-                  }}
+                  onClick={(e) => handleThumbnailClick(e, index)}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentImageIndex
                       ? "bg-white scale-125"
@@ -254,9 +260,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             </button>
           </div>
         </div>
-
-        {/* Hover effect */}
-        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-green-300 transition-all duration-300 pointer-events-none"></div>
       </div>
 
       {/* Gallery Modal */}
