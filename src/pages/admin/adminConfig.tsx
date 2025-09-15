@@ -67,9 +67,12 @@ const AdminConfig = () => {
 
   const onSubmit = async (data) => {
     try {
+      let newEmail = false;
       let profileUrl = user?.profile;
       let scannerUrl = user?.scanner;
-
+      if (data.email != user?.email) {
+        newEmail = true;
+      }
       if (data.profile?.[0]) {
         const formData = new FormData();
         formData.append("file", data.profile[0]);
@@ -100,6 +103,7 @@ const AdminConfig = () => {
         profile: profileUrl,
         scanner: scannerUrl,
         email: data.email,
+        newEmail,
       };
 
       const saveRes = await axios.put(
