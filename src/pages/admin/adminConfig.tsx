@@ -10,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   Activity,
+  ArrowLeft,
 } from "lucide-react";
 
 const AdminConfig = () => {
