@@ -38,6 +38,9 @@ const AdminConfig = () => {
       reader.readAsDataURL(file);
     }
   };
+  const handleCancel = () => {
+    navigate("/admin/dashboard");
+  };
   async function handlePasswordChange(email: string) {
     try {
       const res = await axios.post(`${base_url}/admin/changePassword`, {
