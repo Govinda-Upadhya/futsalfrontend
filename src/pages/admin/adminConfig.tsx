@@ -99,6 +99,7 @@ const AdminConfig = () => {
         contact: data.contact,
         profile: profileUrl,
         scanner: scannerUrl,
+        email: data.email,
       };
 
       const saveRes = await axios.put(
@@ -108,8 +109,8 @@ const AdminConfig = () => {
       );
 
       if (saveRes.status === 200) {
-        alert("Updated successfully");
-        navigate("/admin/dashboard");
+        alert("Updated successfully,please signin again.");
+        navigate("/admin/signin");
       }
     } catch (err) {
       console.error(err);
@@ -204,7 +205,6 @@ const AdminConfig = () => {
           <label className="block text-gray-700 font-medium mb-1">Email</label>
           <input
             type="email"
-            readOnly
             {...register("email")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg 
            bg-gray-100 cursor-not-allowed 
