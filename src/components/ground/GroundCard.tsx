@@ -11,36 +11,36 @@ import {
   X,
   Heart,
   Share2,
+  Map,
 } from "lucide-react";
 import { type Ground } from "../../types/ground.ts";
-import { Navigate, useNavigate } from "react-router-dom";
 
 interface GroundCardProps {
   ground: Ground;
+  onBook: (groundId: string) => void;
 }
 
-const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
-  const navigate = useNavigate();
+const GroundCard: React.FC<GroundCardProps> = ({ ground, onBook }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
   const getSportColor = (type: string) => {
     const colors = {
-      Football: "bg-green-100 text-green-800",
-      Basketball: "bg-orange-100 text-orange-800",
-      Tennis: "bg-blue-100 text-blue-800",
-      Badminton: "bg-red-100 text-red-800",
-      Cricket: "bg-amber-100 text-amber-800",
-      TableTennis: "bg-purple-100 text-purple-800",
-      Volleyball: "bg-teal-100 text-teal-800",
-      Rugby: "bg-pink-100 text-pink-800",
-      Hockey: "bg-slate-100 text-slate-800",
-      Baseball: "bg-amber-100 text-amber-800",
-      Golf: "bg-emerald-100 text-emerald-800",
-      Swimming: "bg-cyan-100 text-cyan-800",
+      Football: "bg-green-600 text-white",
+      Basketball: "bg-orange-500 text-white",
+      Tennis: "bg-blue-500 text-white",
+      Badminton: "bg-red-500 text-white",
+      Cricket: "bg-amber-600 text-white",
+      TableTennis: "bg-purple-500 text-white",
+      Volleyball: "bg-teal-500 text-white",
+      Rugby: "bg-pink-500 text-white",
+      Hockey: "bg-slate-600 text-white",
+      Baseball: "bg-amber-700 text-white",
+      Golf: "bg-emerald-600 text-white",
+      Swimming: "bg-cyan-500 text-white",
     };
-    return colors[type as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[type as keyof typeof colors] || "bg-green-700 text-white";
   };
 
   const getSportIcon = (type: string) => {
@@ -61,11 +61,22 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
     return icons[type as keyof typeof icons] || "🏟️";
   };
 
-  const handleCardClick = () => {};
+  const handleCardClick = () => {
+    onBook(ground._id);
+  };
 
   const handleViewDetailsClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowGallery(true);
+  };
+
+  const handleViewMapClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Open Google Maps with the ground's location
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      ground.location
+    )}`;
+    window.open(mapsUrl, "_blank");
   };
 
   const handleGalleryClose = (e: React.MouseEvent) => {
@@ -76,13 +87,15 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setCurrentImageIndex((prev) =>
+      prev === (ground.images?.length || 1) - 1 ? 0 : prev + 1
+    );
   };
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) =>
-      prev === 0 ? (ground.image?.length || 1) - 1 : prev - 1
+      prev === 0 ? (ground.images?.length || 1) - 1 : prev - 1
     );
   };
 
@@ -98,7 +111,6 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Implement share functionality
     if (navigator.share) {
       navigator.share({
         title: ground.name,
@@ -112,13 +124,16 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
   };
 
   const images =
-    ground.image && ground.image.length > 0
-      ? ground.image
+    ground.images && ground.images.length > 0
+      ? ground.images
       : ["/placeholder.jpg"];
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-green-100 cursor-pointer">
+      <div
+        onClick={handleCardClick}
+        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group border-2 border-green-100 cursor-pointer"
+      >
         {/* Image with gallery controls */}
         <div className="relative h-52 overflow-hidden">
           <img
@@ -131,25 +146,42 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {/* Sport type badge */}
             <span
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm ${getSportColor(
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md ${getSportColor(
                 ground.type
               )}`}
             >
               <span className="text-xs">{getSportIcon(ground.type)}</span>
               {ground.type}
             </span>
+
+            {/* Rating badge - positioned below sport type */}
+            <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-md w-fit border border-green-100">
+              <Star className="h-3 w-3 text-yellow-400 fill-current" />
+              <span className="text-xs font-bold text-gray-700">
+                {ground.rating || 4.8}
+              </span>
+            </div>
           </div>
 
-          {/* Top right section - Favorite and share buttons */}
+          {/* Top right section - Favorite, share, and map buttons */}
           <div className="absolute top-3 right-3 flex flex-col gap-2">
+            {/* Map button - now opens Google Maps directly */}
+            <button
+              onClick={handleViewMapClick}
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-green-50 transition-colors border border-green-100"
+              title="View location on Google Maps"
+            >
+              <Map className="h-4 w-4 text-green-600" />
+            </button>
+
             {/* Favorite button */}
             <button
               onClick={toggleFavorite}
-              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-red-50 transition-colors"
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-red-50 transition-colors border border-green-100"
             >
               <Heart
                 className={`h-4 w-4 ${
-                  isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                  isFavorite ? "fill-red-500 text-red-500" : "text-green-600"
                 }`}
               />
             </button>
@@ -157,9 +189,9 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             {/* Share button */}
             <button
               onClick={handleShare}
-              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-green-50 transition-colors"
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-green-50 transition-colors border border-green-100"
             >
-              <Share2 className="h-4 w-4 text-gray-600" />
+              <Share2 className="h-4 w-4 text-green-600" />
             </button>
           </div>
 
@@ -175,8 +207,8 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentImageIndex
-                      ? "bg-white scale-125"
-                      : "bg-white/50 hover:bg-white/80"
+                      ? "bg-green-500 scale-125"
+                      : "bg-white/70 hover:bg-white"
                   }`}
                 />
               ))}
@@ -184,7 +216,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
           )}
 
           {/* Price badge - bottom right */}
-          <div className="absolute bottom-3 right-3 bg-green-600 text-white rounded-lg px-2 py-1 shadow-sm">
+          <div className="absolute bottom-3 right-3 bg-green-600 text-white rounded-lg px-3 py-1.5 shadow-md border border-green-700">
             <span className="text-xs font-bold">
               Nu. {ground.pricePerHour}/hr
             </span>
@@ -195,11 +227,11 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
         <div className="p-4">
           {/* Title and location */}
           <div className="mb-3">
-            <h3 className="text-lg font-bold text-gray-900 mb-1.5 line-clamp-1 group-hover:text-green-600 transition-colors">
+            <h3 className="text-lg font-bold text-gray-900 mb-1.5 line-clamp-1 group-hover:text-green-700 transition-colors">
               {ground.name}
             </h3>
 
-            <div className="flex items-center text-gray-500 text-sm">
+            <div className="flex items-center text-gray-600 text-sm">
               <MapPin className="h-4 w-4 mr-1.5 text-green-500" />
               <span className="truncate">{ground.location}</span>
             </div>
@@ -216,47 +248,56 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             {(ground.features || []).slice(0, 3).map((feature, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-md font-normal border border-green-100"
+                className="px-2.5 py-1 bg-green-100 text-green-800 text-xs rounded-md font-medium border border-green-200"
               >
                 {feature}
               </span>
             ))}
             {ground.features && ground.features.length > 3 && (
-              <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-md font-normal border border-green-100">
+              <span className="px-2.5 py-1 bg-green-100 text-green-800 text-xs rounded-md font-medium border border-green-200">
                 +{ground.features.length - 3}
               </span>
             )}
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-3 p-2 bg-green-50 rounded-lg">
+          <div className="flex items-center justify-between text-xs text-gray-600 mb-3 p-2.5 bg-green-50 rounded-lg border border-green-100">
             <div className="flex items-center">
-              <Users className="h-4 w-4 mr-1 text-green-500" />
+              <Users className="h-4 w-4 mr-1 text-green-600" />
               <span>{ground.capacity} players</span>
+            </div>
+
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-1 text-green-600" />
+              <span>Flexible timing</span>
+            </div>
+
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-1 text-green-600" />
+              <span>Available</span>
             </div>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center justify-between pt-3 border-t border-green-100">
-            <button
-              onClick={handleViewDetailsClick}
-              className="text-sm text-green-600 hover:text-green-700 transition-colors flex items-center px-3 py-1.5 rounded-lg hover:bg-green-50 font-medium"
-            >
-              <Eye className="h-4 w-4 mr-1" />
-              View Gallery
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleViewDetailsClick}
+                className="text-sm text-green-700 hover:text-green-800 transition-colors flex items-center px-3 py-1.5 rounded-lg hover:bg-green-50 font-medium border border-green-200"
+              >
+                <Eye className="h-4 w-4 mr-1" />
+                View Gallery
+              </button>
+            </div>
 
-            <button
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow-md"
-              onClick={() => navigate(`/booking/${ground._id}`)}
-            >
+            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-md hover:shadow-lg border border-green-700">
               Book Now
             </button>
           </div>
         </div>
 
         {/* Hover effect */}
-        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-green-300 transition-all duration-300 pointer-events-none"></div>
+        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-green-400 transition-all duration-300 pointer-events-none"></div>
       </div>
 
       {/* Gallery Modal */}
@@ -272,7 +313,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             {/* Close button */}
             <button
               onClick={handleGalleryClose}
-              className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors"
+              className="absolute top-4 right-4 z-10 bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors shadow-md"
             >
               <X className="h-6 w-6" />
             </button>
@@ -290,13 +331,13 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
                 <>
                   <button
                     onClick={handlePrevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors shadow-md"
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </button>
                   <button
                     onClick={handleNextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors shadow-md"
                   >
                     <ChevronRight className="h-6 w-6" />
                   </button>
@@ -333,7 +374,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             </div>
 
             {/* Ground info in modal */}
-            <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-lg text-white">
+            <div className="mt-4 p-4 bg-green-800/90 backdrop-blur-sm rounded-lg text-white">
               <h3 className="text-xl font-bold">{ground.name}</h3>
               <p className="text-white/80">{ground.location}</p>
               <div className="flex items-center mt-2">
@@ -344,7 +385,10 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
                 >
                   {ground.type}
                 </span>
-
+                <div className="flex items-center ml-3">
+                  <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
+                  <span>{ground.rating || 4.8}</span>
+                </div>
                 <div className="ml-3">
                   <span className="font-bold">Nu. {ground.pricePerHour}</span>
                   <span className="text-sm">/hr</span>
