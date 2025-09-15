@@ -11,6 +11,7 @@ import {
   XCircle,
   Activity,
   ArrowLeft,
+  X,
 } from "lucide-react";
 
 const AdminConfig = () => {
