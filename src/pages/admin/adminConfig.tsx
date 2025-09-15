@@ -113,8 +113,13 @@ const AdminConfig = () => {
       );
 
       if (saveRes.status === 200) {
-        alert("Updated successfully,please signin again.");
-        navigate("/admin/signin");
+        if (data.email != user?.email) {
+          alert("Updated successfully,please signin again.");
+          navigate("/admin/signin");
+        } else {
+          alert("Admin updated successfully.");
+          navigate("/admin/dashboard");
+        }
       }
     } catch (err) {
       console.error(err);
@@ -211,7 +216,7 @@ const AdminConfig = () => {
             type="email"
             {...register("email")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg 
-           bg-gray-100 cursor-not-allowed 
+           bg-gray-100 
            focus:ring-0 focus:border-gray-300 focus:outline-none transition-all duration-300"
             placeholder="Enter your email"
           />
