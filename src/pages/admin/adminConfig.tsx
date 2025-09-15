@@ -10,8 +10,6 @@ import {
   CheckCircle,
   XCircle,
   Activity,
-  ArrowLeft,
-  X,
 } from "lucide-react";
 
 const AdminConfig = () => {
@@ -69,9 +67,12 @@ const AdminConfig = () => {
 
   const onSubmit = async (data) => {
     try {
+      let newEmail = false;
       let profileUrl = user?.profile;
       let scannerUrl = user?.scanner;
-
+      if (data.email != user?.email) {
+        newEmail = true;
+      }
       if (data.profile?.[0]) {
         const formData = new FormData();
         formData.append("file", data.profile[0]);
@@ -101,6 +102,8 @@ const AdminConfig = () => {
         contact: data.contact,
         profile: profileUrl,
         scanner: scannerUrl,
+        email: data.email,
+        newEmail,
       };
 
       const saveRes = await axios.put(
@@ -110,19 +113,19 @@ const AdminConfig = () => {
       );
 
       if (saveRes.status === 200) {
-        alert("Updated successfully");
-        navigate("/admin/dashboard");
+        if (data.email != user?.email) {
+          alert("Updated successfully,please signin again.");
+          navigate("/admin/signin");
+        } else {
+          alert("Admin updated successfully.");
+          navigate("/admin/dashboard");
+        }
       }
     } catch (err) {
       console.error(err);
       alert("Error updating admin");
     }
   };
-
-  const handleCancel = () => {
-    navigate("/admin/dashboard");
-  };
-
   function handleScannerImage(e) {
     const file = e.target.files[0];
     if (file) {
@@ -225,10 +228,9 @@ const AdminConfig = () => {
           <label className="block text-gray-700 font-medium mb-1">Email</label>
           <input
             type="email"
-            readOnly
             {...register("email")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg 
-           bg-gray-100 cursor-not-allowed 
+           bg-gray-100
            focus:ring-0 focus:border-gray-300 focus:outline-none transition-all duration-300"
             placeholder="Enter your email"
           />
