@@ -102,7 +102,7 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getDailyRevenueStats`,
           { withCredentials: true }
         );
-        console.log(revenueDaily.data);
+        console.log("revnue", revenueDaily.data);
       } catch (error) {}
     }
     fetchBookingData();
