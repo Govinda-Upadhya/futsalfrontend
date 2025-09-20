@@ -83,6 +83,11 @@ const Statistics: React.FC = () => {
           { withCredentials: true }
         );
         setDailyTimeStats(bookingTimeStats.data);
+        const weeklyStats = await axios.get(
+          `${base_url}/admin/bookings/getWeeklyStats`,
+          { withCredentials: true }
+        );
+        console.log("weeklystats", weeklyStats);
       } catch (error) {}
     }
     fetchBookingData();
