@@ -98,6 +98,7 @@ const Statistics: React.FC = () => {
           { withCredentials: true }
         );
         const num = weeklyStats.data.length;
+        console.log(weeklyStats.data);
         setWeeklyAvg(num / 7);
         setWeeklyStats(weeklyStats.data);
         const monthlyStat = await axios.get(
