@@ -63,7 +63,7 @@ const Statistics: React.FC = () => {
     datasets: [],
   });
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedGround, setSelectedGround] = useState<string>("all");
   const [grounds, setGrounds] = useState<string[]>([]);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
