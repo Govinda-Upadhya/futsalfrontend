@@ -78,7 +78,7 @@ const Statistics: React.FC = () => {
         setConfirmedBooking(bookingData.data.totalConfirmedBookings);
         setPendingBookings(bookingData.data.totalPendingBookings);
         const bookingTimeStats = await axios.get(
-          `${base_url}/bookings/getDailyTimeStats`,
+          `${base_url}/admin/bookings/getDailyTimeStats`,
           { withCredentials: true }
         );
         console.log(bookingTimeStats.data);
