@@ -47,6 +47,8 @@ const Statistics: React.FC = () => {
   const [monthlyStats, setMonthlyStats] = useState([]);
   const [weeklyStats, setWeeklyStats] = useState([]);
   const [dailyRevenue, setDailyRevenue] = useState([]);
+  const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+  const [weeklyRevenue, setWeeklyRevenue] = useState([]);
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
   const [totalRevenues, setTotalRevenue] = useState();
@@ -99,11 +101,25 @@ const Statistics: React.FC = () => {
           { withCredentials: true }
         );
         setMonthlyStats(monthlyStat.data);
+
         const revenueDaily = await axios.get(
           `${base_url}/admin/bookings/getDailyRevenueStats`,
           { withCredentials: true }
         );
         setDailyRevenue(revenueDaily.data);
+        const revenueWeekly = await axios.get(
+          `${base_url}/admin/bookings/getWeeklyRevenueStats`,
+          { withCredentials: true }
+        );
+        setWeeklyRevenue(revenueWeekly.data);
+        console.log("weekly", revenueWeekly.data);
+        // Monthly revenue
+        const revenueMonthly = await axios.get(
+          `${base_url}/admin/bookings/getMonthlyRevenueStats`,
+          { withCredentials: true }
+        );
+        setMonthlyRevenue(revenueMonthly.data);
+        console.log("monhtly", revenueMonthly.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -546,10 +562,12 @@ const Statistics: React.FC = () => {
               Revenue Overview
             </h3>
             <div className="h-80">
-              {/* <RightBookingChart
+              <RightBookingChart
                 timeRange={timeRange}
                 dailyRevenueStats={dailyRevenue}
-              /> */}
+                monthlyRevenueStats={monthlyRevenue}
+                weeklyRevenueStats={weeklyRevenue}
+              />
             </div>
           </div>
         </div>
