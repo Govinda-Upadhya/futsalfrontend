@@ -43,6 +43,7 @@ interface Booking {
 
 const Statistics: React.FC = () => {
   const [dailyTimeStats, setDailyTimeStats] = useState([]);
+  const [monthlyStats, setMonthlyStats] = useState([]);
   const [weeklyStats, setWeeklyStats] = useState([]);
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
@@ -91,6 +92,11 @@ const Statistics: React.FC = () => {
           { withCredentials: true }
         );
         setWeeklyStats(weeklyStats.data);
+        const monthlyStat = await axios.get(
+          `${base_url}/admin/bookings/getMonthlyStat`,
+          { withCredentials: true }
+        );
+        console.log(monthlyStat.data);
       } catch (error) {}
     }
     fetchBookingData();
