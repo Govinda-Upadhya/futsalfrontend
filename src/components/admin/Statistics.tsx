@@ -45,6 +45,7 @@ const Statistics: React.FC = () => {
   const [dailyTimeStats, setDailyTimeStats] = useState([]);
   const [monthlyStats, setMonthlyStats] = useState([]);
   const [weeklyStats, setWeeklyStats] = useState([]);
+  const [dailyRevenue, setDailyRevenue] = useState([]);
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
   const [totalRevenues, setTotalRevenue] = useState();
@@ -97,6 +98,11 @@ const Statistics: React.FC = () => {
           { withCredentials: true }
         );
         setMonthlyStats(monthlyStat.data);
+        const revenueDaily = await axios.get(
+          `${base_url}/admin/bookings/getDailyRevenueStats`,
+          { withCredentials: true }
+        );
+        console.log(revenueDaily.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -485,7 +491,7 @@ const Statistics: React.FC = () => {
               Time Range
             </label>
             <div className="flex flex-wrap gap-2">
-              {(["day", "week", "month", "year"] as const).map((range) => (
+              {(["day", "week", "month"] as const).map((range) => (
                 <button
                   key={range}
                   onClick={() => setTimeRange(range)}
@@ -501,7 +507,7 @@ const Statistics: React.FC = () => {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Filter by Ground
             </label>
@@ -516,7 +522,7 @@ const Statistics: React.FC = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
