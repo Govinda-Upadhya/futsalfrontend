@@ -67,9 +67,12 @@ const Statistics: React.FC = () => {
   useEffect(() => {
     async function fetchBookingData() {
       try {
-        const bookingData = await axios.get(`${base_url}/admin/overall`, {
-          withCredentials: true,
-        });
+        const bookingData = await axios.get(
+          `${base_url}/admin/bookings/overall`,
+          {
+            withCredentials: true,
+          }
+        );
         setTotalRevenue(bookingData.data.totalRevenue);
         setConfirmedBooking(bookingData.data.totalConfirmedBookings);
         setPendingBookings(bookingData.data.totalPendingBookings);
