@@ -546,10 +546,10 @@ const Statistics: React.FC = () => {
               Revenue Overview
             </h3>
             <div className="h-80">
-              <RightBookingChart
+              {/* <RightBookingChart
                 timeRange={timeRange}
                 dailyRevenueStats={dailyRevenue}
-              />
+              /> */}
             </div>
           </div>
         </div>
