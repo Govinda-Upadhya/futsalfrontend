@@ -135,10 +135,6 @@ const Statistics: React.FC = () => {
         );
         setMonthlyRevenue(revenueMonthly.data);
         console.log("monhtly", revenueMonthly.data);
-        const res = await axios.get(`${base_url}/admin/bookings`, {
-          withCredentials: true,
-        });
-        setBookings(res.data.bookings);
       } catch (error) {}
     }
     fetchBookingData();
@@ -563,7 +559,7 @@ const Statistics: React.FC = () => {
                     {booking.ground?.name || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    Nu.{booking.amount || 0}
+                    ₹{booking.amount || 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -577,6 +573,14 @@ const Statistics: React.FC = () => {
                     >
                       {booking.status}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      onClick={() => handleEditClick(booking)}
+                      className="text-emerald-600 hover:text-emerald-900 mr-3"
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               ))}
