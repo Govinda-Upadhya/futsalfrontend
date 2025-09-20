@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+import BookingChart from "./bookingChart";
 
 // Register ChartJS components
 ChartJS.register(
@@ -81,7 +82,7 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getDailyTimeStats`,
           { withCredentials: true }
         );
-        console.log(bookingTimeStats.data);
+        setDailyTimeStats(bookingTimeStats.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -510,7 +511,7 @@ const Statistics: React.FC = () => {
               Bookings Overview
             </h3>
             <div className="h-80">
-              <Line data={chartData} options={chartOptions} />
+              <BookingChart timeStats={dailyTimeStats} timeRange="Hour" />;
             </div>
           </div>
 
