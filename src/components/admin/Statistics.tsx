@@ -15,6 +15,7 @@ import { base_url } from "../../types/ground";
 import BookingChart from "./bookingChart";
 import WeeklyBookingChart from "./weeklychart";
 import LeftBookingChart from "./leftBooking";
+import RightBookingChart from "./rightBooking";
 
 // Register ChartJS components
 ChartJS.register(
@@ -102,7 +103,7 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getDailyRevenueStats`,
           { withCredentials: true }
         );
-        console.log("revnue", revenueDaily.data);
+        setDailyRevenue(revenueDaily.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -545,7 +546,10 @@ const Statistics: React.FC = () => {
               Revenue Overview
             </h3>
             <div className="h-80">
-              <Line data={revenueChartData} options={revenueChartOptions} />
+              <RightBookingChart
+                timeRange={timeRange}
+                dailyRevenueStats={dailyRevenue}
+              />
             </div>
           </div>
         </div>
