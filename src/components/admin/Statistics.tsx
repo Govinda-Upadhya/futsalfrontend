@@ -14,6 +14,7 @@ import axios from "axios";
 import { base_url } from "../../types/ground";
 import BookingChart from "./bookingChart";
 import WeeklyBookingChart from "./weeklychart";
+import LeftBookingChart from "./leftBooking";
 
 // Register ChartJS components
 ChartJS.register(
@@ -518,15 +519,11 @@ const Statistics: React.FC = () => {
               Bookings Overview
             </h3>
             <div className="h-80">
-              {timeRange === "day" ? (
-                <BookingChart
-                  key="day"
-                  timeStats={dailyTimeStats}
-                  timeRange="Hour"
-                />
-              ) : (
-                <WeeklyBookingChart key="weekly" weeklyStats={weeklyStats} />
-              )}
+              <LeftBookingChart
+                timeRange={timeRange}
+                dailyTimeStats={dailyTimeStats}
+                weeklyStats={weeklyStats}
+              />
             </div>
           </div>
 
