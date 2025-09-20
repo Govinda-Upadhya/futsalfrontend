@@ -52,6 +52,8 @@ const Statistics: React.FC = () => {
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
   const [totalRevenues, setTotalRevenue] = useState();
+  const [weeklyAvg, setWeeklyAvg] = useState(0);
+  const [monthlyAvg, setMonthlyAvg] = useState(0);
   const [timeRange, setTimeRange] = useState<"day" | "week" | "month" | "year">(
     "week"
   );
@@ -95,13 +97,16 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getWeeklyStats`,
           { withCredentials: true }
         );
+        const num = weeklyStats.data.length;
+        setWeeklyAvg(num / 7);
         setWeeklyStats(weeklyStats.data);
         const monthlyStat = await axios.get(
           `${base_url}/admin/bookings/getMonthlyStats`,
           { withCredentials: true }
         );
         setMonthlyStats(monthlyStat.data);
-
+        const mon = monthlyStat.data;
+        setMonthlyAvg(mon / 12);
         const revenueDaily = await axios.get(
           `${base_url}/admin/bookings/getDailyRevenueStats`,
           { withCredentials: true }
@@ -485,18 +490,36 @@ const Statistics: React.FC = () => {
           <h3 className="text-lg font-semibold text-emerald-800 mb-2">
             Total Revenue
           </h3>
-          <p className="text-3xl font-bold text-blue-700">₹{totalRevenues}</p>
+          <p className="text-3xl font-bold text-blue-700">Nu.{totalRevenues}</p>
           <p className="text-sm text-gray-500 mt-1">From confirmed bookings</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-purple-500">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">
-            Avg. Booking
+          <h3 className="text-lg font-semibold text-emerald-800 mb-4">
+            Avg. Bookings
           </h3>
-          <p className="text-3xl font-bold text-purple-700">
-            ₹{averageBookingValue.toFixed(0)}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">Per confirmed booking</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Weekly Avg */}
+            <div className="bg-purple-50 p-4 rounded-xl text-center shadow-sm">
+              <h4 className="text-sm font-medium text-purple-800 mb-1">
+                Weekly Avg
+              </h4>
+              <p className="text-2xl font-bold text-purple-700">
+                {weeklyAvg || 0}
+              </p>
+            </div>
+
+            {/* Monthly Avg */}
+            <div className="bg-purple-50 p-4 rounded-xl text-center shadow-sm">
+              <h4 className="text-sm font-medium text-purple-800 mb-1">
+                Monthly Avg
+              </h4>
+              <p className="text-2xl font-bold text-purple-700">
+                {monthlyAvg || 0}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
