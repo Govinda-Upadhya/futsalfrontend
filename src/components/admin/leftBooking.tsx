@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -21,8 +21,20 @@ ChartJS.register(
   Legend
 );
 
-const LeftBookingChart = ({ timeRange, dailyTimeStats, weeklyStats }) => {
-  // Days order for weekly chart
+interface LeftBookingChartProps {
+  timeRange: "day" | "week" | "month";
+  dailyTimeStats: Record<string, number>;
+  weeklyStats: Record<string, number>;
+  monthlyStats: Record<string, number>;
+}
+
+const LeftBookingChart: React.FC<LeftBookingChartProps> = ({
+  timeRange,
+  dailyTimeStats,
+  weeklyStats,
+  monthlyStats,
+}) => {
+  // Orders for week and month
   const daysOrder = [
     "Monday",
     "Tuesday",
@@ -33,13 +45,35 @@ const LeftBookingChart = ({ timeRange, dailyTimeStats, weeklyStats }) => {
     "Sunday",
   ];
 
-  // Prepare labels and data dynamically
-  const labels = timeRange === "day" ? Object.keys(dailyTimeStats) : daysOrder;
+  const monthsOrder = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  const dataValues =
-    timeRange === "day"
-      ? Object.values(dailyTimeStats)
-      : daysOrder.map((day) => weeklyStats[day] || 0);
+  // Select labels and values dynamically
+  let labels: string[] = [];
+  let dataValues: number[] = [];
+
+  if (timeRange === "day") {
+    labels = Object.keys(dailyTimeStats);
+    dataValues = Object.values(dailyTimeStats);
+  } else if (timeRange === "week") {
+    labels = daysOrder;
+    dataValues = daysOrder.map((day) => weeklyStats[day] || 0);
+  } else if (timeRange === "month") {
+    labels = monthsOrder;
+    dataValues = monthsOrder.map((month) => monthlyStats[month] || 0);
+  }
 
   const data = {
     labels,
@@ -63,7 +97,9 @@ const LeftBookingChart = ({ timeRange, dailyTimeStats, weeklyStats }) => {
         text:
           timeRange === "day"
             ? "Bookings Overview (Hourly)"
-            : "Bookings Overview (Weekly)",
+            : timeRange === "week"
+            ? "Bookings Overview (Weekly)"
+            : "Bookings Overview (Monthly)",
       },
     },
     scales: {
@@ -75,7 +111,12 @@ const LeftBookingChart = ({ timeRange, dailyTimeStats, weeklyStats }) => {
       x: {
         title: {
           display: true,
-          text: timeRange === "day" ? "Time Slots" : "Day of Week",
+          text:
+            timeRange === "day"
+              ? "Time Slots"
+              : timeRange === "week"
+              ? "Day of Week"
+              : "Month",
         },
       },
     },

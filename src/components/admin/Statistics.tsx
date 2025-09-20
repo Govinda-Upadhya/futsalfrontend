@@ -96,7 +96,7 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getMonthlyStats`,
           { withCredentials: true }
         );
-        console.log(monthlyStat.data);
+        setMonthlyStats(monthlyStat.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -526,9 +526,10 @@ const Statistics: React.FC = () => {
             </h3>
             <div className="h-80">
               <LeftBookingChart
-                timeRange={timeRange}
+                timeRange={timeRange} // "day" | "week" | "month"
                 dailyTimeStats={dailyTimeStats}
                 weeklyStats={weeklyStats}
+                monthlyStats={monthlyStats}
               />
             </div>
           </div>
