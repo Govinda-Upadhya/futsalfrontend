@@ -39,9 +39,17 @@ interface Booking {
 }
 
 const Statistics: React.FC = () => {
-  const [timeRange, setTimeRange] = useState<"day" | "week" | "month" | "year">("week");
+  const [confirmedBooking, setConfirmedBooking] = useState();
+  const [pendingBooking, setPendingBookings] = useState();
+  const [totalRevenues, setTotalRevenue] = useState();
+  const [timeRange, setTimeRange] = useState<"day" | "week" | "month" | "year">(
+    "week"
+  );
   const [chartData, setChartData] = useState<any>({ labels: [], datasets: [] });
-  const [revenueChartData, setRevenueChartData] = useState<any>({ labels: [], datasets: [] });
+  const [revenueChartData, setRevenueChartData] = useState<any>({
+    labels: [],
+    datasets: [],
+  });
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedGround, setSelectedGround] = useState<string>("all");
@@ -52,11 +60,22 @@ const Statistics: React.FC = () => {
     status: "CONFIRMED" as "CONFIRMED" | "PENDING" | "REJECTED",
     contact: "",
     email: "",
-    name: ""
+    name: "",
   });
 
   // Fetch all bookings
   useEffect(() => {
+    async function fetchBookingData() {
+      try {
+        const bookingData = await axios.get(`${base_url}/admin/overall`, {
+          withCredentials: true,
+        });
+        setTotalRevenue(bookingData.data.totalRevenue);
+        setConfirmedBooking(bookingData.data.totalConfirmedBookings);
+        setPendingBookings(bookingData.data.totalPendingBookings);
+      } catch (error) {}
+    }
+    fetchBookingData();
     async function fetchBookings() {
       try {
         const res = await axios.get(`${base_url}/booking/getAllBookings`, {
@@ -64,13 +83,15 @@ const Statistics: React.FC = () => {
         });
         const bookingsData = res.data.bookings || [];
         setBookings(bookingsData);
-        
+
         // Extract unique ground names
-        const groundNames = [...new Set(bookingsData
-          .filter(b => b.ground?.name)
-          .map(b => b.ground.name))] as string[];
+        const groundNames = [
+          ...new Set(
+            bookingsData.filter((b) => b.ground?.name).map((b) => b.ground.name)
+          ),
+        ] as string[];
         setGrounds(["all", ...groundNames]);
-        
+
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
@@ -84,7 +105,7 @@ const Statistics: React.FC = () => {
             ground: { name: "City Arena", type: "Football" },
             contact: "9876543210",
             email: "john@example.com",
-            name: "John Doe"
+            name: "John Doe",
           },
           {
             _id: "B002",
@@ -94,7 +115,7 @@ const Statistics: React.FC = () => {
             ground: { name: "Dragon Court", type: "Basketball" },
             contact: "9123456789",
             email: "alice@example.com",
-            name: "Alice Smith"
+            name: "Alice Smith",
           },
           {
             _id: "B003",
@@ -104,7 +125,7 @@ const Statistics: React.FC = () => {
             ground: { name: "Royal Futsal", type: "Futsal" },
             contact: "9988776655",
             email: "bob@example.com",
-            name: "Bob Lee"
+            name: "Bob Lee",
           },
           {
             _id: "B004",
@@ -114,7 +135,7 @@ const Statistics: React.FC = () => {
             ground: { name: "City Arena", type: "Football" },
             contact: "9765432109",
             email: "sarah@example.com",
-            name: "Sarah Johnson"
+            name: "Sarah Johnson",
           },
           {
             _id: "B005",
@@ -124,17 +145,21 @@ const Statistics: React.FC = () => {
             ground: { name: "Dragon Court", type: "Basketball" },
             contact: "9654321098",
             email: "mike@example.com",
-            name: "Mike Wilson"
+            name: "Mike Wilson",
           },
         ];
         setBookings(dummyBookings);
-        
+
         // Extract unique ground names from dummy data
-        const groundNames = [...new Set(dummyBookings
-          .filter(b => b.ground?.name)
-          .map(b => b.ground.name))] as string[];
+        const groundNames = [
+          ...new Set(
+            dummyBookings
+              .filter((b) => b.ground?.name)
+              .map((b) => b.ground.name)
+          ),
+        ] as string[];
         setGrounds(["all", ...groundNames]);
-        
+
         setLoading(false);
       }
     }
@@ -147,19 +172,21 @@ const Statistics: React.FC = () => {
 
     const processData = () => {
       // Filter bookings based on selected ground and confirmed status
-      let filteredBookings = bookings.filter(b => b.status === "CONFIRMED");
-      
+      let filteredBookings = bookings.filter((b) => b.status === "CONFIRMED");
+
       if (selectedGround !== "all") {
-        filteredBookings = filteredBookings.filter(b => b.ground?.name === selectedGround);
+        filteredBookings = filteredBookings.filter(
+          (b) => b.ground?.name === selectedGround
+        );
       }
-      
+
       // Group bookings by time range for bookings chart
       const bookingsGroupedData: { [key: string]: number } = {};
       const revenueGroupedData: { [key: string]: number } = {};
       const labels: string[] = [];
-      
+
       const now = new Date();
-      
+
       switch (timeRange) {
         case "day":
           for (let i = 23; i >= 0; i--) {
@@ -170,7 +197,7 @@ const Statistics: React.FC = () => {
             revenueGroupedData[key] = 0;
           }
           break;
-          
+
         case "week":
           for (let i = 6; i >= 0; i--) {
             const date = new Date(now.getTime() - i * 86400000);
@@ -180,9 +207,13 @@ const Statistics: React.FC = () => {
             revenueGroupedData[key] = 0;
           }
           break;
-          
+
         case "month":
-          const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+          const daysInMonth = new Date(
+            now.getFullYear(),
+            now.getMonth() + 1,
+            0
+          ).getDate();
           for (let i = 1; i <= daysInMonth; i++) {
             const key = `${i}`;
             labels.push(key);
@@ -190,7 +221,7 @@ const Statistics: React.FC = () => {
             revenueGroupedData[key] = 0;
           }
           break;
-          
+
         case "year":
           for (let i = 0; i < 12; i++) {
             const date = new Date(now.getFullYear(), i, 1);
@@ -201,12 +232,12 @@ const Statistics: React.FC = () => {
           }
           break;
       }
-      
+
       // Count bookings and revenue for each time period
-      filteredBookings.forEach(booking => {
+      filteredBookings.forEach((booking) => {
         const bookingDate = new Date(booking.date);
         let key: string;
-        
+
         switch (timeRange) {
           case "day":
             key = bookingDate.toLocaleTimeString([], { hour: "2-digit" });
@@ -223,17 +254,19 @@ const Statistics: React.FC = () => {
           default:
             key = "";
         }
-        
+
         if (bookingsGroupedData[key] !== undefined) {
           bookingsGroupedData[key] += 1;
           revenueGroupedData[key] += booking.amount || 0;
         }
       });
-      
+
       // Prepare data for charts
-      const bookingsData = labels.map(label => bookingsGroupedData[label] || 0);
-      const revenueData = labels.map(label => revenueGroupedData[label] || 0);
-      
+      const bookingsData = labels.map(
+        (label) => bookingsGroupedData[label] || 0
+      );
+      const revenueData = labels.map((label) => revenueGroupedData[label] || 0);
+
       setChartData({
         labels,
         datasets: [
@@ -247,7 +280,7 @@ const Statistics: React.FC = () => {
           },
         ],
       });
-      
+
       setRevenueChartData({
         labels,
         datasets: [
@@ -262,7 +295,7 @@ const Statistics: React.FC = () => {
         ],
       });
     };
-    
+
     processData();
   }, [bookings, timeRange, selectedGround]);
 
@@ -274,16 +307,18 @@ const Statistics: React.FC = () => {
       status: booking.status,
       contact: booking.contact || "",
       email: booking.email || "",
-      name: booking.name || ""
+      name: booking.name || "",
     });
   };
 
   // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setEditFormData({
       ...editFormData,
-      [name]: name === "amount" ? parseInt(value) || 0 : value
+      [name]: name === "amount" ? parseInt(value) || 0 : value,
     });
   };
 
@@ -292,16 +327,16 @@ const Statistics: React.FC = () => {
     e.preventDefault();
     if (editingBooking) {
       // Update the booking in the state
-      const updatedBookings = bookings.map(booking => 
-        booking._id === editingBooking._id 
+      const updatedBookings = bookings.map((booking) =>
+        booking._id === editingBooking._id
           ? { ...booking, ...editFormData }
           : booking
       );
       setBookings(updatedBookings);
-      
+
       // Here you would typically make an API call to update the booking in the database
       console.log("Updating booking:", editingBooking._id, editFormData);
-      
+
       // Close the edit modal
       setEditingBooking(null);
     }
@@ -340,10 +375,10 @@ const Statistics: React.FC = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: function(value: any) {
-            return '₹' + value;
-          }
-        }
+          callback: function (value: any) {
+            return "₹" + value;
+          },
+        },
       },
     },
   };
@@ -359,12 +394,14 @@ const Statistics: React.FC = () => {
     );
   }
 
-  const confirmedBookings = bookings.filter(b => b.status === "CONFIRMED");
-  const pendingBookings = bookings.filter(b => b.status === "PENDING");
-  const totalRevenue = confirmedBookings.reduce((sum, booking) => sum + (booking.amount || 0), 0);
-  const averageBookingValue = confirmedBookings.length > 0 
-    ? totalRevenue / confirmedBookings.length 
-    : 0;
+  const confirmedBookings = bookings.filter((b) => b.status === "CONFIRMED");
+  const pendingBookings = bookings.filter((b) => b.status === "PENDING");
+  const totalRevenue = confirmedBookings.reduce(
+    (sum, booking) => sum + (booking.amount || 0),
+    0
+  );
+  const averageBookingValue =
+    confirmedBookings.length > 0 ? totalRevenue / confirmedBookings.length : 0;
 
   return (
     <div className="max-w-7xl w-full mx-auto p-2 sm:p-6">
@@ -372,37 +409,43 @@ const Statistics: React.FC = () => {
         <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-emerald-800 tracking-wide">
           Booking Statistics
         </h1>
-        <p className="text-emerald-600">Analyze booking trends and revenue over time</p>
+        <p className="text-emerald-600">
+          Analyze booking trends and revenue over time
+        </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-500">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">Total Bookings</h3>
+          <h3 className="text-lg font-semibold text-emerald-800 mb-2">
+            Total Bookings
+          </h3>
           <p className="text-3xl font-bold text-emerald-700">
-            {confirmedBookings.length}
+            {confirmedBooking}
           </p>
           <p className="text-sm text-gray-500 mt-1">Confirmed bookings</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-yellow-500">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">Pending Bookings</h3>
-          <p className="text-3xl font-bold text-yellow-600">
-            {pendingBookings.length}
-          </p>
+          <h3 className="text-lg font-semibold text-emerald-800 mb-2">
+            Pending Bookings
+          </h3>
+          <p className="text-3xl font-bold text-yellow-600">{pendingBooking}</p>
           <p className="text-sm text-gray-500 mt-1">Awaiting confirmation</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-500">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">Total Revenue</h3>
-          <p className="text-3xl font-bold text-blue-700">
-            ₹{totalRevenue.toLocaleString()}
-          </p>
+          <h3 className="text-lg font-semibold text-emerald-800 mb-2">
+            Total Revenue
+          </h3>
+          <p className="text-3xl font-bold text-blue-700">₹{totalRevenues}</p>
           <p className="text-sm text-gray-500 mt-1">From confirmed bookings</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-purple-500">
-          <h3 className="text-lg font-semibold text-emerald-800 mb-2">Avg. Booking</h3>
+          <h3 className="text-lg font-semibold text-emerald-800 mb-2">
+            Avg. Booking
+          </h3>
           <p className="text-3xl font-bold text-purple-700">
             ₹{averageBookingValue.toFixed(0)}
           </p>
@@ -414,7 +457,9 @@ const Statistics: React.FC = () => {
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex flex-wrap gap-4 mb-6 items-center">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Time Range
+            </label>
             <div className="flex flex-wrap gap-2">
               {(["day", "week", "month", "year"] as const).map((range) => (
                 <button
@@ -433,13 +478,15 @@ const Statistics: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Ground</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Filter by Ground
+            </label>
             <select
               value={selectedGround}
               onChange={(e) => setSelectedGround(e.target.value)}
               className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
             >
-              {grounds.map(ground => (
+              {grounds.map((ground) => (
                 <option key={ground} value={ground}>
                   {ground === "all" ? "All Grounds" : ground}
                 </option>
@@ -450,14 +497,18 @@ const Statistics: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-xl">
-            <h3 className="text-lg font-semibold mb-4 text-center">Bookings Overview</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Bookings Overview
+            </h3>
             <div className="h-80">
               <Line data={chartData} options={chartOptions} />
             </div>
           </div>
 
           <div className="bg-gray-50 p-4 rounded-xl">
-            <h3 className="text-lg font-semibold mb-4 text-center">Revenue Overview</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              Revenue Overview
+            </h3>
             <div className="h-80">
               <Line data={revenueChartData} options={revenueChartOptions} />
             </div>
@@ -472,12 +523,24 @@ const Statistics: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ground</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Customer
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ground
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -497,13 +560,15 @@ const Statistics: React.FC = () => {
                     ₹{booking.amount || 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      booking.status === "CONFIRMED" 
-                        ? "bg-green-100 text-green-800" 
-                        : booking.status === "PENDING"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        booking.status === "CONFIRMED"
+                          ? "bg-green-100 text-green-800"
+                          : booking.status === "PENDING"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
                       {booking.status}
                     </span>
                   </td>
@@ -529,7 +594,9 @@ const Statistics: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Edit Booking</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Amount (₹)
+                </label>
                 <input
                   type="number"
                   name="amount"
@@ -538,9 +605,11 @@ const Statistics: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              
+
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
                 <select
                   name="status"
                   value={editFormData.status}
@@ -552,9 +621,11 @@ const Statistics: React.FC = () => {
                   <option value="REJECTED">REJECTED</option>
                 </select>
               </div>
-              
+
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Contact
+                </label>
                 <input
                   type="text"
                   name="contact"
@@ -563,9 +634,11 @@ const Statistics: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              
+
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -574,9 +647,11 @@ const Statistics: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              
+
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -585,7 +660,7 @@ const Statistics: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              
+
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
