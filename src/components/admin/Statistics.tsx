@@ -93,7 +93,7 @@ const Statistics: React.FC = () => {
         );
         setWeeklyStats(weeklyStats.data);
         const monthlyStat = await axios.get(
-          `${base_url}/admin/bookings/getMonthlyStat`,
+          `${base_url}/admin/bookings/getMonthlyStats`,
           { withCredentials: true }
         );
         console.log(monthlyStat.data);
