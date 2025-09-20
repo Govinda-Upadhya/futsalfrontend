@@ -51,7 +51,7 @@ const Statistics: React.FC = () => {
   );
   const [chartData, setChartData] = useState<any>({ labels: [], datasets: [] });
   const [revenueChartData, setRevenueChartData] = useState<any>({
-    labels: [],W weeklyStats={wee
+    labels: [],
     datasets: [],
   });
   const [bookings, setBookings] = useState<Booking[]>([]);
