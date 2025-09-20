@@ -419,7 +419,7 @@ const BookingPending = () => {
 
             {/* Help Text */}
             <div className="text-center text-sm text-gray-500">
-              Need help? Contact support@thanggo.com or call +975-77123456
+              Need help? Contact thanggodotcom@gmail.com or call +975-17495130
             </div>
           </div>
         </div>
