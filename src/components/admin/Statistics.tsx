@@ -135,97 +135,13 @@ const Statistics: React.FC = () => {
         );
         setMonthlyRevenue(revenueMonthly.data);
         console.log("monhtly", revenueMonthly.data);
+        const res = await axios.get(`${base_url}/admin/bookings`, {
+          withCredentials: true,
+        });
+        setBookings(res.data.bookings);
       } catch (error) {}
     }
     fetchBookingData();
-    async function fetchBookings() {
-      try {
-        const res = await axios.get(`${base_url}/booking/getAllBookings`, {
-          withCredentials: true,
-        });
-        const bookingsData = res.data.bookings || [];
-        setBookings(bookingsData);
-
-        // Extract unique ground names
-        const groundNames = [
-          ...new Set(
-            bookingsData.filter((b) => b.ground?.name).map((b) => b.ground.name)
-          ),
-        ] as string[];
-        setGrounds(["all", ...groundNames]);
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch bookings:", error);
-        // Use dummy data for demonstration
-        const dummyBookings: Booking[] = [
-          {
-            _id: "B001",
-            date: "2025-09-07T10:00:00",
-            amount: 500,
-            status: "CONFIRMED",
-            ground: { name: "City Arena", type: "Football" },
-            contact: "9876543210",
-            email: "john@example.com",
-            name: "John Doe",
-          },
-          {
-            _id: "B002",
-            date: "2025-09-08T15:00:00",
-            amount: 700,
-            status: "CONFIRMED",
-            ground: { name: "Dragon Court", type: "Basketball" },
-            contact: "9123456789",
-            email: "alice@example.com",
-            name: "Alice Smith",
-          },
-          {
-            _id: "B003",
-            date: "2025-09-09T18:00:00",
-            amount: 400,
-            status: "PENDING",
-            ground: { name: "Royal Futsal", type: "Futsal" },
-            contact: "9988776655",
-            email: "bob@example.com",
-            name: "Bob Lee",
-          },
-          {
-            _id: "B004",
-            date: "2025-09-06T14:00:00",
-            amount: 600,
-            status: "CONFIRMED",
-            ground: { name: "City Arena", type: "Football" },
-            contact: "9765432109",
-            email: "sarah@example.com",
-            name: "Sarah Johnson",
-          },
-          {
-            _id: "B005",
-            date: "2025-09-05T16:00:00",
-            amount: 800,
-            status: "CONFIRMED",
-            ground: { name: "Dragon Court", type: "Basketball" },
-            contact: "9654321098",
-            email: "mike@example.com",
-            name: "Mike Wilson",
-          },
-        ];
-        setBookings(dummyBookings);
-
-        // Extract unique ground names from dummy data
-        const groundNames = [
-          ...new Set(
-            dummyBookings
-              .filter((b) => b.ground?.name)
-              .map((b) => b.ground.name)
-          ),
-        ] as string[];
-        setGrounds(["all", ...groundNames]);
-
-        setLoading(false);
-      }
-    }
-    fetchBookings();
   }, []);
 
   // Process booking data for the charts
@@ -647,7 +563,7 @@ const Statistics: React.FC = () => {
                     {booking.ground?.name || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ₹{booking.amount || 0}
+                    Nu.{booking.amount || 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -661,14 +577,6 @@ const Statistics: React.FC = () => {
                     >
                       {booking.status}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleEditClick(booking)}
-                      className="text-emerald-600 hover:text-emerald-900 mr-3"
-                    >
-                      Edit
-                    </button>
                   </td>
                 </tr>
               ))}
@@ -685,7 +593,7 @@ const Statistics: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Amount (₹)
+                  Amount (Nu)
                 </label>
                 <input
                   type="number"
