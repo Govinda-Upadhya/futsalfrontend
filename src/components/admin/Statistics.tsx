@@ -39,6 +39,7 @@ interface Booking {
 }
 
 const Statistics: React.FC = () => {
+  const [dailyTimeStats, setDailyTimeStats] = useState([]);
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
   const [totalRevenues, setTotalRevenue] = useState();
@@ -76,6 +77,11 @@ const Statistics: React.FC = () => {
         setTotalRevenue(bookingData.data.totalRevenue);
         setConfirmedBooking(bookingData.data.totalConfirmedBookings);
         setPendingBookings(bookingData.data.totalPendingBookings);
+        const bookingTimeStats = await axios.get(
+          `${base_url}/bookings/getDailyTimeStats`,
+          { withCredentials: true }
+        );
+        console.log(bookingTimeStats.data);
       } catch (error) {}
     }
     fetchBookingData();
