@@ -112,7 +112,7 @@ const Statistics: React.FC = () => {
         setMonthlyStats(monthlyStat.data);
         const value = Object.values(monthlyStat.data);
         const totals = values.reduce((a, b) => a + b, 0);
-        const averages = totals / values.length;
+        const averages = totals / value.length;
 
         console.log("Weekmonhtlyly Average:", averages);
 
