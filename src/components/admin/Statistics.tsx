@@ -104,7 +104,7 @@ const Statistics: React.FC = () => {
 
         console.log("Weekly Average:", average);
 
-        setWeeklyAvg(average);
+        setWeeklyAvg(average.toFixed(2));
         const monthlyStat = await axios.get(
           `${base_url}/admin/bookings/getMonthlyStats`,
           { withCredentials: true }
@@ -112,11 +112,11 @@ const Statistics: React.FC = () => {
         setMonthlyStats(monthlyStat.data);
         const value = Object.values(monthlyStat.data);
         const totals = values.reduce((a, b) => a + b, 0);
-        const averages = total / values.length;
+        const averages = totals / values.length;
 
         console.log("Weekmonhtlyly Average:", averages);
 
-        setMonthlyAvg(averages);
+        setMonthlyAvg(averages.toFixed(2));
         const revenueDaily = await axios.get(
           `${base_url}/admin/bookings/getDailyRevenueStats`,
           { withCredentials: true }
