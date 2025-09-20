@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { base_url } from "../../types/ground";
 import BookingChart from "./bookingChart";
+import WeeklyBookingChart from "./weeklychart";
 
 // Register ChartJS components
 ChartJS.register(
@@ -41,6 +42,7 @@ interface Booking {
 
 const Statistics: React.FC = () => {
   const [dailyTimeStats, setDailyTimeStats] = useState([]);
+  const [weeklyStats, setWeeklyStats] = useState([]);
   const [confirmedBooking, setConfirmedBooking] = useState();
   const [pendingBooking, setPendingBookings] = useState();
   const [totalRevenues, setTotalRevenue] = useState();
@@ -49,7 +51,7 @@ const Statistics: React.FC = () => {
   );
   const [chartData, setChartData] = useState<any>({ labels: [], datasets: [] });
   const [revenueChartData, setRevenueChartData] = useState<any>({
-    labels: [],
+    labels: [],W weeklyStats={wee
     datasets: [],
   });
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -87,7 +89,7 @@ const Statistics: React.FC = () => {
           `${base_url}/admin/bookings/getWeeklyStats`,
           { withCredentials: true }
         );
-        console.log("weeklystats", weeklyStats);
+        setWeeklyStats(weeklyStats.data);
       } catch (error) {}
     }
     fetchBookingData();
@@ -516,7 +518,11 @@ const Statistics: React.FC = () => {
               Bookings Overview
             </h3>
             <div className="h-80">
-              <BookingChart timeStats={dailyTimeStats} timeRange="Hour" />;
+              {timeRange === "day" ? (
+                <BookingChart timeStats={dailyTimeStats} timeRange="Hour" />
+              ) : (
+                <WeeklyBookingChart weeklyStats={weeklyStats} />
+              )}
             </div>
           </div>
 
