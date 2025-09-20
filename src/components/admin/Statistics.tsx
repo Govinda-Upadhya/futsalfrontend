@@ -519,9 +519,13 @@ const Statistics: React.FC = () => {
             </h3>
             <div className="h-80">
               {timeRange === "day" ? (
-                <BookingChart timeStats={dailyTimeStats} timeRange="Hour" />
+                <BookingChart
+                  key="day"
+                  timeStats={dailyTimeStats}
+                  timeRange="Hour"
+                />
               ) : (
-                <WeeklyBookingChart weeklyStats={weeklyStats} />
+                <WeeklyBookingChart key="weekly" weeklyStats={weeklyStats} />
               )}
             </div>
           </div>
