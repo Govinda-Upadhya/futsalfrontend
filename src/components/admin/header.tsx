@@ -180,6 +180,18 @@ export default function Header({ active, setActive }: HeaderProps) {
             </li>
             <li className="w-full sm:w-auto">
               <button
+                onClick={() => handleSetActive("statistics")}
+                className={`w-full sm:w-auto text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 ${
+                  active === "statistics"
+                    ? "bg-white text-emerald-700 font-bold shadow-lg"
+                    : "bg-emerald-700/50 hover:bg-emerald-700 text-white"
+                }`}
+              >
+                Statistics
+              </button>
+            </li>
+            <li className="w-full sm:w-auto">
+              <button
                 onClick={() => handleSetActive("addGround")}
                 className={`w-full sm:w-auto text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 ${
                   active === "addGround"

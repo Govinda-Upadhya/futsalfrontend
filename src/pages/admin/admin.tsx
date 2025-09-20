@@ -40,8 +40,8 @@ const Admin = () => {
         return <Booking />;
       case "addGround":
         return <Addground />;
-      // case "statistics":
-      //   return <Statistics />;
+      case "statistics":
+        return <Statistics />;
       default:
         return <Futsalcomponent grounds={grounds} />;
     }
