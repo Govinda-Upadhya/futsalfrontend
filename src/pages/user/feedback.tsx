@@ -1,20 +1,29 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import { base_url } from "../../types/ground";
 const FeedbackPage: React.FC = () => {
   const [rating, setRating] = useState<number>(0);
   const [hover, setHover] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
       toast.error("Please select a star rating before submitting.");
       return;
     }
-    console.log("Feedback submitted:", { rating, comment });
-    toast.success("thank you for your feedback");
-    setRating(0);
-    setComment("");
+    let res = await axios.post(`${base_url}/users/feedback`, {
+      rating,
+      comment,
+    });
+    if (res.status == 200) {
+      toast.success("thank you for your feedback.");
+      setRating(0);
+      setComment("");
+    } else {
+      toast.error("Feedback couldn't be submitted.");
+    }
   };
 
   return (
