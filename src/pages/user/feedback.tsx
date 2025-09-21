@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Bounce, ToastContainer } from "react-toastify";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 const FeedbackPage: React.FC = () => {
   const [rating, setRating] = useState<number>(0);
   const [hover, setHover] = useState<number>(0);
@@ -8,11 +8,11 @@ const FeedbackPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
-      alert("Please select a star rating before submitting.");
+      toast.error("Please select a star rating before submitting.");
       return;
     }
     console.log("Feedback submitted:", { rating, comment });
-    alert("Thank you for your feedback!");
+    toast.success("thank you for your feedback");
     setRating(0);
     setComment("");
   };
