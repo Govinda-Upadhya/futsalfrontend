@@ -305,8 +305,18 @@ const BookingPage: React.FC = () => {
     console.log("booked tijme", bookedTime[0]);
   }
   useEffect(() => {
+    // run immediately on mount / when selectedDate changes
     getTime();
+
+    // then run every 5 seconds
+    const interval = setInterval(() => {
+      getTime();
+    }, 5000);
+
+    // cleanup interval when component unmounts or selectedDate changes
+    return () => clearInterval(interval);
   }, [selectedDate]);
+
   // Phone number validation
   const validatePhone = (value: string) => {
     const phoneRegex = /^\d{8}$/;
