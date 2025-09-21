@@ -190,7 +190,7 @@ const Navbar: React.FC = () => {
             >
               Contact Us
             </NavLink>
-            <NavLink to="/feedback" className={getNavLinkClass}>
+            <NavLink to="/feedback" className={getMobileNavLinkClass}>
               FeedBack
               {/* Hover underline effect */}
               <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-emerald-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
