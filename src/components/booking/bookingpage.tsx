@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, data } from "react-router-dom";
 import {
   ArrowLeft,
   MapPin,
@@ -288,6 +288,7 @@ const BookingPage: React.FC = () => {
 
   const selectedDate = watch("date");
   async function getTime() {
+    console.log("selected date", selectedDate);
     const time = await axios.get(`${base_url}/users/bookedTime`, {
       params: {
         date: selectedDate,
