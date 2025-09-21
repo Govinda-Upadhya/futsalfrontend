@@ -623,24 +623,24 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
       {showChallengeInfoPopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           {/* Blurred glass-like background */}
-          <div
-            className="absolute inset-0 bg-white/30 backdrop-blur-md rounded-lg transition-opacity duration-500"
-            style={{ opacity: 0 }}
-          />
+          <div className="absolute inset-0 bg-white/30 backdrop-blur-lg"></div>
+
           {/* Popup card */}
-          <div className="relative bg-white rounded-xl p-6 max-w-md w-full shadow-lg transform scale-95 opacity-0 transition-all duration-500 ease-out animate-popup">
-            <h2 className="text-xl font-bold mb-4">How to Use Challenges</h2>
-            <p className="mb-4">
+          <div className="relative bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 max-w-lg w-full shadow-2xl transform scale-95 opacity-0 animate-popup">
+            <h2 className="text-2xl font-bold mb-6">How to Use Challenges</h2>
+            <p className="mb-6 text-gray-700 text-lg">
               You can post challenges by clicking on the "Add Challenge" button
               and filling in the necessary details. You can also accept already
               posted challenges.
             </p>
-            <button
-              onClick={() => setShowChallengeInfoPopup(false)}
-              className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
-            >
-              OK
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowChallengeInfoPopup(false)}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}
