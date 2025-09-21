@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import { base_url } from "../../types/ground";
+import { Activity, Shield, Target } from "lucide-react";
 
 const FeedbackPage: React.FC = () => {
   const [rating, setRating] = useState<number>(0);
@@ -40,11 +41,23 @@ const FeedbackPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100px-4">
-      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-          Feedback
-        </h2>
+      <div className="text-center mb-8">
+        <div className="flex justify-center items-center mb-4">
+          <div className="relative">
+            <div className="absolute -inset-4 bg-emerald-400/30 rounded-full animate-pulse"></div>
+            <Shield className="h-12 w-12 text-emerald-700 relative z-10" />
+          </div>
+          <Target className="h-10 w-10 text-green-600 mx-2" />
+          <Activity className="h-12 w-12 text-emerald-700" />
+        </div>
+        <h1 className="text-3xl font-bold text-emerald-800 mb-2">Feedback</h1>
+        <p className="text-emerald-600">
+          How was your experience with us today? ⭐ We'd love to hear your
+          thoughts!
+        </p>
+      </div>
 
+      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
         {/* ⭐ Star Rating */}
         <div className="flex justify-center mb-4">
           {[1, 2, 3, 4, 5].map((star) => (
