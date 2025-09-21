@@ -464,12 +464,12 @@ const Groundcard = ({ ground, onUpdate }) => {
           <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
 
           {/* Popup card */}
-          <div className="relative bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 max-w-lg w-full shadow-2xl transform scale-95 opacity-0 animate-popup">
+          <div className="relative flex flex-col justify-center items-center bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 max-w-lg w-full shadow-2xl transform scale-95 opacity-0 animate-popup">
             <h2 className="text-2xl font-bold mb-6">Confirm Delete</h2>
             <p className="mb-6 text-gray-700 text-lg">
               Are you sure you want to delete the ground?
             </p>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <button
                 onClick={() => setConfirmDelete(true)}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
