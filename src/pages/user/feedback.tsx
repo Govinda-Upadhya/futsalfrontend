@@ -100,7 +100,7 @@ const FeedbackPage: React.FC = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your feedback here..."
-            className="border rounded-lg p-3 h-28 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="border rounded-lg border-gray-400 p-3 h-28 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             disabled={loading}
           />
 
