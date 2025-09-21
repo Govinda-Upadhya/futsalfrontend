@@ -13,6 +13,7 @@ import {
   X,
   Trash2,
 } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
 
 const Addground = () => {
   const {
@@ -277,8 +278,10 @@ const Addground = () => {
         reset();
         setImages([]);
         setPreviews([]);
-        alert("Ground created successfully!");
-        window.location.reload();
+        toast.success("ground created successfully");
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         alert("Failed to create ground. Please check your information.");
       }
@@ -708,6 +711,19 @@ const Addground = () => {
           )}
         </button>
       </form>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };
