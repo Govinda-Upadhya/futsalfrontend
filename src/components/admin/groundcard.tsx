@@ -48,12 +48,11 @@ const Groundcard = ({ ground, onUpdate }) => {
     );
   };
   function showDeletePopUp() {
+    e.stopPropagation();
     setShowDeletePopup(true);
   }
 
   const handleDelete = async (e) => {
-    e.stopPropagation();
-
     if (confirmDelete) {
       setIsDeleting(true);
       try {
