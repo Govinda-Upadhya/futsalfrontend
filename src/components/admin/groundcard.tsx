@@ -52,8 +52,8 @@ const Groundcard = ({ ground, onUpdate }) => {
     setShowDeletePopup(true);
   }
 
-  const handleDelete = async (e) => {
-    if (confirmDelete) {
+  const handleDelete = async (e: boolean) => {
+    if (e) {
       setIsDeleting(true);
       try {
         // Replace with your actual API endpoint
@@ -476,7 +476,7 @@ const Groundcard = ({ ground, onUpdate }) => {
               <button
                 onClick={(e) => {
                   setConfirmDelete(true);
-                  handleDelete(e);
+                  handleDelete(true);
                 }}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
               >
