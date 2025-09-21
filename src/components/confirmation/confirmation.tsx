@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 /**
  * confirm.tsx
  * - Green sporty vibe background
@@ -8,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
  * - Fully responsive using Tailwind + a few CSS keyframes
  */
 function Confirmation() {
+  const navigate = useNavigate();
   const [showSoundPill, setShowSoundPill] = useState(false);
   const unlockedRef = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -117,6 +119,9 @@ function Confirmation() {
       once: true,
       passive: true as any,
     });
+    const timer = setTimeout(() => {
+      navigate("/");
+    }, 3000);
 
     return () => {
       document.removeEventListener("DOMContentLoaded", onDom);
@@ -202,11 +207,20 @@ function Confirmation() {
         </div>
 
         <h1 className="text-[clamp(20px,6vw,30px)] leading-tight mb-1">
-          Booking Confirmed
+          Reservation Confirmed
         </h1>
         <p className="text-slate-600 text-[clamp(13px,4.5vw,17px)] leading-relaxed m-0">
-          You’re all set. A confirmation has been sent to your email.
+          You’re all set. You will receive a confirmation email from the owner
+          shortly.
         </p>
+        <motion.p
+          className="mt-2 text-sm text-gray-500"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          Redirecting in 5 seconds...
+        </motion.p>
       </main>
 
       {/* Sound enable pill (shown only if needed) */}
