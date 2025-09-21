@@ -40,15 +40,7 @@ function App() {
             path="users/booking/:booking_id"
             element={<BookingPending />}
           />
-          <Route
-            path="users/booking/confirmed"
-            element={
-              <Confirmation
-                redirectTo="/"
-                message="Payment screenshoot submitted. Ground has been reserved"
-              />
-            }
-          />
+          <Route path="users/booking/confirmed" element={<Confirmation />} />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="feedback" element={<FeedbackPage />} />
           <Route path="contactus" element={<ContactUs />} />
