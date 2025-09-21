@@ -25,6 +25,8 @@ import axios from "axios";
 import GoogleLoader from "../../components/Loader";
 
 const HomePage: React.FC = () => {
+  const [showChallengeInfoPopup, setShowChallengeInfoPopup] = useState(false);
+  const [hasSeenChallengeInfo, setHasSeenChallengeInfo] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [searchDate, setSearchDate] = useState("");
@@ -39,6 +41,14 @@ const HomePage: React.FC = () => {
   const [challengeDateSearch, setChallengeDateSearch] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [activePolicy, setActivePolicy] = useState<string | null>(null);
+  const handleTabClick = (tab: "grounds" | "rivals") => {
+    setActiveTab(tab);
+    // Only show the popup if the user clicks Challenges for the first time
+    if (tab === "rivals" && !hasSeenChallengeInfo) {
+      setShowChallengeInfoPopup(true); // show the popup
+      setHasSeenChallengeInfo(true); // mark it as "seen"
+    }
+  };
   async function fetchGrounds() {
     setLoading(true);
     const res = await axios.get(`${base_url}/users/getgrounds`, {
@@ -396,7 +406,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
           <div className="flex justify-center gap-6 border-b border-gray-200 mb-8">
             <button
-              onClick={() => setActiveTab("grounds")}
+              onClick={() => handleTabClick("grounds")}
               className={`px-6 py-3 text-lg font-semibold transition ${
                 activeTab === "grounds"
                   ? "border-b-4 border-emerald-600 text-emerald-700"
@@ -406,7 +416,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               Grounds
             </button>
             <button
-              onClick={() => setActiveTab("rivals")}
+              onClick={() => handleTabClick("rivals")}
               className={`px-6 py-3 text-lg font-semibold transition ${
                 activeTab === "rivals"
                   ? "border-b-4 border-emerald-600 text-emerald-700"
@@ -610,6 +620,26 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
           )}{" "}
         </div>
       </div>
+      {showChallengeInfoPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md text-center shadow-2xl">
+            <h2 className="text-xl font-bold text-emerald-700 mb-4">
+              Welcome to Challenges!
+            </h2>
+            <p className="text-gray-700 mb-6">
+              You can post challenges by clicking on the "Add Challenge" button
+              and filling in the required details. You can also accept already
+              posted challenges.
+            </p>
+            <button
+              onClick={() => setShowChallengeInfoPopup(false)}
+              className="px-6 py-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Footer Section */}
       <footer className="bg-gradient-to-r from-green-900 to-emerald-900 text-white mt-auto">
