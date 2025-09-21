@@ -47,7 +47,7 @@ const Groundcard = ({ ground, onUpdate }) => {
       3000
     );
   };
-  function showDeletePopUp() {
+  function showDeletePopUp(e) {
     e.stopPropagation();
     setShowDeletePopup(true);
   }
@@ -298,7 +298,7 @@ const Groundcard = ({ ground, onUpdate }) => {
             {/* Delete button */}
             <button
               type="button"
-              onClick={showDeletePopUp}
+              onClick={(e) => showDeletePopUp(e)}
               className="p-2 bg-white text-red-500 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 hover:bg-red-50 active:scale-95 group"
               aria-label="Delete ground"
             >
