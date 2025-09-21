@@ -298,7 +298,7 @@ const BookingPage: React.FC = () => {
 
     if (time.data.bookedTime) {
       console.log(time.data.bookedTime);
-      setBookedTime(time.data.bookedTime[0]);
+      setBookedTime(time.data.bookedTime);
     } else {
       setBookedTime([]);
     }
