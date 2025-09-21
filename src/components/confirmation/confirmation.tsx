@@ -13,7 +13,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({ redirectTo, message }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate(redirectTo);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [redirectTo, navigate]);
 

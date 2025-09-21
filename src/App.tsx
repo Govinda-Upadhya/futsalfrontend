@@ -24,6 +24,7 @@ import AdminConfig from "./pages/admin/adminConfig";
 import AdminProtectedRoute from "./components/auth/protectRoutes";
 import NotFound from "./components/pageNotFound";
 import Confirmation from "./components/confirmation/confirmation";
+import FeedbackPage from "./pages/user/feedback";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             }
           />
           <Route path="aboutus" element={<AboutUs />} />
+          <Route path="feedback" element={<FeedbackPage />} />
           <Route path="contactus" element={<ContactUs />} />
         </Route>
 
