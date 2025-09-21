@@ -7,6 +7,7 @@ import Addground from "../../components/admin/addground";
 import Booking from "./adminBooking";
 import Statistics from "../../components/admin/Statistics"; // Make sure this import is correct
 import { base_url } from "../../types/ground";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const Admin = () => {
   const [active, setActive] = useState("dashboard");
@@ -22,7 +23,7 @@ const Admin = () => {
           setGrounds(res.data.grounds);
           console.log(res.data.grounds);
         } else {
-          alert("You havent registered any grounds");
+          toast.error("No Grounds registered yet");
         }
       } catch (error) {
         alert("You have not registered any grounds yet");
@@ -51,6 +52,19 @@ const Admin = () => {
     <div className="flex flex-col min-h-screen bg-gray-100 font-sans w-full">
       <Header setActive={setActive} active={active} />
       {renderActiveComponent()}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <Footer />
     </div>
   );
