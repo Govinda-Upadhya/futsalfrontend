@@ -40,7 +40,7 @@ const FeedbackPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100px-4">
+    <div className="w-screen h-screen flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100px-4">
       <div className="text-center mb-8">
         <div className="flex justify-center items-center mb-4">
           <div className="relative">
@@ -109,7 +109,7 @@ const FeedbackPage: React.FC = () => {
             type="submit"
             disabled={rating === 0 || loading}
             className={`px-4 py-2 rounded-lg font-semibold text-white transition ${
-              rating === 0 || loading
+              loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
             }`}
