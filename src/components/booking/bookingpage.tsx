@@ -288,22 +288,33 @@ const BookingPage: React.FC = () => {
 
   const selectedDate = watch("date");
   async function getTime() {
-    console.log("selected date", selectedDate);
-    const time = await axios.get(`${base_url}/users/bookedTime`, {
-      params: {
-        date: selectedDate,
-        ground: groundId,
-      },
-    });
+    try {
+      const response = await axios.get(`${base_url}/users/bookedTime`, {
+        params: {
+          date: selectedDate,
+          ground: groundId,
+        },
+      });
 
-    if (time.data.bookedTime) {
-      console.log(time.data.bookedTime);
-      setBookedTime(time.data.bookedTime);
-    } else {
-      setBookedTime([]);
+      const updatedBookedTime: TimeSlot[] = response.data.bookedTime || [];
+
+      // Update booked times
+      setBookedTime(updatedBookedTime);
+
+      // Remove any selected times that are now booked
+      setSelectedTimeSlot((prev) =>
+        prev.filter(
+          (slot) =>
+            !updatedBookedTime.some(
+              (booked) => booked.start === slot.start && booked.end === slot.end
+            )
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching booked times:", error);
     }
-    console.log("booked tijme", bookedTime[0]);
   }
+
   useEffect(() => {
     // run immediately on mount / when selectedDate changes
     getTime();
