@@ -58,8 +58,9 @@ const Groundcard = ({ ground, onUpdate }) => {
         await axios.delete(`${base_url}/admin/deleteground/${ground._id}`, {
           withCredentials: true,
         });
+
         showNotification("Ground deleted successfully!", "success");
-        window.location.reload();
+        setShowDeletePopup(false);
       } catch (error) {
         console.error("Error deleting ground:", error);
         showNotification("Failed to delete ground. Please try again.", "error");
@@ -474,7 +475,7 @@ const Groundcard = ({ ground, onUpdate }) => {
                 onClick={() => setConfirmDelete(true)}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
               >
-                Yes
+                {isDeleting ? "deleting..." : "yes"}
               </button>
               <button
                 onClick={() => setShowDeletePopup(false)}
