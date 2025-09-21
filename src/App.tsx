@@ -23,6 +23,7 @@ import UserLayout from "./layout/userlayout";
 import AdminConfig from "./pages/admin/adminConfig";
 import AdminProtectedRoute from "./components/auth/protectRoutes";
 import NotFound from "./components/pageNotFound";
+import Confirmation from "./components/confirmation/confirmation";
 
 function App() {
   return (
@@ -37,6 +38,15 @@ function App() {
           <Route
             path="users/booking/:booking_id"
             element={<BookingPending />}
+          />
+          <Route
+            path="users/booking/confirmed"
+            element={
+              <Confirmation
+                redirectTo="/"
+                message="Payment screenshoot submitted. Ground has been reserved"
+              />
+            }
           />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="contactus" element={<ContactUs />} />

@@ -171,7 +171,7 @@ const BookingPending = () => {
         headers: { "Content-Type": "multipart/form-data" },
       }
     );
-    alert("Screenshot sent successfully!");
+    navigate("/users/booking/confirmed");
     setUploading(false);
     navigate("/");
     setUploading(true);
