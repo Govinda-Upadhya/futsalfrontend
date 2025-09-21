@@ -623,7 +623,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
       {showChallengeInfoPopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           {/* Blurred glass-like background */}
-          <div className="absolute inset-0 bg-white/20 backdrop-blur-md"></div>
+          <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
 
           {/* Popup card */}
           <div className="relative bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 max-w-lg w-full shadow-2xl transform scale-95 opacity-0 animate-popup">
