@@ -2,27 +2,39 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import { base_url } from "../../types/ground";
+
 const FeedbackPage: React.FC = () => {
   const [rating, setRating] = useState<number>(0);
   const [hover, setHover] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (rating === 0) {
       toast.error("Please select a star rating before submitting.");
       return;
     }
-    let res = await axios.post(`${base_url}/users/feedback`, {
-      rating,
-      comment,
-    });
-    if (res.status == 200) {
-      toast.success("thank you for your feedback.");
-      setRating(0);
-      setComment("");
-    } else {
-      toast.error("Feedback couldn't be submitted.");
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${base_url}/users/feedback`, {
+        rating,
+        comment,
+      });
+
+      if (res.status === 200) {
+        toast.success("Thank you for your feedback.");
+        setRating(0);
+        setComment("");
+      } else {
+        toast.error("Feedback couldn't be submitted.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,6 +55,7 @@ const FeedbackPage: React.FC = () => {
               onMouseEnter={() => setHover(star)}
               onMouseLeave={() => setHover(0)}
               className="focus:outline-none"
+              disabled={loading}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,22 +88,25 @@ const FeedbackPage: React.FC = () => {
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your feedback here..."
             className="border rounded-lg p-3 h-28 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            disabled={loading}
           />
 
           {/* ✅ Submit Button */}
           <button
             type="submit"
-            disabled={rating === 0}
+            disabled={rating === 0 || loading}
             className={`px-4 py-2 rounded-lg font-semibold text-white transition ${
-              rating === 0
+              rating === 0 || loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-yellow-500 hover:bg-yellow-600"
             }`}
           >
-            Submit Feedback
+            {loading ? "Submitting..." : "Submit Feedback"}
           </button>
         </form>
       </div>
+
+      {/* Toast Notifications */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
