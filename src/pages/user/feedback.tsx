@@ -40,7 +40,7 @@ const FeedbackPage: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100px-4">
+    <div className="w-screen h-screen flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 px-4">
       <div className="text-center mb-8">
         <div className="flex justify-center items-center mb-4">
           <div className="relative">
