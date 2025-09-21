@@ -39,7 +39,7 @@ const FeedbackPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100px-4">
       <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
           Feedback
@@ -98,7 +98,7 @@ const FeedbackPage: React.FC = () => {
             className={`px-4 py-2 rounded-lg font-semibold text-white transition ${
               rating === 0 || loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
             }`}
           >
             {loading ? "Submitting..." : "Submit Feedback"}
