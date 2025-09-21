@@ -47,10 +47,13 @@ const Groundcard = ({ ground, onUpdate }) => {
       3000
     );
   };
+  function showDeletePopUp() {
+    setShowDeletePopup(true);
+  }
 
   const handleDelete = async (e) => {
     e.stopPropagation();
-    setShowDeletePopup(true);
+
     if (confirmDelete) {
       setIsDeleting(true);
       try {
@@ -296,7 +299,7 @@ const Groundcard = ({ ground, onUpdate }) => {
             {/* Delete button */}
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={showDeletePopUp}
               className="p-2 bg-white text-red-500 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 hover:bg-red-50 active:scale-95 group"
               aria-label="Delete ground"
             >
@@ -472,7 +475,10 @@ const Groundcard = ({ ground, onUpdate }) => {
             </p>
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => setConfirmDelete(true)}
+                onClick={(e) => {
+                  setConfirmDelete(true);
+                  handleDelete(e);
+                }}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
               >
                 {isDeleting ? "deleting..." : "yes"}
