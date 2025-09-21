@@ -173,7 +173,7 @@ const BookingPending = () => {
     );
     navigate("/users/booking/confirmed");
     setUploading(false);
-    navigate("/");
+
     setUploading(true);
   };
 
