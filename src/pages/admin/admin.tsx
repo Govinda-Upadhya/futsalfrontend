@@ -26,7 +26,7 @@ const Admin = () => {
           toast.error("No Grounds registered yet");
         }
       } catch (error) {
-        alert("You have not registered any grounds yet");
+        toast.error("No Grounds registered yet");
       }
     }
     fetchGround();
