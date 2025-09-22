@@ -322,7 +322,7 @@ const BookingPage: React.FC = () => {
     // then run every 5 seconds
     const interval = setInterval(() => {
       getTime();
-    }, 5000);
+    }, 1000);
 
     // cleanup interval when component unmounts or selectedDate changes
     return () => clearInterval(interval);
