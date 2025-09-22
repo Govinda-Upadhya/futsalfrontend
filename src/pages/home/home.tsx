@@ -638,7 +638,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
                 onClick={() => setShowChallengeInfoPopup(false)}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition"
               >
-                OK
+                Done
               </button>
             </div>
           </div>
