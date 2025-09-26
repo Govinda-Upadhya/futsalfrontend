@@ -21,7 +21,7 @@ import { base_url } from "../../types/ground";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch } from "react-redux";
-import { setEmail, setOtpAvail } from "../../slice/authSlice";
+import { setBookingid, setEmail, setOtpAvail } from "../../slice/authSlice";
 
 type TimeSlot = { start: string; end: string };
 
@@ -220,7 +220,7 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
 const BookingPage: React.FC = () => {
   const [groundloading, setGroundLoading] = useState(false);
   const email = useSelector((state: RootState) => state.auth.email);
-  const otpAvail = useSelector((state: RootState) => state.auth.otpAvail);
+  const booking_id = useSelector((state: RootState) => state.auth.booking_id);
   const dispatch = useDispatch<AppDispatch>();
   const [disable, setDisbale] = useState<boolean>(false);
   const [bookedTime, setBookedTime] = useState<TimeSlot[]>([]);
@@ -281,11 +281,11 @@ const BookingPage: React.FC = () => {
       }
     );
     dispatch(setEmail(data.email));
-    dispatch(setOtpAvail(true));
+    dispatch(setBookingid(booking.data.booking_id));
     console.log(booking);
 
     setIsBooking(false);
-    navigate(`/user/booking/OTP/${booking.data.booking_id}`);
+    navigate(`/user/booking/OTP`);
   };
 
   const getTotalAmount = () => {

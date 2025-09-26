@@ -37,7 +37,7 @@ function App() {
           <Route path="booking/:groundId" element={<BookingPage />} />
           <Route path="addChallenge" element={<AddChallengeForm />} />
           <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
-          <Route path="user/booking/OTP/:booking_id" element={<OtpPage />} />
+          <Route path="user/booking/OTP" element={<OtpPage />} />
           <Route
             path="users/booking/:booking_id"
             element={<BookingPending />}

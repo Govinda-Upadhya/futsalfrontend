@@ -1,11 +1,17 @@
+import axios from "axios";
 import React, { useState, useRef, FormEvent, ChangeEvent } from "react";
-
+import { base_url } from "../../types/ground";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useNavigate } from "react-router-dom";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 export default function OtpPage(): JSX.Element {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [message, setMessage] = useState<string>("");
-
+  const email = useSelector((state: RootState) => state.auth.email);
+  const bookingId = useSelector((state: RootState) => state.auth.booking_id);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+  const navigate = useNavigate();
   const handleChange = (e: ChangeEvent<HTMLInputElement>, idx: number) => {
     const value = e.target.value.replace(/\D/g, ""); // only digits
     if (!value) return;
@@ -36,14 +42,26 @@ export default function OtpPage(): JSX.Element {
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (otp.some((digit) => digit === "")) {
       setMessage("Please fill all 6 digits");
       return;
     }
     const otpCode = otp.join("");
-    setMessage(`OTP submitted: ${otpCode}`);
+    const res = await axios.post(
+      `${base_url}/users/verifyotp`,
+      { otp, email },
+      { withCredentials: true }
+    );
+    if (res.status == 200) {
+      console.log("booking Id", bookingId);
+      setTimeout(() => {
+        navigate(`/users/booking/${bookingId}`);
+      }, 2000);
+    } else {
+      toast.error(res.data.message);
+    }
     // TODO: Send OTP to backend for verification
   };
 
@@ -71,7 +89,7 @@ export default function OtpPage(): JSX.Element {
           </div>
           <button
             type="submit"
-            className="bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+            className="bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
           >
             Verify OTP
           </button>
@@ -86,6 +104,19 @@ export default function OtpPage(): JSX.Element {
           <button className="text-indigo-600 hover:underline">Resend</button>
         </p>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 }

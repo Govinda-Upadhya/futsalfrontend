@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   email: string;
-  otpAvail: boolean;
+  booking_id: string;
 }
 
 const initialState: AuthState = {
   email: "",
-  otpAvail: false,
+  booking_id: "",
 };
 
 const authSlice = createSlice({
@@ -20,15 +20,15 @@ const authSlice = createSlice({
     clearEmail: (state) => {
       state.email = "";
     },
-    setOtpAvail: (state, action: PayloadAction<boolean>) => {
-      state.otpAvail = action.payload;
+    setBookingid: (state, action: PayloadAction<string>) => {
+      state.booking_id = action.payload;
     },
-    clearOtpAvail: (state) => {
-      state.otpAvail = false;
+    clearBookingId: (state) => {
+      state.booking_id = "";
     },
   },
 });
 
-export const { setEmail, clearEmail, setOtpAvail, clearOtpAvail } =
+export const { setEmail, clearEmail, setBookingid, clearBookingId } =
   authSlice.actions;
 export default authSlice.reducer;
