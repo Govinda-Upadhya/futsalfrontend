@@ -6,6 +6,7 @@ import { RootState } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 export default function OtpPage(): JSX.Element {
+  const [submitting, setSubmiting] = useState(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [message, setMessage] = useState<string>("");
   const email = useSelector((state: RootState) => state.auth.email);
@@ -49,6 +50,7 @@ export default function OtpPage(): JSX.Element {
       return;
     }
     const otpCode = otp.join("");
+    setSubmiting(true);
     const res = await axios.post(
       `${base_url}/users/verifyotp`,
       { otp, email },
@@ -56,14 +58,24 @@ export default function OtpPage(): JSX.Element {
     );
     if (res.status == 200) {
       console.log("booking Id", bookingId);
+      setSubmiting(false);
       setTimeout(() => {
         navigate(`/users/booking/${bookingId}`);
       }, 2000);
     } else {
+      setSubmiting(false);
       toast.error(res.data.message);
     }
     // TODO: Send OTP to backend for verification
   };
+  async function handleResend() {
+    const res = await axios.post(`${base_url}/users/resendotp`);
+    if (res.status == 200) {
+      alert("otp in send to your email");
+    } else {
+      alert("error");
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -91,7 +103,7 @@ export default function OtpPage(): JSX.Element {
             type="submit"
             className="bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
           >
-            Verify OTP
+            {submitting ? "verifying" : "submit"}
           </button>
         </form>
         {message && (
@@ -101,7 +113,12 @@ export default function OtpPage(): JSX.Element {
         )}
         <p className="mt-6 text-center text-gray-500 text-sm">
           Didn't receive OTP?{" "}
-          <button className="text-indigo-600 hover:underline">Resend</button>
+          <button
+            className="text-indigo-600 hover:underline"
+            onClick={handleResend}
+          >
+            Resend
+          </button>
         </p>
       </div>
       <ToastContainer
