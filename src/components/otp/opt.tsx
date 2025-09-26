@@ -50,10 +50,11 @@ export default function OtpPage(): JSX.Element {
       return;
     }
     const otpCode = otp.join("");
+    console.log(otpCode);
     setSubmiting(true);
     const res = await axios.post(
       `${base_url}/users/verifyotp`,
-      { otp, email },
+      { otp: otpCode, email },
       { withCredentials: true }
     );
     if (res.status == 200) {
