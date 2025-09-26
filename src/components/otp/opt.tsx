@@ -21,8 +21,18 @@ export default function OtpPage(): JSX.Element {
     e: React.KeyboardEvent<HTMLInputElement>,
     idx: number
   ) => {
-    if (e.key === "Backspace" && !otp[idx] && idx > 0) {
-      inputRefs.current[idx - 1]?.focus();
+    if (e.key === "Backspace") {
+      e.preventDefault();
+
+      const newOtp = [...otp];
+      if (newOtp[idx]) {
+        newOtp[idx] = "";
+        setOtp(newOtp);
+      } else if (idx > 0) {
+        inputRefs.current[idx - 1]?.focus();
+        newOtp[idx - 1] = "";
+        setOtp(newOtp);
+      }
     }
   };
 
