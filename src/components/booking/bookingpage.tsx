@@ -18,6 +18,10 @@ import {
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { useDispatch } from "react-redux";
+import { setEmail, setOtpAvail } from "../../slice/authSlice";
 
 type TimeSlot = { start: string; end: string };
 
@@ -215,7 +219,9 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
 
 const BookingPage: React.FC = () => {
   const [groundloading, setGroundLoading] = useState(false);
-
+  const email = useSelector((state: RootState) => state.auth.email);
+  const otpAvail = useSelector((state: RootState) => state.auth.otpAvail);
+  const dispatch = useDispatch<AppDispatch>();
   const [disable, setDisbale] = useState<boolean>(false);
   const [bookedTime, setBookedTime] = useState<TimeSlot[]>([]);
   const { groundId } = useParams<{ groundId: string }>();
@@ -274,10 +280,12 @@ const BookingPage: React.FC = () => {
         data,
       }
     );
+    dispatch(setEmail(data.email));
+    dispatch(setOtpAvail(true));
     console.log(booking);
 
     setIsBooking(false);
-    navigate(`/users/booking/${booking.data.booking_id}`);
+    navigate(`/user/booking/OTP/${booking.data.booking_id}`);
   };
 
   const getTotalAmount = () => {

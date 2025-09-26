@@ -25,6 +25,7 @@ import AdminProtectedRoute from "./components/auth/protectRoutes";
 import NotFound from "./components/pageNotFound";
 import Confirmation from "./components/confirmation/confirmation";
 import FeedbackPage from "./pages/user/feedback";
+import OtpPage from "./components/otp/opt";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="booking/:groundId" element={<BookingPage />} />
           <Route path="addChallenge" element={<AddChallengeForm />} />
           <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
+          <Route path="user/booking/OTP/:booking_id" element={<OtpPage />} />
           <Route
             path="users/booking/:booking_id"
             element={<BookingPending />}
