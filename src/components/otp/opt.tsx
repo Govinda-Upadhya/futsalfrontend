@@ -1,22 +1,39 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useRef, FormEvent, ChangeEvent } from "react";
 
 export default function OtpPage(): JSX.Element {
-  const [otp, setOtp] = useState<string>("");
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [message, setMessage] = useState<string>("");
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers and max 6 digits
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 6) setOtp(value);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, idx: number) => {
+    const value = e.target.value.replace(/\D/g, ""); // only digits
+    if (!value) return;
+    const newOtp = [...otp];
+    newOtp[idx] = value[0]; // take only first digit
+    setOtp(newOtp);
+
+    // Move focus to next input
+    if (idx < 5) inputRefs.current[idx + 1]?.focus();
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    idx: number
+  ) => {
+    if (e.key === "Backspace" && !otp[idx] && idx > 0) {
+      inputRefs.current[idx - 1]?.focus();
+    }
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (otp.length !== 6) {
-      setMessage("OTP must be 6 digits");
+    if (otp.some((digit) => digit === "")) {
+      setMessage("Please fill all 6 digits");
       return;
     }
-    setMessage(`OTP submitted: ${otp}`);
+    const otpCode = otp.join("");
+    setMessage(`OTP submitted: ${otpCode}`);
     // TODO: Send OTP to backend for verification
   };
 
@@ -26,14 +43,22 @@ export default function OtpPage(): JSX.Element {
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">
           Enter OTP
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            value={otp}
-            onChange={handleChange}
-            placeholder="6-digit OTP"
-            className="border border-gray-300 rounded-lg px-4 py-2 text-center text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex justify-between gap-2">
+            {otp.map((digit, idx) => (
+              <input
+                key={idx}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(e, idx)}
+                onKeyDown={(e) => handleKeyDown(e, idx)}
+                ref={(el) => (inputRefs.current[idx] = el)}
+                className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            ))}
+          </div>
           <button
             type="submit"
             className="bg-indigo-600 text-white py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors"
