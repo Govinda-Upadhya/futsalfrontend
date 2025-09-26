@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+
 export default function OtpPage(): JSX.Element {
   const [submitting, setSubmiting] = useState(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
@@ -13,14 +14,14 @@ export default function OtpPage(): JSX.Element {
   const bookingId = useSelector((state: RootState) => state.auth.booking_id);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>, idx: number) => {
-    const value = e.target.value.replace(/\D/g, ""); // only digits
+    const value = e.target.value.replace(/\D/g, "");
     if (!value) return;
     const newOtp = [...otp];
-    newOtp[idx] = value[0]; // take only first digit
+    newOtp[idx] = value[0];
     setOtp(newOtp);
 
-    // Move focus to next input
     if (idx < 5) inputRefs.current[idx + 1]?.focus();
   };
 
@@ -30,7 +31,6 @@ export default function OtpPage(): JSX.Element {
   ) => {
     if (e.key === "Backspace") {
       e.preventDefault();
-
       const newOtp = [...otp];
       if (newOtp[idx]) {
         newOtp[idx] = "";
@@ -50,7 +50,6 @@ export default function OtpPage(): JSX.Element {
       return;
     }
     const otpCode = otp.join("");
-    console.log(otpCode);
     setSubmiting(true);
     try {
       const res = await axios.post(
@@ -60,44 +59,42 @@ export default function OtpPage(): JSX.Element {
       );
 
       if (res.status === 200) {
-        console.log("booking Id", bookingId);
         setSubmiting(false);
-
         setTimeout(() => {
           navigate(`/users/booking/${bookingId}`);
         }, 2000);
       }
     } catch (error: any) {
       setSubmiting(false);
-
       if (error.response) {
-        // Server responded with a non-2xx status
         toast.error(error.response.data.message || "Verification failed");
       } else {
-        // Network error or request not sent
         toast.error("Something went wrong. Please try again.");
       }
     }
-
-    // TODO: Send OTP to backend for verification
   };
+
   async function handleResend() {
-    const res = await axios.post(`${base_url}/users/resendotp`);
-    if (res.status == 200) {
-      alert("otp in send to your email");
+    const res = await axios.post(`${base_url}/users/resendotp`, {
+      email,
+      bookingId,
+    });
+    if (res.status === 200) {
+      toast.success("OTP has been sent to your email");
     } else {
-      alert("error");
+      toast.error("Error resending OTP");
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-80 sm:w-96">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md lg:max-w-lg">
+        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-gray-800">
           Enter OTP
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex justify-between gap-2">
+          {/* OTP Inputs */}
+          <div className="flex justify-between gap-2 sm:gap-3">
             {otp.map((digit, idx) => (
               <input
                 key={idx}
@@ -108,22 +105,27 @@ export default function OtpPage(): JSX.Element {
                 onChange={(e) => handleChange(e, idx)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
                 ref={(el) => (inputRefs.current[idx] = el)}
-                className="w-12 h-12 text-center text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             ))}
           </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
-            className="bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+            disabled={submitting}
+            className="bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
           >
-            {submitting ? "verifying" : "submit"}
+            {submitting ? "Verifying..." : "Submit"}
           </button>
         </form>
+
+        {/* Message */}
         {message && (
-          <p className="mt-4 text-center text-green-600 font-medium">
-            {message}
-          </p>
+          <p className="mt-4 text-center text-red-600 font-medium">{message}</p>
         )}
+
+        {/* Resend */}
         <p className="mt-6 text-center text-gray-500 text-sm">
           Didn't receive OTP?{" "}
           <button
@@ -134,16 +136,15 @@ export default function OtpPage(): JSX.Element {
           </button>
         </p>
       </div>
+
+      {/* Toasts */}
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={4000}
         hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
+        closeOnClick
         pauseOnHover
+        draggable
         theme="light"
         transition={Bounce}
       />
