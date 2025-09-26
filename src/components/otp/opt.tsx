@@ -52,21 +52,33 @@ export default function OtpPage(): JSX.Element {
     const otpCode = otp.join("");
     console.log(otpCode);
     setSubmiting(true);
-    const res = await axios.post(
-      `${base_url}/users/verifyotp`,
-      { otp: otpCode, email },
-      { withCredentials: true }
-    );
-    if (res.status == 200) {
-      console.log("booking Id", bookingId);
+    try {
+      const res = await axios.post(
+        `${base_url}/users/verifyotp`,
+        { otp: otpCode, email },
+        { withCredentials: true }
+      );
+
+      if (res.status === 200) {
+        console.log("booking Id", bookingId);
+        setSubmiting(false);
+
+        setTimeout(() => {
+          navigate(`/users/booking/${bookingId}`);
+        }, 2000);
+      }
+    } catch (error: any) {
       setSubmiting(false);
-      setTimeout(() => {
-        navigate(`/users/booking/${bookingId}`);
-      }, 2000);
-    } else {
-      setSubmiting(false);
-      toast.error(res.data.message);
+
+      if (error.response) {
+        // Server responded with a non-2xx status
+        toast.error(error.response.data.message || "Verification failed");
+      } else {
+        // Network error or request not sent
+        toast.error("Something went wrong. Please try again.");
+      }
     }
+
     // TODO: Send OTP to backend for verification
   };
   async function handleResend() {
