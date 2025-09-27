@@ -13,8 +13,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../../types/ground";
 import * as tf from "@tensorflow/tfjs";
-const [model, setModel] = useState<tf.GraphModel | null>(null);
-const [prediction, setPrediction] = useState<string | null>(null);
 
 type TimeSlot = { start: string; end: string };
 async function fileToTensor(file: File): Promise<tf.Tensor4D> {
@@ -64,11 +62,12 @@ const BookingPending = () => {
   const [countdown, setCountdown] = useState(300);
   const [scanner, setScanner] = useState(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [model, setModel] = useState<tf.GraphModel | null>(null);
+  const [prediction, setPrediction] = useState<string | null>(null);
   useEffect(() => {
     async function loadModel() {
-      const loaded = await tf.loadGraphModel(
-        "../../../public/models/yolo/model.json"
-      );
+      const loaded = await tf.loadGraphModel("/models/yolo/model.json");
+
       setModel(loaded);
       console.log("✅ Model loaded");
     }
