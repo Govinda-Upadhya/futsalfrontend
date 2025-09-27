@@ -155,7 +155,15 @@ const HomePage: React.FC = () => {
       return textMatches && dateMatches;
     });
   }, [challenges, challengeSearch, challengeDateSearch]);
+  useEffect(() => {
+    console.log(new Date().toString());
+    // Shows local server timezone
 
+    console.log(new Date().toISOString());
+    // Always UTC (may look like "yesterday")
+
+    return () => {};
+  }, []);
   const openPolicy = (policy: string) => {
     setActivePolicy(policy);
   };
