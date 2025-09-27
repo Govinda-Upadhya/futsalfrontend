@@ -77,7 +77,6 @@ export default function OtpPage(): JSX.Element {
   async function handleResend() {
     const res = await axios.post(`${base_url}/users/resendotp`, {
       email,
-      bookingId,
     });
     if (res.status === 200) {
       toast.success("OTP has been sent to your email");
