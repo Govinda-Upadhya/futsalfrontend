@@ -416,7 +416,9 @@ const BookingPage: React.FC = () => {
                   {...register("date", {
                     required: "Please select a date",
                   })}
-                  min={new Date().toISOString().split("T")[0]}
+                  min={new Date().toLocaleDateString("en-CA", {
+                    timeZone: "Asia/Kolkata",
+                  })}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                     errors.date
                       ? "border-red-500 focus:ring-red-500"
