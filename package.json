@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "@tailwindcss/vite": "^4.1.13",
+    "@tensorflow/tfjs": "^4.22.0",
     "@types/lodash": "^4.17.20",
     "axios": "^1.12.2",
     "chart.js": "^4.5.0",

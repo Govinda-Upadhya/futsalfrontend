@@ -12,8 +12,30 @@ import { Download } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+import * as tf from "@tensorflow/tfjs";
+const [model, setModel] = useState<tf.GraphModel | null>(null);
+const [prediction, setPrediction] = useState<string | null>(null);
 
 type TimeSlot = { start: string; end: string };
+async function fileToTensor(file: File): Promise<tf.Tensor4D> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const tensor = tf.browser
+          .fromPixels(img)
+          .resizeNearestNeighbor([224, 224]) // must match training size
+          .toFloat()
+          .div(255.0)
+          .expandDims(0);
+        resolve(tensor);
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 interface BookingInfoType {
   _id: string;
@@ -42,6 +64,16 @@ const BookingPending = () => {
   const [countdown, setCountdown] = useState(300);
   const [scanner, setScanner] = useState(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  useEffect(() => {
+    async function loadModel() {
+      const loaded = await tf.loadGraphModel(
+        "../../../public/models/yolo/model.json"
+      );
+      setModel(loaded);
+      console.log("✅ Model loaded");
+    }
+    loadModel();
+  }, []);
 
   // Dummy data
   useEffect(() => {
@@ -135,6 +167,20 @@ const BookingPending = () => {
       } else {
         setFile(selectedFile);
         setErrors((prev) => ({ ...prev, file: undefined }));
+        if (model) {
+          const img = await fileToTensor(selectedFile);
+          const preds = model.predict(img) as tf.Tensor;
+          const data = await preds.data();
+
+          // Get predicted class index
+          const maxIdx = data.indexOf(Math.max(...Array.from(data)));
+
+          // Map to label (from your dataset classes)
+          const labels = ["not_payment", "payment"]; // adjust based on metadata.yaml
+          setPrediction(labels[maxIdx]);
+
+          console.log("📊 Prediction:", labels[maxIdx], data);
+        }
       }
     }
   };
@@ -153,7 +199,10 @@ const BookingPending = () => {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (file == null) {
+    if (!file || !prediction) return;
+
+    if (prediction !== "payment") {
+      alert("⚠️ Please upload a valid payment screenshot.");
       return;
     }
     setUploading(true);
@@ -395,6 +444,19 @@ const BookingPending = () => {
                     Accepted formats: JPG, PNG, GIF. Max size: 5MB
                   </div>
                 </div>
+                {prediction && (
+                  <div className="mt-2 text-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-bold ${
+                        prediction === "payment"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      Model detected: {prediction}
+                    </span>
+                  </div>
+                )}
 
                 <button
                   type="submit"
