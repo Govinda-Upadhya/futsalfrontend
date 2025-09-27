@@ -15,25 +15,27 @@ import { base_url } from "../../types/ground";
 import * as tf from "@tensorflow/tfjs";
 
 type TimeSlot = { start: string; end: string };
-async function fileToTensor(file: File): Promise<tf.Tensor4D> {
+const fileToTensor = async (file: File): Promise<tf.Tensor> => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
       img.src = reader.result as string;
       img.onload = () => {
-        const tensor = tf.browser
-          .fromPixels(img)
-          .resizeNearestNeighbor([224, 224]) // must match training size
-          .toFloat()
-          .div(255.0)
-          .expandDims(0);
+        const tensor = tf.tidy(() => {
+          return tf.browser
+            .fromPixels(img)
+            .resizeBilinear([640, 640]) // 🔥 match YOLO input
+            .expandDims(0) // [1,640,640,3]
+            .toFloat()
+            .div(255.0); // normalize
+        });
         resolve(tensor);
       };
     };
     reader.readAsDataURL(file);
   });
-}
+};
 
 interface BookingInfoType {
   _id: string;
@@ -166,19 +168,19 @@ const BookingPending = () => {
       } else {
         setFile(selectedFile);
         setErrors((prev) => ({ ...prev, file: undefined }));
+
         if (model) {
-          const img = await fileToTensor(selectedFile);
+          const img = await fileToTensor(selectedFile); // 🔥 now correct size
           const preds = model.predict(img) as tf.Tensor;
           const data = await preds.data();
 
-          // Get predicted class index
           const maxIdx = data.indexOf(Math.max(...Array.from(data)));
-
-          // Map to label (from your dataset classes)
-          const labels = ["not_payment", "payment"]; // adjust based on metadata.yaml
+          const labels = ["not_payment", "payment"]; // from metadata.yaml
           setPrediction(labels[maxIdx]);
 
           console.log("📊 Prediction:", labels[maxIdx], data);
+          img.dispose();
+          preds.dispose();
         }
       }
     }
