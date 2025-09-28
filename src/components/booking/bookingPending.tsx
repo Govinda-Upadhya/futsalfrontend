@@ -461,7 +461,7 @@ const BookingPending = () => {
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      Model detected: {prediction}
+                      {prediction}
                     </span>
                   </div>
                 )}
