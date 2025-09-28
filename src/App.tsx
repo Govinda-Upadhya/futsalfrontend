@@ -26,6 +26,7 @@ import NotFound from "./components/pageNotFound";
 import Confirmation from "./components/confirmation/confirmation";
 import FeedbackPage from "./pages/user/feedback";
 import OtpPage from "./components/otp/opt";
+import BookingAdminPage from "./components/admin/adminBooking";
 
 function App() {
   return (
@@ -63,7 +64,8 @@ function App() {
             <Route path="dashboard" element={<Admin />} />
             <Route path="config" element={<AdminConfig />} />
             <Route path="ground/:id" element={<Groundetails />} />
-            <Route path="booking/:groundId" element={<BookingPage />} />
+            <Route path="booking/:groundId" element={<BookingAdminPage />} />
+            <Route path="booking/confirmed" element={<Confirmation />} />
           </Route>
         </Route>
 
