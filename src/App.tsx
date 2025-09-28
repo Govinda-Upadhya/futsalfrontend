@@ -63,6 +63,7 @@ function App() {
             <Route path="dashboard" element={<Admin />} />
             <Route path="config" element={<AdminConfig />} />
             <Route path="ground/:id" element={<Groundetails />} />
+            <Route path="booking/:groundId" element={<BookingPage />} />
           </Route>
         </Route>
 
