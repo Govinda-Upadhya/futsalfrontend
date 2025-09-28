@@ -57,6 +57,7 @@ interface ValidationErrors {
 
 const BookingPending = () => {
   const navigate = useNavigate();
+  const [imgVal, setImageVal] = useState(false);
   const { booking_id } = useParams();
   const [bookingInfo, setBookingInfo] = useState<BookingInfoType>();
   const [file, setFile] = useState<File | null>(null);
@@ -175,9 +176,14 @@ const BookingPending = () => {
           const data = await preds.data();
 
           const maxIdx = data.indexOf(Math.max(...Array.from(data)));
-          const labels = ["not_payment", "payment"]; // from metadata.yaml
+          const labels = [
+            "Invalid payment screenshoot",
+            "Valid payment screenshoot",
+          ]; // from metadata.yaml
           setPrediction(labels[maxIdx]);
-
+          if (labels[maxIdx] == "Valid payment screenshoot") {
+            setImageVal(true);
+          }
           console.log("📊 Prediction:", labels[maxIdx], data);
           img.dispose();
           preds.dispose();
@@ -202,7 +208,7 @@ const BookingPending = () => {
     e.preventDefault();
     if (!file || !prediction) return;
 
-    if (prediction !== "payment") {
+    if (prediction !== "Valid payment screenshoot") {
       alert("⚠️ Please upload a valid payment screenshot.");
       return;
     }
@@ -461,7 +467,7 @@ const BookingPending = () => {
 
                 <button
                   type="submit"
-                  disabled={uploading}
+                  disabled={uploading || !imgVal}
                   onClick={handleSend}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >
