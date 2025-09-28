@@ -176,6 +176,7 @@ const BookingPending = () => {
           const data = await preds.data();
 
           const maxIdx = data.indexOf(Math.max(...Array.from(data)));
+          console.log("maxIdx", maxIdx);
           const labels = [
             "Invalid payment screenshoot",
             "Valid payment screenshoot",
@@ -455,7 +456,7 @@ const BookingPending = () => {
                   <div className="mt-2 text-center">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-bold ${
-                        prediction === "payment"
+                        prediction === "Valid payment screenshoot"
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700"
                       }`}
