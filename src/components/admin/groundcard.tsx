@@ -372,7 +372,7 @@ const Groundcard = ({ ground, onUpdate }) => {
               onClick={() => navigate(`/admin/booking/${ground._id}`)}
               className="text-emerald-600 font-medium text-sm bg-white px-3 py-2 rounded-full border border-emerald-200 hover:bg-emerald-50 transition-colors"
             >
-              Book Ground{" "}
+              Update Booking{" "}
               <span className="inline-block transition-transform group-hover:translate-x-1">
                 →
               </span>
