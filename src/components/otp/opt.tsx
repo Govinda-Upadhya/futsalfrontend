@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setEmail } from "../../slice/authSlice";
+import { Activity } from "lucide-react";
 
 export default function OtpPage(): JSX.Element {
   const [submitting, setSubmiting] = useState(false);
@@ -20,7 +21,6 @@ export default function OtpPage(): JSX.Element {
   const [message, setMessage] = useState<string>("");
   let email = useSelector((state: RootState) => state.auth.email);
   let dispatch = useDispatch();
-
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
 
@@ -52,13 +52,11 @@ export default function OtpPage(): JSX.Element {
     }
   };
   useEffect(() => {
-    console.log("email from useEffect redux", email);
     if (!email) {
       const newEmail = localStorage.getItem("email");
       console.log("email from useEffect local", newEmail);
       if (newEmail) {
         dispatch(setEmail(newEmail));
-        console.log("new email from useEffect redux from local", newEmail);
       } else {
         toast.error("make a booking first");
       }
@@ -68,7 +66,6 @@ export default function OtpPage(): JSX.Element {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("email from handlesumit redux", email);
     if (otp.some((digit) => digit === "")) {
       setMessage("Please fill all 6 digits");
       return;
@@ -111,11 +108,17 @@ export default function OtpPage(): JSX.Element {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-2 sm:p-4">
       <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md lg:max-w-lg">
-        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-gray-800">
-          Enter OTP
-        </h2>
+        <div className="flex items-center justify-center mb-6">
+          <div className="relative">
+            <Activity className="h-10 w-10 text-emerald-600 mr-2" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-ping"></div>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
+            Enter <span className="text-emerald-600">OTP</span>
+          </h2>
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* OTP Inputs */}
           <div className="flex justify-between gap-2 sm:gap-3">
@@ -153,7 +156,7 @@ export default function OtpPage(): JSX.Element {
         <p className="mt-6 text-center text-gray-500 text-sm">
           Didn't receive OTP?{" "}
           <button
-            className="text-indigo-600 hover:underline"
+            className="text-emerald-600 hover:underline"
             onClick={handleResend}
           >
             Resend
