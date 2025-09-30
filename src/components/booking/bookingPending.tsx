@@ -12,8 +12,30 @@ import { Download } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+import * as tf from "@tensorflow/tfjs";
 
 type TimeSlot = { start: string; end: string };
+const fileToTensor = async (file: File): Promise<tf.Tensor> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const tensor = tf.tidy(() => {
+          return tf.browser
+            .fromPixels(img)
+            .resizeBilinear([640, 640]) // 🔥 match YOLO input
+            .expandDims(0) // [1,640,640,3]
+            .toFloat()
+            .div(255.0); // normalize
+        });
+        resolve(tensor);
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+};
 
 interface BookingInfoType {
   _id: string;
@@ -35,6 +57,7 @@ interface ValidationErrors {
 
 const BookingPending = () => {
   const navigate = useNavigate();
+  const [imgVal, setImageVal] = useState(false);
   const { booking_id } = useParams();
   const [bookingInfo, setBookingInfo] = useState<BookingInfoType>();
   const [file, setFile] = useState<File | null>(null);
@@ -42,6 +65,17 @@ const BookingPending = () => {
   const [countdown, setCountdown] = useState(300);
   const [scanner, setScanner] = useState(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [model, setModel] = useState<tf.GraphModel | null>(null);
+  const [prediction, setPrediction] = useState<string | null>(null);
+  useEffect(() => {
+    async function loadModel() {
+      const loaded = await tf.loadGraphModel("/models/yolo/model.json");
+
+      setModel(loaded);
+      console.log("✅ Model loaded");
+    }
+    loadModel();
+  }, []);
 
   // Dummy data
   useEffect(() => {
@@ -124,7 +158,7 @@ const BookingPending = () => {
     link.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       const fileError = validateFile(selectedFile);
@@ -135,6 +169,26 @@ const BookingPending = () => {
       } else {
         setFile(selectedFile);
         setErrors((prev) => ({ ...prev, file: undefined }));
+
+        if (model) {
+          const img = await fileToTensor(selectedFile); // 🔥 now correct size
+          const preds = model.predict(img) as tf.Tensor;
+          const data = await preds.data();
+
+          const maxIdx = data.indexOf(Math.max(...Array.from(data)));
+          console.log("maxIdx", maxIdx);
+          const labels = [
+            "Invalid payment screenshoot",
+            "Valid payment screenshoot",
+          ]; // from metadata.yaml
+          setPrediction(labels[maxIdx]);
+          if (labels[maxIdx] == "Valid payment screenshoot") {
+            setImageVal(true);
+          }
+          console.log("📊 Prediction:", labels[maxIdx], data);
+          img.dispose();
+          preds.dispose();
+        }
       }
     }
   };
@@ -153,7 +207,10 @@ const BookingPending = () => {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (file == null) {
+    if (!file || !prediction) return;
+
+    if (prediction !== "Valid payment screenshoot") {
+      alert("⚠️ Please upload a valid payment screenshot.");
       return;
     }
     setUploading(true);
@@ -395,10 +452,23 @@ const BookingPending = () => {
                     Accepted formats: JPG, PNG, GIF. Max size: 5MB
                   </div>
                 </div>
+                {prediction && (
+                  <div className="mt-2 text-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-bold ${
+                        prediction === "Valid payment screenshoot"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {prediction}
+                    </span>
+                  </div>
+                )}
 
                 <button
                   type="submit"
-                  disabled={uploading}
+                  disabled={uploading || !imgVal}
                   onClick={handleSend}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >

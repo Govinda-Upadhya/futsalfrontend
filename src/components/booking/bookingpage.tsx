@@ -18,6 +18,10 @@ import {
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { base_url } from "../../types/ground";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { useDispatch } from "react-redux";
+import { setBookingid, setEmail, setOtpAvail } from "../../slice/authSlice";
 
 type TimeSlot = { start: string; end: string };
 
@@ -215,7 +219,9 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
 
 const BookingPage: React.FC = () => {
   const [groundloading, setGroundLoading] = useState(false);
-
+  const email = useSelector((state: RootState) => state.auth.email);
+  const booking_id = useSelector((state: RootState) => state.auth.booking_id);
+  const dispatch = useDispatch<AppDispatch>();
   const [disable, setDisbale] = useState<boolean>(false);
   const [bookedTime, setBookedTime] = useState<TimeSlot[]>([]);
   const { groundId } = useParams<{ groundId: string }>();
@@ -274,10 +280,11 @@ const BookingPage: React.FC = () => {
         data,
       }
     );
-    console.log(booking);
+    dispatch(setEmail(data.email));
+    localStorage.setItem("email", data.email);
 
     setIsBooking(false);
-    navigate(`/users/booking/${booking.data.booking_id}`);
+    navigate(`/user/booking/OTP`);
   };
 
   const getTotalAmount = () => {
@@ -408,7 +415,9 @@ const BookingPage: React.FC = () => {
                   {...register("date", {
                     required: "Please select a date",
                   })}
-                  min={new Date().toISOString().split("T")[0]}
+                  min={new Date().toLocaleDateString("en-CA", {
+                    timeZone: "Asia/Kolkata",
+                  })}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:outline-none transition-colors ${
                     errors.date
                       ? "border-red-500 focus:ring-red-500"

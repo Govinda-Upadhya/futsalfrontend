@@ -7,6 +7,6 @@ export default defineConfig({
   server: {
     host: true, // allows access from network
     port: 5173,
-    allowedHosts: ["www.thanggo.com", "thanggo.com"], // add your host here
+    allowedHosts: ["www.thanggo.com", "thanggo.com", "dev.thanggo.com"], // add your host here
   },
 });
