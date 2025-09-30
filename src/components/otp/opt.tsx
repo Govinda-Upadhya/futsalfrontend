@@ -11,12 +11,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setEmail } from "../../slice/authSlice";
 
 export default function OtpPage(): JSX.Element {
   const [submitting, setSubmiting] = useState(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [message, setMessage] = useState<string>("");
   let email = useSelector((state: RootState) => state.auth.email);
+  let dispatch = useDispatch();
   const bookingId = useSelector((state: RootState) => state.auth.booking_id);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
@@ -54,7 +57,8 @@ export default function OtpPage(): JSX.Element {
       const newEmail = localStorage.getItem("email");
       console.log("email from useEffect local", newEmail);
       if (newEmail) {
-        email = newEmail;
+        dispatch(setEmail(newEmail));
+        console.log("new email from useEffect redux from local", newEmail);
       } else {
         toast.error("make a booking first");
       }
