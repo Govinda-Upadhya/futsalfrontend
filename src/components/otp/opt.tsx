@@ -10,7 +10,7 @@ export default function OtpPage(): JSX.Element {
   const [submitting, setSubmiting] = useState(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [message, setMessage] = useState<string>("");
-  const email = useSelector((state: RootState) => state.auth.email);
+  let email = useSelector((state: RootState) => state.auth.email);
   const bookingId = useSelector((state: RootState) => state.auth.booking_id);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
@@ -45,6 +45,14 @@ export default function OtpPage(): JSX.Element {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!email) {
+      const newEmail = localStorage.getItem("email");
+      if (newEmail) {
+        email = newEmail;
+      } else {
+        toast.error("make a booking first");
+      }
+    }
     if (otp.some((digit) => digit === "")) {
       setMessage("Please fill all 6 digits");
       return;
@@ -60,6 +68,7 @@ export default function OtpPage(): JSX.Element {
 
       if (res.status === 200) {
         setSubmiting(false);
+        localStorage.removeItem("email");
         setTimeout(() => {
           navigate(`/users/booking/${bookingId}`);
         }, 2000);

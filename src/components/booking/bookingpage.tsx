@@ -282,7 +282,7 @@ const BookingPage: React.FC = () => {
     );
     dispatch(setEmail(data.email));
     dispatch(setBookingid(booking.data.booking_id));
-    console.log(booking);
+    localStorage.setItem("email", data.email);
 
     setIsBooking(false);
     navigate(`/user/booking/OTP`);
