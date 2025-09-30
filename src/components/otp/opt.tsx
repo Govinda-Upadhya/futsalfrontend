@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useState, useRef, FormEvent, ChangeEvent } from "react";
+import React, {
+  useState,
+  useRef,
+  FormEvent,
+  ChangeEvent,
+  useEffect,
+} from "react";
 import { base_url } from "../../types/ground";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -42,9 +48,7 @@ export default function OtpPage(): JSX.Element {
       }
     }
   };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  useEffect(() => {
     if (!email) {
       const newEmail = localStorage.getItem("email");
       if (newEmail) {
@@ -53,6 +57,12 @@ export default function OtpPage(): JSX.Element {
         toast.error("make a booking first");
       }
     }
+    return () => {};
+  }, []);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (otp.some((digit) => digit === "")) {
       setMessage("Please fill all 6 digits");
       return;
