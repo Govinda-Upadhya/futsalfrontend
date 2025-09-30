@@ -49,8 +49,10 @@ export default function OtpPage(): JSX.Element {
     }
   };
   useEffect(() => {
+    console.log("email from useEffect redux", email);
     if (!email) {
       const newEmail = localStorage.getItem("email");
+      console.log("email from useEffect local", newEmail);
       if (newEmail) {
         email = newEmail;
       } else {
@@ -62,7 +64,7 @@ export default function OtpPage(): JSX.Element {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    console.log("email from handlesumit redux", email);
     if (otp.some((digit) => digit === "")) {
       setMessage("Please fill all 6 digits");
       return;
