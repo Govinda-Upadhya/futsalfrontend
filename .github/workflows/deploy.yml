@@ -26,7 +26,7 @@ jobs:
               echo "🚀 Deploying PRODUCTION..."
               cd /root/app/futsalfrontend
               git pull origin main
-              npm install --omit=dev
+              npm install 
               pm2 restart fe
             elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
               echo "🚀 Deploying DEVELOPMENT..."
