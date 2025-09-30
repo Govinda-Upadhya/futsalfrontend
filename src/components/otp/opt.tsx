@@ -75,13 +75,14 @@ export default function OtpPage(): JSX.Element {
     try {
       const res = await axios.post(
         `${base_url}/users/verifyotp`,
-        { otp: otpCode, email },
+        { otp: otpCode, email, id: localStorage.getItem("id") },
         { withCredentials: true }
       );
 
       if (res.status === 200) {
         setSubmiting(false);
         localStorage.removeItem("email");
+        localStorage.removeItem("id");
         setTimeout(() => {
           navigate(`/users/booking/${res.data.id}`);
         }, 2000);
