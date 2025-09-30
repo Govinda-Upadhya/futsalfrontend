@@ -20,7 +20,7 @@ export default function OtpPage(): JSX.Element {
   const [message, setMessage] = useState<string>("");
   let email = useSelector((state: RootState) => state.auth.email);
   let dispatch = useDispatch();
-  const bookingId = useSelector((state: RootState) => state.auth.booking_id);
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
 
@@ -86,7 +86,7 @@ export default function OtpPage(): JSX.Element {
         setSubmiting(false);
         localStorage.removeItem("email");
         setTimeout(() => {
-          navigate(`/users/booking/${bookingId}`);
+          navigate(`/users/booking/${res.data.id}`);
         }, 2000);
       }
     } catch (error: any) {

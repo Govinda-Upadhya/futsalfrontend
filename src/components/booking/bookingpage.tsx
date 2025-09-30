@@ -281,7 +281,6 @@ const BookingPage: React.FC = () => {
       }
     );
     dispatch(setEmail(data.email));
-    dispatch(setBookingid(booking.data.booking_id));
     localStorage.setItem("email", data.email);
 
     setIsBooking(false);
