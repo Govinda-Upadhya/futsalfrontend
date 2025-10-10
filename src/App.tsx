@@ -27,6 +27,9 @@ import Confirmation from "./components/confirmation/confirmation";
 import FeedbackPage from "./pages/user/feedback";
 import OtpPage from "./components/otp/opt";
 import BookingAdminPage from "./components/admin/adminBooking";
+import ChallengeCard from "./components/challenge/challengeCard";
+import ChallengeotpPage from "./components/otp/challengeopt";
+import Confirmationchallenge from "./components/confirmation/challengeconfirmation";
 
 function App() {
   return (
@@ -39,11 +42,16 @@ function App() {
           <Route path="addChallenge" element={<AddChallengeForm />} />
           <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
           <Route path="user/booking/OTP" element={<OtpPage />} />
+          <Route path="user/verifychallenge" element={<ChallengeotpPage />} />
           <Route
             path="users/booking/:booking_id"
             element={<BookingPending />}
           />
           <Route path="users/booking/confirmed" element={<Confirmation />} />
+          <Route
+            path="users/challenge/confirmed"
+            element={<Confirmationchallenge />}
+          />
           <Route path="aboutus" element={<AboutUs />} />
           <Route path="feedback" element={<FeedbackPage />} />
           <Route path="contactus" element={<ContactUs />} />
