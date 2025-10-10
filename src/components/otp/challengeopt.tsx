@@ -87,6 +87,7 @@ export default function ChallengeotpPage(): JSX.Element {
     } catch (error: any) {
       setSubmiting(false);
       if (error.response) {
+        console.log(error.response);
         toast.error(error.response.data.message || "Verification failed");
       } else {
         toast.error("Something went wrong. Please try again.");
