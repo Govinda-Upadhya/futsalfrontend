@@ -40,6 +40,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="booking/:groundId" element={<BookingPage />} />
           <Route path="addChallenge" element={<AddChallengeForm />} />
+          <Route path="verifyotp/:id" element={<OtpPage />} />
           <Route path="acceptChallenge/:id" element={<AcceptChallenge />} />
           <Route path="user/booking/OTP" element={<OtpPage />} />
           <Route path="user/verifychallenge" element={<ChallengeotpPage />} />
