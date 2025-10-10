@@ -62,7 +62,7 @@ const AddChallengeForm: React.FC = () => {
 
     if (addChallenge.status === 200) {
       localStorage.setItem("email", data.email);
-      localStorage.setItem("challengeId", addChallenge.response.id);
+      localStorage.setItem("challengeId", addChallenge.data.id);
       navigate("/user/verifychallenge");
     }
   };
