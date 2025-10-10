@@ -75,7 +75,7 @@ export default function ChallengeotpPage(): JSX.Element {
     try {
       const res = await axios.post(
         `${base_url}/users/verifychallengeotp`,
-        { otp: otpCode, email },
+        { otp: otpCode, email, id: localStorage.getItem("challengeId") },
         { withCredentials: true }
       );
 
