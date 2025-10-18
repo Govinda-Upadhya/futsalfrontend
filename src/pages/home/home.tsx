@@ -423,7 +423,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             >
               Grounds
             </button>
-            <button
+            {/* <button
               onClick={() => handleTabClick("rivals")}
               className={`px-6 py-3 text-lg font-semibold transition ${
                 activeTab === "rivals"
@@ -432,7 +432,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               }`}
             >
               Challenges
-            </button>
+            </button> */}
           </div>
           {/* Grounds Section */}
           {activeTab === "grounds" && (
