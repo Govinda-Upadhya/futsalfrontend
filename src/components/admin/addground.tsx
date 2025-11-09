@@ -34,6 +34,7 @@ const Addground = () => {
       capacity: 0,
       pricePerHour: 0,
       nightprice: 0,
+      nightime: 0,
       rating: 4,
       features: [""],
       availability: [{ start: "", end: "" }],
@@ -533,6 +534,32 @@ const Addground = () => {
             {errors.nightprice && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.nightprice.message}
+              </p>
+            )}
+          </div>
+          {/* night time*/}
+          <div className="w-full">
+            <label className="block font-medium text-gray-700 mb-2">
+              Time Shift Start Time
+            </label>
+            <div className="relative w-full">
+              <input
+                type="time"
+                {...register("nightime", {
+                  required: "Night time is required",
+                  pattern: {
+                    value: /^(1[3-9]|2[0-2]):[0-5]\d$/, // ✅ allows 13:00–22:59 only
+                    message: "Time must be between 1 PM and 11 PM",
+                  },
+                })}
+                className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                placeholder="0.00"
+              />
+              <span className="absolute left-3 top-3 text-gray-400">PM</span>
+            </div>
+            {errors.nightime && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.nightime.message}
               </p>
             )}
           </div>
