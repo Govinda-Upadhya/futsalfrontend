@@ -243,7 +243,7 @@ const Addground = () => {
 
     const slots = generateTimeSlots(availability[0].start, availability[0].end);
     const submitData = { ...data, availability: slots, images };
-
+    console.log(submitData);
     try {
       // Upload images first
       const formData = new FormData();
