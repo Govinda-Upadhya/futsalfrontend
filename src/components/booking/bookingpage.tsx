@@ -292,6 +292,7 @@ const BookingPage: React.FC = () => {
   const getTotalAmount = () => {
     const price = ground ? ground.pricePerHour : 0;
     let total = 0;
+    console.log("night time", ground?.nightime);
     for (const time of selectedTimeSlot) {
       if (
         parseInt(time.start.replace(":", ""), 10) >=
