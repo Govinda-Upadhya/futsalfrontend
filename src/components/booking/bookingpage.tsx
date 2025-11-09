@@ -296,7 +296,7 @@ const BookingPage: React.FC = () => {
     for (const time of selectedTimeSlot) {
       if (
         parseInt(time.start.replace(":", ""), 10) >=
-        parseInt(ground!.nightime.replace(":", ""), 10)
+        parseInt(ground!.nightime, 10) * 100
       ) {
         total += ground!.nightprice;
       } else {
