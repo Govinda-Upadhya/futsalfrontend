@@ -19,6 +19,7 @@ interface GroundCardProps {
 
 const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
   const navigate = useNavigate();
+  const [day, setDay] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -190,9 +191,14 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
           )}
 
           {/* Price badge - bottom right */}
-          <div className="absolute bottom-3 right-3 bg-green-600 text-white rounded-lg px-2 py-1 shadow-sm">
+          <div
+            className={`absolute bottom-3 right-3 ${
+              day ? "bg-green-600 text-white" : "bg-black text-white"
+            } rounded-lg px-2 py-1 shadow-sm`}
+            onClick={() => setDay((p) => !p)}
+          >
             <span className="text-xs font-bold">
-              Nu. {ground.pricePerHour}/hr
+              Nu. {day ? ground.pricePerHour : ground.nightprice}/hr
             </span>
           </div>
         </div>

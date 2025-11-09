@@ -4,6 +4,7 @@ export interface Ground {
   type: "Football" | "Cricket" | "Basketball" | "Tennis" | "Badminton";
   location: string;
   pricePerHour: number;
+  nightprice: number;
   rating: number;
   features: string[];
   image: string;
