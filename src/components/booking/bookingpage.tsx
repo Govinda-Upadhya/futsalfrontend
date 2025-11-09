@@ -189,9 +189,20 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
         </p>
 
         <div className="flex items-center justify-between mb-4">
-          <div className="text-2xl font-bold text-emerald-700">
-            Nu.{ground.pricePerHour}
-            <span className="text-lg font-normal text-gray-500">/hour</span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+            <div className="text-2xl font-bold text-emerald-700">
+              Nu.{ground.pricePerHour}
+              <span className="text-lg font-normal text-gray-500">
+                /hr (Day)
+              </span>
+            </div>
+
+            <div className="text-xl font-semibold text-blue-700">
+              Nu.{ground.nightprice}
+              <span className="text-sm font-normal text-gray-500">
+                /hr (Night)
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
