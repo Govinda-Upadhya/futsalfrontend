@@ -4,6 +4,7 @@ import { data, useNavigate } from "react-router-dom";
 import { base_url, upload_base_url, type Ground } from "../../types/ground";
 
 const Groundcard = ({ ground, onUpdate }) => {
+  const [nightime, setNightime] = useState<string>();
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ const Groundcard = ({ ground, onUpdate }) => {
         newImageUrls: newImagesUrls,
         pricePerHour: parseFloat(editFormData.pricePerHour),
         nightprice: parseFloat(editFormData.nightprice),
+        nightime: nightime,
       };
       console.log(formattedData);
 
@@ -661,6 +663,24 @@ const Groundcard = ({ ground, onUpdate }) => {
                     min="0"
                     step="0.01"
                   />
+                </div>
+              </div>
+              <div className="w-full">
+                <label className="block font-medium text-gray-700 mb-2">
+                  Night Shift Start Time
+                </label>
+                <div className="relative w-full">
+                  <input
+                    onChange={(e) => {
+                      setNightime(e.target.value);
+                    }}
+                    type="time"
+                    className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                    placeholder="0.00"
+                  />
+                  <span className="absolute left-3 top-3 text-gray-400">
+                    PM
+                  </span>
                 </div>
               </div>
 
