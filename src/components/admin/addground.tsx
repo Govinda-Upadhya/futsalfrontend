@@ -266,6 +266,7 @@ const Addground = () => {
           location: submitData.location,
           pricePerHour: submitData.pricePerHour,
           nightprice: submitData.nightprice,
+          nightime: submitData.nightime,
           rating: submitData.rating,
           features: submitData.features.filter((f) => f !== ""),
           capacity: submitData.capacity,
