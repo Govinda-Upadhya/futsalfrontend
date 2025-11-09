@@ -33,6 +33,7 @@ const Addground = () => {
       location: "",
       capacity: 0,
       pricePerHour: 0,
+      nightprice: 0,
       rating: 4,
       features: [""],
       availability: [{ start: "", end: "" }],
@@ -263,6 +264,7 @@ const Addground = () => {
           type: submitData.type,
           location: submitData.location,
           pricePerHour: submitData.pricePerHour,
+          nightprice: submitData.nightprice,
           rating: submitData.rating,
           features: submitData.features.filter((f) => f !== ""),
           capacity: submitData.capacity,
@@ -508,6 +510,29 @@ const Addground = () => {
             {errors.pricePerHour && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.pricePerHour.message}
+              </p>
+            )}
+          </div>
+          {/* Price per Hour at night*/}
+          <div className="w-full">
+            <label className="block font-medium text-gray-700 mb-2">
+              Price Per Hour at Night (Nu.)
+            </label>
+            <div className="relative w-full">
+              <input
+                type="number"
+                {...register("nightprice", {
+                  required: "Price per hour is required",
+                  min: { value: 0, message: "Price cannot be negative" },
+                })}
+                className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                placeholder="0.00"
+              />
+              <span className="absolute left-3 top-3 text-gray-400">Nu.</span>
+            </div>
+            {errors.nightprice && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.nightprice.message}
               </p>
             )}
           </div>
