@@ -40,6 +40,7 @@ interface Ground {
   description: string;
   pricePerHour: number;
   nightprice: number;
+  nightime: string;
   features: string[];
   availability: TimeSlot[];
   images: string[];
@@ -292,10 +293,13 @@ const BookingPage: React.FC = () => {
     const price = ground ? ground.pricePerHour : 0;
     let total = 0;
     for (const time of selectedTimeSlot) {
-      if (parseInt(time.start.replace(":", ""), 10) >= 1800) {
-        total += ground.nightprice;
+      if (
+        parseInt(time.start.replace(":", ""), 10) >=
+        parseInt(ground!.nightime.replace(":", ""), 10)
+      ) {
+        total += ground!.nightprice;
       } else {
-        total += ground.pricePerHour;
+        total += ground!.pricePerHour;
       }
     }
     return total;
