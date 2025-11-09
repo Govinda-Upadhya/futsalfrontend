@@ -201,7 +201,7 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
           >
             <span className="text-xs font-bold">
               {day ? (
-                <Sun className="text-white" />
+                <Sun className="text-white h-2" />
               ) : (
                 <Moon className="text-white" />
               )}
