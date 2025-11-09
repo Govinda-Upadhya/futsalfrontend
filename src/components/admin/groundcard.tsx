@@ -27,6 +27,7 @@ const Groundcard = ({ ground, onUpdate }) => {
     location: ground.location || "",
     capacity: ground.capacity || 0,
     pricePerHour: ground.pricePerHour || 0,
+    pricenight: ground.pricenight || 0,
     features: ground.features || [],
     images: ground.image || [],
     availability: ground.availability || [],
@@ -90,6 +91,7 @@ const Groundcard = ({ ground, onUpdate }) => {
         removedImages: removedImageUrls,
         newImageUrls: newImagesUrls,
         pricePerHour: parseFloat(editFormData.pricePerHour),
+        pricenight: parseFloat(editFormData.pricenight),
       };
       console.log(formattedData);
 
@@ -652,7 +654,7 @@ const Groundcard = ({ ground, onUpdate }) => {
                     type="number"
                     id="pricenight"
                     name="pricenight"
-                    value={editFormData.pricePerHour}
+                    value={editFormData.pricenight}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     required
