@@ -194,17 +194,19 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
 
           {/* Price badge - bottom right */}
           <div
-            className={`absolute bottom-3 right-3 ${
-              day ? "bg-green-600 text-white" : "bg-black text-white"
-            } rounded-lg px-2 py-1 shadow-sm`}
+            className={`absolute bottom-3 right-3 flex items-center gap-1 cursor-pointer transition-all duration-200 ${
+              day
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-gray-900 hover:bg-gray-800"
+            } text-white rounded-lg px-2 py-1 shadow-md`}
             onClick={() => setDay((p) => !p)}
           >
-            <span className="text-xs font-bold">
-              {day ? (
-                <Sun className="text-white h-2" />
-              ) : (
-                <Moon className="text-white" />
-              )}
+            {day ? (
+              <Sun className="h-4 w-4 text-yellow-300" />
+            ) : (
+              <Moon className="h-4 w-4 text-blue-300" />
+            )}
+            <span className="text-xs font-semibold whitespace-nowrap">
               Nu. {day ? ground.pricePerHour : ground.nightprice}/hr
             </span>
           </div>
