@@ -641,6 +641,25 @@ const Groundcard = ({ ground, onUpdate }) => {
                     step="0.01"
                   />
                 </div>
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="pricenight"
+                  >
+                    Price Per Hour at night(Nu)
+                  </label>
+                  <input
+                    type="number"
+                    id="pricenight"
+                    name="pricenight"
+                    value={editFormData.pricePerHour}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
               </div>
 
               <div className="mb-4">
