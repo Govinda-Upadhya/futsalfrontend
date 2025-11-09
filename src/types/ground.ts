@@ -9,6 +9,7 @@ export interface Ground {
   image: string;
   description: string;
   availability: string[];
+  nightprice: number;
 }
 
 export interface Booking {
