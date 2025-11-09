@@ -9,6 +9,8 @@ import {
   Share2,
   Eye,
   Map,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { type Ground } from "../../types/ground.ts";
 import { useNavigate } from "react-router-dom";
@@ -198,6 +200,11 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
             onClick={() => setDay((p) => !p)}
           >
             <span className="text-xs font-bold">
+              {day ? (
+                <Sun className="text-white" />
+              ) : (
+                <Moon className="text-white" />
+              )}
               Nu. {day ? ground.pricePerHour : ground.nightprice}/hr
             </span>
           </div>
