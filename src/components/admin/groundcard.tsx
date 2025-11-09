@@ -27,7 +27,7 @@ const Groundcard = ({ ground, onUpdate }) => {
     location: ground.location || "",
     capacity: ground.capacity || 0,
     pricePerHour: ground.pricePerHour || 0,
-    pricenight: ground.pricenight || 0,
+    nightprice: ground.nightprice || 0,
     features: ground.features || [],
     images: ground.image || [],
     availability: ground.availability || [],
@@ -91,7 +91,7 @@ const Groundcard = ({ ground, onUpdate }) => {
         removedImages: removedImageUrls,
         newImageUrls: newImagesUrls,
         pricePerHour: parseFloat(editFormData.pricePerHour),
-        pricenight: parseFloat(editFormData.pricenight),
+        nightprice: parseFloat(editFormData.nightprice),
       };
       console.log(formattedData);
 
@@ -646,15 +646,15 @@ const Groundcard = ({ ground, onUpdate }) => {
                 <div>
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="pricenight"
+                    htmlFor="nightprice"
                   >
                     Price Per Hour at night(Nu)
                   </label>
                   <input
                     type="number"
-                    id="pricenight"
-                    name="pricenight"
-                    value={editFormData.pricenight}
+                    id="nightprice"
+                    name="nightprice"
+                    value={editFormData.nightprice}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     required
