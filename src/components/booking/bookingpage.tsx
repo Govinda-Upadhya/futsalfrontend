@@ -320,6 +320,7 @@ const BookingPage: React.FC = () => {
     let total = 0;
     const selectDay = new Date(selectedDate);
     const day = selectDay.getDay();
+    console.log("day", day);
     for (const time of selectedTimeSlot) {
       if (
         parseInt(time.start.replace(":", ""), 10) >=
