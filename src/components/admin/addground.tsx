@@ -497,9 +497,14 @@ const Addground = () => {
           </div>
 
           {/* Price per Hour */}
-          <div>
-            <p>Weekday Price (Mon-Fri)</p>
-            <div className="w-full">
+          {/* ===== Weekday Prices ===== */}
+          <div className="bg-emerald-50 p-5 rounded-2xl shadow-sm border border-emerald-100 mb-6">
+            <h3 className="text-lg font-semibold text-emerald-700 mb-4">
+              Weekday Price (Mon – Fri)
+            </h3>
+
+            {/* Daytime Price */}
+            <div className="mb-4">
               <label className="block font-medium text-gray-700 mb-2">
                 Price Per Hour (Nu.)
               </label>
@@ -510,7 +515,7 @@ const Addground = () => {
                     required: "Price per hour is required",
                     min: { value: 0, message: "Price cannot be negative" },
                   })}
-                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
                   placeholder="0.00"
                 />
                 <span className="absolute left-3 top-3 text-gray-400">Nu.</span>
@@ -521,8 +526,9 @@ const Addground = () => {
                 </p>
               )}
             </div>
-            {/* Price per Hour at night*/}
-            <div className="w-full">
+
+            {/* Nighttime Price */}
+            <div>
               <label className="block font-medium text-gray-700 mb-2">
                 Price Per Hour at Night (Nu.)
               </label>
@@ -530,10 +536,10 @@ const Addground = () => {
                 <input
                   type="number"
                   {...register("nightprice", {
-                    required: "Price per hour is required",
+                    required: "Night price is required",
                     min: { value: 0, message: "Price cannot be negative" },
                   })}
-                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
                   placeholder="0.00"
                 />
                 <span className="absolute left-3 top-3 text-gray-400">Nu.</span>
@@ -545,9 +551,15 @@ const Addground = () => {
               )}
             </div>
           </div>
-          <div>
-            <p>Weekend price (Sat-Sun)</p>
-            <div className="w-full">
+
+          {/* ===== Weekend Prices ===== */}
+          <div className="bg-orange-50 p-5 rounded-2xl shadow-sm border border-orange-100">
+            <h3 className="text-lg font-semibold text-orange-700 mb-4">
+              Weekend Price (Sat – Sun)
+            </h3>
+
+            {/* Daytime Price */}
+            <div className="mb-4">
               <label className="block font-medium text-gray-700 mb-2">
                 Price Per Hour (Nu.)
               </label>
@@ -555,10 +567,10 @@ const Addground = () => {
                 <input
                   type="number"
                   {...register("weekendPrice", {
-                    required: "Price per hour is required",
+                    required: "Weekend price per hour is required",
                     min: { value: 0, message: "Price cannot be negative" },
                   })}
-                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition"
                   placeholder="0.00"
                 />
                 <span className="absolute left-3 top-3 text-gray-400">Nu.</span>
@@ -569,8 +581,9 @@ const Addground = () => {
                 </p>
               )}
             </div>
-            {/* Price per Hour at night*/}
-            <div className="w-full">
+
+            {/* Nighttime Price */}
+            <div>
               <label className="block font-medium text-gray-700 mb-2">
                 Price Per Hour at Night (Nu.)
               </label>
@@ -578,10 +591,10 @@ const Addground = () => {
                 <input
                   type="number"
                   {...register("weekendNightPrice", {
-                    required: "Price per hour is required",
+                    required: "Weekend night price is required",
                     min: { value: 0, message: "Price cannot be negative" },
                   })}
-                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                  className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition"
                   placeholder="0.00"
                 />
                 <span className="absolute left-3 top-3 text-gray-400">Nu.</span>
@@ -593,6 +606,7 @@ const Addground = () => {
               )}
             </div>
           </div>
+
           {/* night time*/}
           <div className="w-full">
             <label className="block font-medium text-gray-700 mb-2">

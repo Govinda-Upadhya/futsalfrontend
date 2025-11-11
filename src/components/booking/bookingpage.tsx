@@ -40,6 +40,8 @@ interface Ground {
   description: string;
   pricePerHour: number;
   nightprice: number;
+  weekendPrice: number;
+  weekendNightPrice: number;
   nightime: string;
   features: string[];
   availability: TimeSlot[];
@@ -203,6 +205,19 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
                 /hr (Night)
               </span>
             </div>
+            <div className="text-2xl font-bold text-emerald-700">
+              Nu.{ground.weekendPrice}
+              <span className="text-lg font-normal text-gray-500">
+                /hr (Weekend Day)
+              </span>
+            </div>
+
+            <div className="text-xl font-semibold text-blue-700">
+              Nu.{ground.weekendNightPrice}
+              <span className="text-sm font-normal text-gray-500">
+                /hr (weekend Night)
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
@@ -303,13 +318,22 @@ const BookingPage: React.FC = () => {
   const getTotalAmount = () => {
     const price = ground ? ground.pricePerHour : 0;
     let total = 0;
-
+    const selectDay = new Date(selectedDate);
+    const day = selectDay.getDay();
     for (const time of selectedTimeSlot) {
       if (
         parseInt(time.start.replace(":", ""), 10) >=
         parseInt(ground!.nightime, 10) * 100
       ) {
-        total += ground!.nightprice;
+        if (day == 0 || day == 6) {
+          total += ground.weekendNightPrice;
+        } else {
+          if (day == 0 || day == 6) {
+            total += ground.weekendPrice;
+          } else {
+            total += ground.pricePerHour;
+          }
+        }
       } else {
         total += ground!.pricePerHour;
       }

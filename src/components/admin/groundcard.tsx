@@ -610,7 +610,8 @@ const Groundcard = ({ ground, onUpdate }) => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Capacity */}
                 <div>
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"
@@ -629,88 +630,122 @@ const Groundcard = ({ ground, onUpdate }) => {
                     min="1"
                   />
                 </div>
-                <div>
-                  <p>Weekday price</p>
-                  <div>
+
+                {/* Weekday Prices */}
+                <div className="border border-gray-200 rounded-xl p-4 shadow-sm">
+                  <h3 className="text-lg font-semibold text-emerald-700 mb-3">
+                    Weekday Prices
+                  </h3>
+
+                  {/* Day Price */}
+                  <div className="mb-3">
                     <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
+                      className="block text-gray-700 text-sm font-medium mb-1"
                       htmlFor="pricePerHour"
                     >
-                      Price Per Hour (Nu)
+                      Price Per Hour (Day)
                     </label>
-                    <input
-                      type="number"
-                      id="pricePerHour"
-                      name="pricePerHour"
-                      value={editFormData.pricePerHour}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      required
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-2.5 text-gray-400">
+                        Nu.
+                      </span>
+                      <input
+                        type="number"
+                        id="pricePerHour"
+                        name="pricePerHour"
+                        value={editFormData.pricePerHour}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
                   </div>
 
+                  {/* Night Price */}
                   <div>
                     <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
+                      className="block text-gray-700 text-sm font-medium mb-1"
                       htmlFor="nightprice"
                     >
-                      Price Per Hour at night(Nu)
+                      Price Per Hour (Night)
                     </label>
-                    <input
-                      type="number"
-                      id="nightprice"
-                      name="nightprice"
-                      value={editFormData.nightprice}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      required
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-2.5 text-gray-400">
+                        Nu.
+                      </span>
+                      <input
+                        type="number"
+                        id="nightprice"
+                        name="nightprice"
+                        value={editFormData.nightprice}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <p>Weekend price</p>
-                  <div>
+
+                {/* Weekend Prices */}
+                <div className="border border-gray-200 rounded-xl p-4 shadow-sm">
+                  <h3 className="text-lg font-semibold text-emerald-700 mb-3">
+                    Weekend Prices
+                  </h3>
+
+                  {/* Day Price */}
+                  <div className="mb-3">
                     <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
+                      className="block text-gray-700 text-sm font-medium mb-1"
                       htmlFor="weekendPrice"
                     >
-                      Price Per Hour (Nu)
+                      Price Per Hour (Day)
                     </label>
-                    <input
-                      type="number"
-                      id="weekendPrice"
-                      name="weekendPrice"
-                      value={editFormData.weekendPrice}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      required
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-2.5 text-gray-400">
+                        Nu.
+                      </span>
+                      <input
+                        type="number"
+                        id="weekendPrice"
+                        name="weekendPrice"
+                        value={editFormData.weekendPrice}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
                   </div>
 
+                  {/* Night Price */}
                   <div>
                     <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
+                      className="block text-gray-700 text-sm font-medium mb-1"
                       htmlFor="weekendNightPrice"
                     >
-                      Price Per Hour at night(Nu)
+                      Price Per Hour (Night)
                     </label>
-                    <input
-                      type="number"
-                      id="weekendNightPrice"
-                      name="weekendNightPrice"
-                      value={editFormData.weekendNightPrice}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                      required
-                      min="0"
-                      step="0.01"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-2.5 text-gray-400">
+                        Nu.
+                      </span>
+                      <input
+                        type="number"
+                        id="weekendNightPrice"
+                        name="weekendNightPrice"
+                        value={editFormData.weekendNightPrice}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        required
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
