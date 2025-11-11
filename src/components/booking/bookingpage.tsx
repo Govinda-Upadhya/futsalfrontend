@@ -284,6 +284,7 @@ const BookingPage: React.FC = () => {
       screenshot: false,
       time: selectedTimeSlot,
     };
+    console.log("data", bookingPayload);
 
     // Store the booking data in local storage
 
