@@ -29,6 +29,8 @@ const Groundcard = ({ ground, onUpdate }) => {
     capacity: ground.capacity || 0,
     pricePerHour: ground.pricePerHour || 0,
     nightprice: ground.nightprice || 0,
+    weekendPrice: ground.weekendPrice || 0,
+    weekendNightPrice: ground.weekendNightPrice || 0,
     features: ground.features || [],
     images: ground.image || [],
     availability: ground.availability || [],
@@ -93,6 +95,8 @@ const Groundcard = ({ ground, onUpdate }) => {
         newImageUrls: newImagesUrls,
         pricePerHour: parseFloat(editFormData.pricePerHour),
         nightprice: parseFloat(editFormData.nightprice),
+        weekendNightPrice: parseFloat(editFormData.weekendNightPrice),
+        weekendPrice: parseFloat(editFormData.weekendPrice),
         nightime: nightime,
       };
       console.log(formattedData);
@@ -625,46 +629,92 @@ const Groundcard = ({ ground, onUpdate }) => {
                     min="1"
                   />
                 </div>
-
                 <div>
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="pricePerHour"
-                  >
-                    Price Per Hour (Nu)
-                  </label>
-                  <input
-                    type="number"
-                    id="pricePerHour"
-                    name="pricePerHour"
-                    value={editFormData.pricePerHour}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    required
-                    min="0"
-                    step="0.01"
-                  />
+                  <p>Weekday price</p>
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="pricePerHour"
+                    >
+                      Price Per Hour (Nu)
+                    </label>
+                    <input
+                      type="number"
+                      id="pricePerHour"
+                      name="pricePerHour"
+                      value={editFormData.pricePerHour}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="nightprice"
+                    >
+                      Price Per Hour at night(Nu)
+                    </label>
+                    <input
+                      type="number"
+                      id="nightprice"
+                      name="nightprice"
+                      value={editFormData.nightprice}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
                 </div>
                 <div>
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="nightprice"
-                  >
-                    Price Per Hour at night(Nu)
-                  </label>
-                  <input
-                    type="number"
-                    id="nightprice"
-                    name="nightprice"
-                    value={editFormData.nightprice}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    required
-                    min="0"
-                    step="0.01"
-                  />
+                  <p>Weekend price</p>
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="weekendPrice"
+                    >
+                      Price Per Hour (Nu)
+                    </label>
+                    <input
+                      type="number"
+                      id="weekendPrice"
+                      name="weekendPrice"
+                      value={editFormData.weekendPrice}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="weekendNightPrice"
+                    >
+                      Price Per Hour at night(Nu)
+                    </label>
+                    <input
+                      type="number"
+                      id="weekendNightPrice"
+                      name="weekendNightPrice"
+                      value={editFormData.weekendNightPrice}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
                 </div>
               </div>
+
               <div className="w-full">
                 <label className="block font-medium text-gray-700 mb-2">
                   Night Shift Start Time
