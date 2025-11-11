@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapPin,
   Users,
@@ -61,6 +61,12 @@ const GroundCard: React.FC<GroundCardProps> = ({ ground }) => {
     };
     return icons[type as keyof typeof icons] || "🏟️";
   };
+  useEffect(() => {
+    setInterval(() => {
+      setDay((p) => !p);
+    }, 5000);
+    return () => {};
+  }, []);
 
   const handleViewDetailsClick = (e: React.MouseEvent) => {
     e.stopPropagation();
