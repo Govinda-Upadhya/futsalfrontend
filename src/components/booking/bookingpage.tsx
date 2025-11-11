@@ -329,14 +329,14 @@ const BookingPage: React.FC = () => {
         if (day == 0 || day == 6) {
           total += ground.weekendNightPrice;
         } else {
-          if (day == 0 || day == 6) {
-            total += ground.weekendPrice;
-          } else {
-            total += ground.pricePerHour;
-          }
+          total += ground.nightprice;
         }
       } else {
-        total += ground!.pricePerHour;
+        if (day == 0 || day == 6) {
+          total += ground.weekendPrice;
+        } else {
+          total += ground.pricePerHour;
+        }
       }
     }
     return total;
