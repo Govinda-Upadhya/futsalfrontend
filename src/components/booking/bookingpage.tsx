@@ -190,38 +190,45 @@ const GroundCard: React.FC<{ ground: Ground }> = ({ ground }) => {
           {ground.description}
         </p>
 
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
-            <div className="text-2xl font-bold text-emerald-700">
-              Nu.{ground.pricePerHour}
-              <span className="text-lg font-normal text-gray-500">
-                /hr (Day)
-              </span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+          {/* Pricing Section */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {/* Weekday (Day) */}
+            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-center shadow-sm">
+              <div className="text-lg font-semibold text-emerald-700">
+                Nu.{ground.pricePerHour}
+              </div>
+              <div className="text-sm text-gray-600">Weekday (Day)</div>
             </div>
 
-            <div className="text-xl font-semibold text-blue-700">
-              Nu.{ground.nightprice}
-              <span className="text-sm font-normal text-gray-500">
-                /hr (Night)
-              </span>
-            </div>
-            <div className="text-2xl font-bold text-emerald-700">
-              Nu.{ground.weekendPrice}
-              <span className="text-lg font-normal text-gray-500">
-                /hr (Weekend Day)
-              </span>
+            {/* Weekday (Night) */}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center shadow-sm">
+              <div className="text-lg font-semibold text-blue-700">
+                Nu.{ground.nightprice}
+              </div>
+              <div className="text-sm text-gray-600">Weekday (Night)</div>
             </div>
 
-            <div className="text-xl font-semibold text-blue-700">
-              Nu.{ground.weekendNightPrice}
-              <span className="text-sm font-normal text-gray-500">
-                /hr (weekend Night)
-              </span>
+            {/* Weekend (Day) */}
+            <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 text-center shadow-sm">
+              <div className="text-lg font-semibold text-orange-700">
+                Nu.{ground.weekendPrice}
+              </div>
+              <div className="text-sm text-gray-600">Weekend (Day)</div>
+            </div>
+
+            {/* Weekend (Night) */}
+            <div className="bg-purple-50 border border-purple-100 rounded-xl p-3 text-center shadow-sm">
+              <div className="text-lg font-semibold text-purple-700">
+                Nu.{ground.weekendNightPrice}
+              </div>
+              <div className="text-sm text-gray-600">Weekend (Night)</div>
             </div>
           </div>
 
-          <div className="flex items-center bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
+          {/* Availability Badge */}
+          <div className="flex items-center justify-center sm:justify-end bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full shadow-sm">
+            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
             <span className="text-sm font-medium">Available Now</span>
           </div>
         </div>
