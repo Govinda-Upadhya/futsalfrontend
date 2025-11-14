@@ -23,6 +23,7 @@ import GroundCard from "../../components/ground/GroundCard";
 import ChallengeCard from "../../components/challenge/challengeCard";
 import axios from "axios";
 import GoogleLoader from "../../components/Loader";
+import GroundFeeSplitCalculator from "../user/priceSplitter";
 
 const HomePage: React.FC = () => {
   const [showChallengeInfoPopup, setShowChallengeInfoPopup] = useState(false);
@@ -35,13 +36,15 @@ const HomePage: React.FC = () => {
   const [searchType, setSearchType] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [grounds, setGrounds] = useState<Ground[]>([]);
-  const [activeTab, setActiveTab] = useState<"grounds" | "rivals">("grounds");
+  const [activeTab, setActiveTab] = useState<
+    "grounds" | "rivals" | "feesSplitter"
+  >("grounds");
   const [challenges, setChallenges] = useState<any[]>([]);
   const [challengeSearch, setChallengeSearch] = useState("");
   const [challengeDateSearch, setChallengeDateSearch] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [activePolicy, setActivePolicy] = useState<string | null>(null);
-  const handleTabClick = (tab: "grounds" | "rivals") => {
+  const handleTabClick = (tab: "grounds" | "rivals" | "feesSplitter") => {
     setActiveTab(tab);
     // Only show the popup if the user clicks Challenges for the first time
     if (tab === "rivals" && !hasSeenChallengeInfo) {
@@ -433,6 +436,16 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             >
               Challenges
             </button> */}
+            <button
+              onClick={() => handleTabClick("feesSplitter")}
+              className={`px-6 py-3 text-lg font-semibold transition ${
+                activeTab === "rivals"
+                  ? "border-b-4 border-emerald-600 text-emerald-700"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Fees Splitter
+            </button>
           </div>
           {/* Grounds Section */}
           {activeTab === "grounds" && (
@@ -628,6 +641,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
           )}{" "}
         </div>
       </div>
+      {activeTab == "feesSplitter" && <GroundFeeSplitCalculator />}
       {showChallengeInfoPopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           {/* Blurred glass-like background */}
