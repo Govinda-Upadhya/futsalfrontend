@@ -22,7 +22,7 @@ export default function GroundFeeSplitCalculator() {
         const perPersonPaymentWinner = winnerTeamPay / totalPlayers;
         const advancePayerMoney = downPayment - perPersonPaymentWinner;
         console.log(advancePayerMoney);
-        if (advancePayerMoney < 0) {
+        if (advancePayerMoney > 0) {
           notice = `The person who paid advance will get back ${Math.abs(
             advancePayerMoney
           )} from losing team`;
