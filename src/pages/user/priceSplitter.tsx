@@ -6,6 +6,7 @@ export default function GroundFeeSplitCalculator() {
   const [loserPercent, setLoserPercent] = useState(70);
   const [matchFormat, setMatchFormat] = useState("6v6");
   const [advanceTeam, setAdvanceTeam] = useState("winner");
+  const [notice, setNotice] = useState("");
 
   // basic values
   const totalPrice = pricePerHour * hours;
@@ -14,19 +15,47 @@ export default function GroundFeeSplitCalculator() {
   // split calculation
   const loserTeamPay = (totalPrice * loserPercent) / 100;
   const winnerTeamPay = totalPrice - loserTeamPay;
-
+  const totalPlayers = parseInt(matchFormat.split("v")[0]);
   // advance payer effect
   let advancePayerFinal;
   if (advanceTeam === "winner") {
     // winning team pays less + may get back extra
-    const winnerShareAfterAdvance = winnerTeamPay - downPayment;
-    const loserContributionToAdvance = (downPayment * loserPercent) / 100;
+    const perPersonPaymentWinner = winnerTeamPay / totalPlayers;
+    const advancePayerMoney = downPayment - perPersonPaymentWinner;
+    if (advancePayerMoney < 0) {
+      setNotice(
+        `The person who paid advance will get back ${Math.abs(
+          advancePayerMoney
+        )} from losing team`
+      );
+    } else {
+      setNotice(
+        `The person who paid advance will have to pay only ${Math.abs(
+          advancePayerMoney
+        )}`
+      );
+    }
+    // const winnerShareAfterAdvance = winnerTeamPay - downPayment;
+    // const loserContributionToAdvance = (downPayment * loserPercent) / 100;
 
-    advancePayerFinal = winnerShareAfterAdvance - loserContributionToAdvance;
+    // advancePayerFinal = winnerShareAfterAdvance - loserContributionToAdvance;
   } else {
     // losing team paid advance → reduce their remaining
-    const loserShareAfterAdvance = loserTeamPay - downPayment;
-    advancePayerFinal = loserShareAfterAdvance;
+    const perPersonPaymentWinner = loserTeamPay / totalPlayers;
+    const advancePayerMoney = downPayment - perPersonPaymentWinner;
+    if (advancePayerMoney > 0) {
+      setNotice(
+        `The person who paid advance will pay only ${Math.abs(
+          advancePayerMoney
+        )} `
+      );
+    } else {
+      setNotice(
+        `The person who paid advance will have to get back ${Math.abs(
+          advancePayerMoney
+        )} from its team members`
+      );
+    }
   }
 
   return (
@@ -117,7 +146,7 @@ export default function GroundFeeSplitCalculator() {
         <div className="border-t pt-3 space-y-3">
           <h4 className="font-semibold">Advance Payer Final Amount</h4>
           <p className="text-blue-700 text-lg">
-            <strong>Advance Payer Final Payment:</strong> Rs {advancePayerFinal}
+            <strong>{notice}</strong>
           </p>
         </div>
       </div>
