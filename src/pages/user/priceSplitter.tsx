@@ -25,13 +25,13 @@ export default function GroundFeeSplitCalculator() {
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded-2xl shadow-lg space-y-6">
       <h2 className="text-2xl font-bold text-emerald-700 text-center">
-        Ground Fee Split Calculator
+        Ground Fee Split
       </h2>
 
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="font-medium">Price Per Hour (Rs)</label>
+          <label className="font-medium">Price Per Hour</label>
           <input
             type="number"
             className="w-full p-2 border rounded-xl"
@@ -41,7 +41,7 @@ export default function GroundFeeSplitCalculator() {
         </div>
 
         <div>
-          <label className="font-medium">Total Hours</label>
+          <label className="font-medium">Hours</label>
           <input
             type="number"
             className="w-full p-2 border rounded-xl"
@@ -51,7 +51,7 @@ export default function GroundFeeSplitCalculator() {
         </div>
 
         <div>
-          <label className="font-medium">Losing Team Payment (%)</label>
+          <label className="font-medium">Losing Team %</label>
           <input
             type="number"
             className="w-full p-2 border rounded-xl"
@@ -61,53 +61,50 @@ export default function GroundFeeSplitCalculator() {
         </div>
       </div>
 
-      {/* Results */}
+      {/* Summary Card */}
       <div className="bg-emerald-50 p-4 rounded-xl space-y-4">
         <h3 className="text-xl font-semibold text-emerald-700 text-center">
-          Payment Breakdown (Option 2: Down Payment Refunded Proportionally)
+          Summary
         </h3>
 
-        <p className="text-lg">
-          <strong>Total Ground Price:</strong> Rs {totalPrice}
-        </p>
-        <p className="text-lg">
-          <strong>Down Payment (10%):</strong> Rs {downPayment}
-        </p>
-        <p className="text-lg">
-          <strong>Remaining Amount:</strong> Rs {remainingAmount}
-        </p>
-
-        <div className="border-t pt-3 space-y-3">
-          <h4 className="font-semibold">Split of Remaining Amount</h4>
+        <div className="space-y-2">
           <p>
-            <strong>Losing Team Share:</strong> Rs {loserShareRemaining}
+            <strong>Total Price:</strong> Rs {totalPrice}
           </p>
           <p>
-            <strong>Winning Team Share:</strong> Rs {winnerShareRemaining}
+            <strong>Down Payment (10%):</strong> Rs {downPayment}
+          </p>
+          <p>
+            <strong>Amount to Be Paid After Match:</strong> Rs {remainingAmount}
           </p>
         </div>
 
-        <div className="border-t pt-3 space-y-3">
-          <h4 className="font-semibold">Refund Contribution Breakdown</h4>
+        {/* Simple Split */}
+        <div className="border-t pt-3 space-y-2">
+          <h4 className="font-semibold">Team Split</h4>
           <p>
-            <strong>Losing Team Refund Contribution ({loserPercent}%):</strong>{" "}
-            Rs {loserRefund}
+            <strong>Losing Team Base Share:</strong> Rs {loserShareRemaining}
           </p>
           <p>
-            <strong>
-              Winning Team Refund Contribution ({100 - loserPercent}%):
-            </strong>{" "}
-            Rs {winnerRefund}
+            <strong>Winning Team Base Share:</strong> Rs {winnerShareRemaining}
           </p>
         </div>
 
-        <div className="border-t pt-3 space-y-3">
+        {/* Refund Visual */}
+        <div className="border-t pt-3 space-y-2">
+          <h4 className="font-semibold">Down Payment Adjustment</h4>
+          <p>Losing team refunds: Rs {loserRefund}</p>
+          <p>Winning team refunds: Rs {winnerRefund}</p>
+        </div>
+
+        {/* Final */}
+        <div className="border-t pt-3 space-y-2">
           <h4 className="font-semibold">Final Amount Each Team Pays</h4>
           <p className="text-red-700 text-lg">
-            <strong>Losing Team Final Payment:</strong> Rs {loserFinalPay}
+            <strong>Losing Team:</strong> Rs {loserFinalPay}
           </p>
           <p className="text-green-700 text-lg">
-            <strong>Winning Team Final Payment:</strong> Rs {winnerFinalPay}
+            <strong>Winning Team:</strong> Rs {winnerFinalPay}
           </p>
         </div>
       </div>
