@@ -4,23 +4,30 @@ export default function GroundFeeSplitCalculator() {
   const [pricePerHour, setPricePerHour] = useState(1500);
   const [hours, setHours] = useState(1);
   const [loserPercent, setLoserPercent] = useState(70);
+  const [matchFormat, setMatchFormat] = useState("6v6");
+  const [advanceTeam, setAdvanceTeam] = useState("winner");
 
-  // calculations
+  // basic values
   const totalPrice = pricePerHour * hours;
   const downPayment = totalPrice * 0.1;
-  const remainingAmount = totalPrice - downPayment;
 
-  // share split
-  const loserShareRemaining = (remainingAmount * loserPercent) / 100;
-  const winnerShareRemaining = remainingAmount - loserShareRemaining;
+  // split calculation
+  const loserTeamPay = (totalPrice * loserPercent) / 100;
+  const winnerTeamPay = totalPrice - loserTeamPay;
 
-  // proportional refund logic (Option 2)
-  const loserRefund = (downPayment * loserPercent) / 100;
-  const winnerRefund = (downPayment * (100 - loserPercent)) / 100;
+  // advance payer effect
+  let advancePayerFinal;
+  if (advanceTeam === "winner") {
+    // winning team pays less + may get back extra
+    const winnerShareAfterAdvance = winnerTeamPay - downPayment;
+    const loserContributionToAdvance = (downPayment * loserPercent) / 100;
 
-  // final total each team pays
-  const loserFinalPay = loserShareRemaining + loserRefund;
-  const winnerFinalPay = winnerShareRemaining + winnerRefund;
+    advancePayerFinal = winnerShareAfterAdvance - loserContributionToAdvance;
+  } else {
+    // losing team paid advance → reduce their remaining
+    const loserShareAfterAdvance = loserTeamPay - downPayment;
+    advancePayerFinal = loserShareAfterAdvance;
+  }
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded-2xl shadow-lg space-y-6">
@@ -59,12 +66,35 @@ export default function GroundFeeSplitCalculator() {
             onChange={(e) => setLoserPercent(Number(e.target.value))}
           />
         </div>
+
+        <div>
+          <label className="font-medium">Match Format</label>
+          <input
+            type="text"
+            className="w-full p-2 border rounded-xl"
+            placeholder="e.g., 6v6"
+            value={matchFormat}
+            onChange={(e) => setMatchFormat(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="font-medium">Advance Paid By (Team)</label>
+          <select
+            className="w-full p-2 border rounded-xl"
+            value={advanceTeam}
+            onChange={(e) => setAdvanceTeam(e.target.value)}
+          >
+            <option value="winner">Winning Team</option>
+            <option value="loser">Losing Team</option>
+          </select>
+        </div>
       </div>
 
       {/* Results */}
       <div className="bg-emerald-50 p-4 rounded-xl space-y-4">
         <h3 className="text-xl font-semibold text-emerald-700 text-center">
-          Payment Breakdown (Option 2: Down Payment Refunded Proportionally)
+          Final Payment Breakdown
         </h3>
 
         <p className="text-lg">
@@ -73,41 +103,21 @@ export default function GroundFeeSplitCalculator() {
         <p className="text-lg">
           <strong>Down Payment (10%):</strong> Rs {downPayment}
         </p>
-        <p className="text-lg">
-          <strong>Remaining Amount:</strong> Rs {remainingAmount}
-        </p>
 
         <div className="border-t pt-3 space-y-3">
-          <h4 className="font-semibold">Split of Remaining Amount</h4>
+          <h4 className="font-semibold">Team Payment Split</h4>
           <p>
-            <strong>Losing Team Share:</strong> Rs {loserShareRemaining}
+            <strong>Losing Team Pays:</strong> Rs {loserTeamPay}
           </p>
           <p>
-            <strong>Winning Team Share:</strong> Rs {winnerShareRemaining}
+            <strong>Winning Team Pays:</strong> Rs {winnerTeamPay}
           </p>
         </div>
 
         <div className="border-t pt-3 space-y-3">
-          <h4 className="font-semibold">Refund Contribution Breakdown</h4>
-          <p>
-            <strong>Losing Team Refund Contribution ({loserPercent}%):</strong>{" "}
-            Rs {loserRefund}
-          </p>
-          <p>
-            <strong>
-              Winning Team Refund Contribution ({100 - loserPercent}%):
-            </strong>{" "}
-            Rs {winnerRefund}
-          </p>
-        </div>
-
-        <div className="border-t pt-3 space-y-3">
-          <h4 className="font-semibold">Final Amount Each Team Pays</h4>
-          <p className="text-red-700 text-lg">
-            <strong>Losing Team Final Payment:</strong> Rs {loserFinalPay}
-          </p>
-          <p className="text-green-700 text-lg">
-            <strong>Winning Team Final Payment:</strong> Rs {winnerFinalPay}
+          <h4 className="font-semibold">Advance Payer Final Amount</h4>
+          <p className="text-blue-700 text-lg">
+            <strong>Advance Payer Final Payment:</strong> Rs {advancePayerFinal}
           </p>
         </div>
       </div>
