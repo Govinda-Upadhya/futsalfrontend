@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 export default function GroundFeeSplitCalculator() {
   const [pricePerHour, setPricePerHour] = useState(1500);
@@ -6,57 +6,48 @@ export default function GroundFeeSplitCalculator() {
   const [loserPercent, setLoserPercent] = useState(70);
   const [matchFormat, setMatchFormat] = useState("6v6");
   const [advanceTeam, setAdvanceTeam] = useState("winner");
-  const [notice, setNotice] = useState("");
 
-  // basic values
-  const totalPrice = pricePerHour * hours;
-  const downPayment = totalPrice * 0.1;
+  // Compute values dynamically whenever inputs change
+  const { totalPrice, downPayment, loserTeamPay, winnerTeamPay, notice } =
+    useMemo(() => {
+      const totalPrice = pricePerHour * hours;
+      const downPayment = totalPrice * 0.1;
+      const loserTeamPay = (totalPrice * loserPercent) / 100;
+      const winnerTeamPay = totalPrice - loserTeamPay;
 
-  // split calculation
-  const loserTeamPay = (totalPrice * loserPercent) / 100;
-  const winnerTeamPay = totalPrice - loserTeamPay;
-  const totalPlayers = parseInt(matchFormat.split("v")[0]);
-  // advance payer effect
-  let advancePayerFinal;
-  if (advanceTeam === "winner") {
-    // winning team pays less + may get back extra
-    const perPersonPaymentWinner = winnerTeamPay / totalPlayers;
-    const advancePayerMoney = downPayment - perPersonPaymentWinner;
-    if (advancePayerMoney < 0) {
-      setNotice(
-        `The person who paid advance will get back ${Math.abs(
-          advancePayerMoney
-        )} from losing team`
-      );
-    } else {
-      setNotice(
-        `The person who paid advance will have to pay only ${Math.abs(
-          advancePayerMoney
-        )}`
-      );
-    }
-    // const winnerShareAfterAdvance = winnerTeamPay - downPayment;
-    // const loserContributionToAdvance = (downPayment * loserPercent) / 100;
+      const totalPlayers = parseInt(matchFormat.split("v")[0]) || 1;
 
-    // advancePayerFinal = winnerShareAfterAdvance - loserContributionToAdvance;
-  } else {
-    // losing team paid advance → reduce their remaining
-    const perPersonPaymentWinner = loserTeamPay / totalPlayers;
-    const advancePayerMoney = downPayment - perPersonPaymentWinner;
-    if (advancePayerMoney > 0) {
-      setNotice(
-        `The person who paid advance will pay only ${Math.abs(
-          advancePayerMoney
-        )} `
-      );
-    } else {
-      setNotice(
-        `The person who paid advance will have to get back ${Math.abs(
-          advancePayerMoney
-        )} from its team members`
-      );
-    }
-  }
+      let notice = "";
+      if (advanceTeam === "winner") {
+        const perPersonPaymentWinner = winnerTeamPay / totalPlayers;
+        const advancePayerMoney = downPayment - perPersonPaymentWinner;
+
+        if (advancePayerMoney < 0) {
+          notice = `The person who paid advance will get back ${Math.abs(
+            advancePayerMoney
+          )} from losing team`;
+        } else {
+          notice = `The person who paid advance will have to pay only ${Math.abs(
+            advancePayerMoney
+          )}`;
+        }
+      } else {
+        const perPersonPaymentLoser = loserTeamPay / totalPlayers;
+        const advancePayerMoney = downPayment - perPersonPaymentLoser;
+
+        if (advancePayerMoney > 0) {
+          notice = `The person who paid advance will pay only ${Math.abs(
+            advancePayerMoney
+          )}`;
+        } else {
+          notice = `The person who paid advance will have to get back ${Math.abs(
+            advancePayerMoney
+          )} from its team members`;
+        }
+      }
+
+      return { totalPrice, downPayment, loserTeamPay, winnerTeamPay, notice };
+    }, [pricePerHour, hours, loserPercent, matchFormat, advanceTeam]);
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded-2xl shadow-lg space-y-6">
