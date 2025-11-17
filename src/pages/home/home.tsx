@@ -466,10 +466,10 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               <div id="search-section" className="py-8">
                 <SearchBar onSearch={handleSearch} className="mb-12" />
               </div>
-              <div className="flex">
+              <div className="flex w-full justify-end">
                 <button
                   onClick={() => handleTabClick("feesSplitter")}
-                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition"
+                  className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all"
                 >
                   Fees Splitter
                 </button>
