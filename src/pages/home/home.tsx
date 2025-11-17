@@ -439,7 +439,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             >
               Challenges
             </button> */}
-            <button
+            {/* <button
               onClick={() => handleTabClick("feesSplitter")}
               className={`px-6 py-3 text-lg font-semibold transition ${
                 activeTab === "feesSplitter"
@@ -448,7 +448,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               }`}
             >
               Fees Splitter
-            </button>
+            </button> */}
             <button
               onClick={() => handleTabClick("activityhub")}
               className={`px-6 py-3 text-lg font-semibold transition ${
@@ -465,6 +465,14 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             <>
               <div id="search-section" className="py-8">
                 <SearchBar onSearch={handleSearch} className="mb-12" />
+              </div>
+              <div className="flex">
+                <button
+                  onClick={() => handleTabClick("feesSplitter")}
+                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition"
+                >
+                  Fees Splitter
+                </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
