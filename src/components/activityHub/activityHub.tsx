@@ -12,15 +12,7 @@ const categories = [
 ];
 
 export default function ActivityHub() {
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const toggleCategory = (category: string) => {
-    setSelected((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
-  };
+  const [selected, setSelected] = useState<string>("");
 
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
@@ -29,44 +21,34 @@ export default function ActivityHub() {
         <h1 className="text-3xl font-bold">Activity Hub</h1>
       </div>
 
-      {/* Filter Section */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">Filter Activities</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {/* Dropdown Filter */}
+      <div className="mb-6 max-w-xs">
+        <label className="block text-lg font-semibold mb-2">
+          Select Activity
+        </label>
+        <select
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600"
+        >
+          <option value="">-- Choose an activity --</option>
           {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => toggleCategory(cat)}
-              className={`px-4 py-2 rounded-2xl border text-sm font-medium transition-all shadow-sm hover:shadow-md
-              ${
-                selected.includes(cat)
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300"
-              }
-              `}
-            >
+            <option key={cat} value={cat}>
               {cat}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
-      {/* Results Section */}
+      {/* Selected Result */}
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Selected Activities</h2>
-        {selected.length === 0 ? (
-          <p className="text-gray-500">No activities selected.</p>
+        <h2 className="text-xl font-semibold mb-4">Selected Activity</h2>
+        {selected ? (
+          <span className="px-4 py-2 bg-emerald-600 text-white rounded-2xl shadow text-sm">
+            {selected}
+          </span>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {selected.map((item) => (
-              <span
-                key={item}
-                className="px-3 py-1 text-sm bg-blue-600 text-white rounded-2xl shadow"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+          <p className="text-gray-500">No activity selected.</p>
         )}
       </div>
     </div>

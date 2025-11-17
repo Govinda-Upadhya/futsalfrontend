@@ -442,7 +442,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             <button
               onClick={() => handleTabClick("feesSplitter")}
               className={`px-6 py-3 text-lg font-semibold transition ${
-                activeTab === "rivals"
+                activeTab === "feesSplitter"
                   ? "border-b-4 border-emerald-600 text-emerald-700"
                   : "text-gray-500 hover:text-gray-700"
               }`}
@@ -452,7 +452,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             <button
               onClick={() => handleTabClick("activityhub")}
               className={`px-6 py-3 text-lg font-semibold transition ${
-                activeTab === "rivals"
+                activeTab === "activityhub"
                   ? "border-b-4 border-emerald-600 text-emerald-700"
                   : "text-gray-500 hover:text-gray-700"
               }`}
