@@ -469,7 +469,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               <div className="flex w-full justify-end">
                 <button
                   onClick={() => handleTabClick("feesSplitter")}
-                  className="px-5 py-2 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all"
+                  className="px-5 py-2 bg-gradient-to-r mb-2 from-emerald-500 to-emerald-700 text-white rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all"
                 >
                   Fees Splitter
                 </button>
