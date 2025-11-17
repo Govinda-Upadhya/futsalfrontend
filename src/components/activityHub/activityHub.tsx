@@ -15,7 +15,7 @@ export default function ActivityHub() {
   const [selected, setSelected] = useState<string>("");
 
   return (
-    <div className="w-full min-h-screen p-6 bg-gray-50">
+    <div className="min-h-screen p-6 bg-gray-50 w-[80%]">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Activity Hub</h1>
