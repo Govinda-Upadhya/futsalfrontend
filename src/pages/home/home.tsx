@@ -449,7 +449,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
             >
               Fees Splitter
             </button> */}
-            <button
+            {/* <button
               onClick={() => handleTabClick("activityhub")}
               className={`px-6 py-3 text-lg font-semibold transition ${
                 activeTab === "activityhub"
@@ -458,7 +458,7 @@ You can set your browser to refuse all or some browser cookies, or to alert you 
               }`}
             >
               Activity Hub
-            </button>
+            </button> */}
           </div>
           {/* Grounds Section */}
           {activeTab === "grounds" && (
