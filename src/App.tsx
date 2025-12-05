@@ -30,6 +30,8 @@ import BookingAdminPage from "./components/admin/adminBooking";
 import ChallengeCard from "./components/challenge/challengeCard";
 import ChallengeotpPage from "./components/otp/challengeopt";
 import Confirmationchallenge from "./components/confirmation/challengeconfirmation";
+import Failed from "./components/confirmation/failure";
+import Canceled from "./components/confirmation/cancelled";
 
 function App() {
   return (
@@ -49,6 +51,8 @@ function App() {
             element={<BookingPending />}
           />
           <Route path="users/booking/confirmed" element={<Confirmation />} />
+          <Route path="users/booking/failed" element={<Failed />} />
+          <Route path="users/booking/cancelled" element={<Canceled />} />
           <Route
             path="users/challenge/confirmed"
             element={<Confirmationchallenge />}
