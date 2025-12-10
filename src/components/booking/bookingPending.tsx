@@ -207,7 +207,7 @@ const BookingPending = () => {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !prediction) return;
+    if (!file) return;
 
     // if (prediction !== "Valid payment screenshoot") {
     //   alert("⚠️ Please upload a valid payment screenshot.");
