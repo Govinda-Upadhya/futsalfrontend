@@ -209,10 +209,10 @@ const BookingPending = () => {
     e.preventDefault();
     if (!file || !prediction) return;
 
-    if (prediction !== "Valid payment screenshoot") {
-      alert("⚠️ Please upload a valid payment screenshot.");
-      return;
-    }
+    // if (prediction !== "Valid payment screenshoot") {
+    //   alert("⚠️ Please upload a valid payment screenshot.");
+    //   return;
+    // }
     setUploading(true);
     const formData = new FormData();
     formData.append("screenshot", file);
