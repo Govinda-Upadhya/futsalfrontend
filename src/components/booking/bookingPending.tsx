@@ -471,7 +471,6 @@ const BookingPending = () => {
 
                 <button
                   type="submit"
-                  disabled={uploading || !imgVal}
                   onClick={handleSend}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >
