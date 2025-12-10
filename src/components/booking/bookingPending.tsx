@@ -170,25 +170,25 @@ const BookingPending = () => {
         setFile(selectedFile);
         setErrors((prev) => ({ ...prev, file: undefined }));
 
-        if (model) {
-          const img = await fileToTensor(selectedFile); // 🔥 now correct size
-          const preds = model.predict(img) as tf.Tensor;
-          const data = await preds.data();
+        // if (model) {
+        //   const img = await fileToTensor(selectedFile); // 🔥 now correct size
+        //   const preds = model.predict(img) as tf.Tensor;
+        //   const data = await preds.data();
 
-          const maxIdx = data.indexOf(Math.max(...Array.from(data)));
-          console.log("maxIdx", maxIdx);
-          const labels = [
-            "Invalid payment screenshoot",
-            "Valid payment screenshoot",
-          ]; // from metadata.yaml
-          setPrediction(labels[maxIdx]);
-          if (labels[maxIdx] == "Valid payment screenshoot") {
-            setImageVal(true);
-          }
-          console.log("📊 Prediction:", labels[maxIdx], data);
-          img.dispose();
-          preds.dispose();
-        }
+        //   const maxIdx = data.indexOf(Math.max(...Array.from(data)));
+        //   console.log("maxIdx", maxIdx);
+        //   const labels = [
+        //     "Invalid payment screenshoot",
+        //     "Valid payment screenshoot",
+        //   ]; // from metadata.yaml
+        //   setPrediction(labels[maxIdx]);
+        //   if (labels[maxIdx] == "Valid payment screenshoot") {
+        //     setImageVal(true);
+        //   }
+        //   console.log("📊 Prediction:", labels[maxIdx], data);
+        //   img.dispose();
+        //   preds.dispose();
+        // }
       }
     }
   };
