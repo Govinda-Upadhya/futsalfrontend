@@ -221,14 +221,17 @@ const BookingPending = () => {
     formData.append("contactInfo", bookingInfo?.contact || "");
     formData.append("email", bookingInfo?.email || "");
     formData.append("bookingId", bookingInfo?._id || "");
-    await axios.post(
-      `${base_url}/users/bookinginfo/send_screentshot`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    navigate("/users/booking/confirmed");
+    const res = await fetch(`${base_url}/users/bookinginfo/send_screentshot`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const html = await res.text();
+
+    // Replace current page with BFS redirect HTML
+    document.open();
+    document.write(html);
+    document.close();
     setUploading(false);
 
     setUploading(true);
