@@ -339,7 +339,7 @@ const Booking: React.FC = () => {
                     (a, b) =>
                       new Date(a.date).getTime() - new Date(b.date).getTime()
                   )
-                  .map((booking) => (
+                  .map((booking: Booking) => (
                     <tr
                       key={booking._id}
                       className={`transition-all duration-300 hover:bg-emerald-50 ${
@@ -419,14 +419,14 @@ const Booking: React.FC = () => {
                       <td className="px-4 sm:px-6 py-4">
                         <span
                           className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                            booking.status === "CONFIRMED"
+                            booking.payment_status === "SUCCESS"
                               ? "bg-green-100 text-green-800"
                               : booking.status === "PENDING"
                               ? "bg-yellow-100 text-yellow-800 animate-pulse"
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {booking.status === "CONFIRMED" && (
+                          {booking.payment_status === "SUCCESS" && (
                             <svg
                               className="w-4 h-4 mr-1"
                               fill="none"
@@ -472,52 +472,6 @@ const Booking: React.FC = () => {
                             </svg>
                           </button>
 
-                          {booking.status === "PENDING" && (
-                            <>
-                              <button
-                                onClick={() =>
-                                  handleAction(booking._id, "CONFIRMED")
-                                }
-                                className="text-green-600 hover:text-green-900 transition-colors duration-300"
-                                title="Accept Booking"
-                              >
-                                <svg
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleAction(booking._id, "REJECTED")
-                                }
-                                className="text-red-600 hover:text-red-900 transition-colors duration-300"
-                                title="Reject Booking"
-                              >
-                                <svg
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                  />
-                                </svg>
-                              </button>
-                            </>
-                          )}
                           {booking.status === "CONFIRMED" && (
                             <button
                               onClick={() => handleDelete(booking._id)}
