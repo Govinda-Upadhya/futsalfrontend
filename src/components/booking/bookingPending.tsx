@@ -67,17 +67,7 @@ const BookingPending = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [model, setModel] = useState<tf.GraphModel | null>(null);
   const [prediction, setPrediction] = useState<string | null>(null);
-  useEffect(() => {
-    async function loadModel() {
-      const loaded = await tf.loadGraphModel("/models/yolo/model.json");
 
-      setModel(loaded);
-      console.log("✅ Model loaded");
-    }
-    loadModel();
-  }, []);
-
-  // Dummy data
   useEffect(() => {
     async function fetchBooking() {
       const info = await axios.get(
@@ -85,7 +75,6 @@ const BookingPending = () => {
       );
       console.log(info);
       setBookingInfo(info.data.info);
-      setScanner(info.data.scanner);
     }
     fetchBooking();
   }, []);
@@ -141,15 +130,15 @@ const BookingPending = () => {
     return undefined;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
-    if (errors[name as keyof ValidationErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
+  //   // Clear error when user starts typing
+  //   if (errors[name as keyof ValidationErrors]) {
+  //     setErrors((prev) => ({ ...prev, [name]: undefined }));
+  //   }
+  // };
   const handleDownload = () => {
     if (!scanner) return;
     const link = document.createElement("a");
@@ -193,29 +182,24 @@ const BookingPending = () => {
     }
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: ValidationErrors = {
-      name: validateName(formData.name),
-      email: validateEmail(formData.email),
-      contact: validateContact(formData.contact),
-      file: validateFile(file),
-    };
+  // const validateForm = (): boolean => {
+  //   const newErrors: ValidationErrors = {
+  //     name: validateName(formData.name),
+  //     email: validateEmail(formData.email),
+  //     contact: validateContact(formData.contact),
+  //     file: validateFile(file),
+  //   };
 
-    setErrors(newErrors);
-    return !Object.values(newErrors).some((error) => error !== undefined);
-  };
+  //   setErrors(newErrors);
+  //   return !Object.values(newErrors).some((error) => error !== undefined);
+  // };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) return;
 
-    // if (prediction !== "Valid payment screenshoot") {
-    //   alert("⚠️ Please upload a valid payment screenshot.");
-    //   return;
-    // }
     setUploading(true);
     const formData = new FormData();
-    formData.append("screenshot", file);
+
     formData.append("name", bookingInfo?.name || "");
     formData.append("groundId", bookingInfo?.ground._id || "");
     formData.append("contactInfo", bookingInfo?.contact || "");
@@ -227,6 +211,7 @@ const BookingPending = () => {
     });
 
     const html = await res.text();
+    console.log(html);
 
     // Replace current page with BFS redirect HTML
     document.open();
@@ -355,36 +340,6 @@ const BookingPending = () => {
 
             {/* Payment Section */}
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200 mb-6">
-              <h3 className="font-bold text-gray-900 mb-3 text-lg">
-                Payment Instructions
-              </h3>
-              <div className="bg-white shadow-md rounded-xl p-4 w-full max-w-sm mx-auto text-center border border-gray-200">
-                <p className="text-gray-700 font-medium mb-3">Owner Bank QR</p>
-
-                <div className="relative">
-                  {scanner ? (
-                    <img
-                      src={scanner}
-                      alt="Payment QR"
-                      className="w-40 h-40 mx-auto rounded-lg border border-gray-300 shadow-sm object-contain bg-gray-50"
-                    />
-                  ) : (
-                    <div className="w-40 h-40 mx-auto flex items-center justify-center rounded-lg border border-dashed border-gray-400 bg-gray-50 text-gray-500">
-                      No QR Available
-                    </div>
-                  )}
-
-                  {scanner && (
-                    <button
-                      onClick={handleDownload}
-                      className="absolute bottom-2 right-2 p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg transition-colors"
-                    >
-                      <Download className="h-5 w-5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
               <div className="bg-white rounded-lg p-4 mb-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600">Down Payment (10%):</span>
@@ -403,88 +358,16 @@ const BookingPending = () => {
                 </div>
               </div>
 
-              <p className="text-sm text-gray-700 mb-4">
-                Upload your payment screenshot to confirm your booking. The
-                ground owner will verify your payment.
-              </p>
-
               <form>
-                {/* File Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Payment Screenshot
-                  </label>
-                  <div className="relative w-full">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="absolute inset-0 z-10 w-full h-full cursor-pointer opacity-0"
-                    />
-                    <div
-                      className={`w-full border-2 border-dashed rounded-xl p-4 transition-colors ${
-                        errors.file
-                          ? "border-red-500 bg-red-50"
-                          : "border-green-300 focus:ring-green-500 focus:border-green-500"
-                      }`}
-                    >
-                      {!file ? (
-                        <div className="flex flex-col items-center justify-center text-center">
-                          <CreditCard className="h-8 w-8 text-green-400 mx-auto mb-2" />
-                          <span className="text-green-600 font-medium">
-                            Click to upload payment screenshot
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between px-4">
-                          <span className="text-green-700 font-medium truncate">
-                            {file.name}
-                          </span>
-                          <Check className="h-5 w-5 text-green-600" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {errors.file && (
-                    <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
-                      <AlertCircle className="h-4 w-4" />
-                      <span>{errors.file}</span>
-                    </div>
-                  )}
-                  <div className="text-xs text-gray-500 mt-1">
-                    Accepted formats: JPG, PNG, GIF. Max size: 5MB
-                  </div>
-                </div>
-                {prediction && (
-                  <div className="mt-2 text-center">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-bold ${
-                        prediction === "Valid payment screenshoot"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {prediction}
-                    </span>
-                  </div>
-                )}
-
                 <button
                   type="submit"
                   onClick={handleSend}
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:scale-100 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                 >
-                  {uploading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Check className="h-5 w-5" />
-                      Confirm Payment
-                    </>
-                  )}
+                  <>
+                    <Check className="h-5 w-5" />
+                    Confirm Payment
+                  </>
                 </button>
               </form>
             </div>

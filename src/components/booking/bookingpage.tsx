@@ -319,7 +319,7 @@ const BookingPage: React.FC = () => {
     localStorage.setItem("email", data.email);
     localStorage.setItem("id", booking.data.booking_id);
     setIsBooking(false);
-    navigate(`/user/booking/OTP`);
+    navigate(`/users/booking/${booking.data.booking_id}`);
   };
 
   const getTotalAmount = () => {
