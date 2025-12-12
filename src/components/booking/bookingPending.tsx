@@ -200,20 +200,23 @@ const BookingPending = () => {
     setUploading(true);
     const formData = new FormData();
 
-    formData.append("name", bookingInfo?.name || "");
-    formData.append("groundId", bookingInfo?.ground._id || "");
-    formData.append("contactInfo", bookingInfo?.contact || "");
-    formData.append("email", bookingInfo?.email || "");
-    formData.append("bookingId", bookingInfo?._id || "");
     const res = await fetch(`${base_url}/users/bookinginfo/send_screentshot`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: bookingInfo?.name || "",
+        groundId: bookingInfo?.ground._id || "",
+        contactInfo: bookingInfo?.contact || "",
+        email: bookingInfo?.email || "",
+        bookingId: bookingInfo?._id || "",
+      }),
     });
 
     const html = await res.text();
     console.log(html);
 
-    // Replace current page with BFS redirect HTML
     document.open();
     document.write(html);
     document.close();
