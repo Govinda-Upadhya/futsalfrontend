@@ -441,7 +441,7 @@ const Booking: React.FC = () => {
                               />
                             </svg>
                           )}
-                          {booking.status}
+                          {booking.payment_status}
                         </span>
                       </td>
                       <td className="px-4 sm:px-6 py-4">
@@ -472,7 +472,7 @@ const Booking: React.FC = () => {
                             </svg>
                           </button>
 
-                          {booking.status === "CONFIRMED" && (
+                          {booking.payment_status === "SUCCESS" && (
                             <button
                               onClick={() => handleDelete(booking._id)}
                               className="text-gray-500 hover:text-gray-900 transition-colors duration-300"
@@ -677,55 +677,6 @@ const Booking: React.FC = () => {
                   Actions
                 </h3>
                 <div className="space-y-3">
-                  {selectedBooking.status === "PENDING" && (
-                    <>
-                      <button
-                        onClick={() => {
-                          handleAction(selectedBooking._id, "CONFIRMED");
-                          setShowDetailModal(false);
-                        }}
-                        className={`w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-300 `}
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        Accept Booking
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedBookingId(selectedBooking._id);
-                          setShowRejectModal(true);
-                          setShowDetailModal(false);
-                        }}
-                        className="w-full flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors duration-300"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                        Reject Booking
-                      </button>
-                    </>
-                  )}
                   {selectedBooking.status === "CONFIRMED" && (
                     <button
                       onClick={() => {
