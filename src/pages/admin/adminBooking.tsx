@@ -642,7 +642,7 @@ const Booking: React.FC = () => {
                     </span>
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                        selectedBooking.status === "CONFIRMED"
+                        selectedBooking.payment_status === "CONFIRMED"
                           ? "bg-green-100 text-green-800"
                           : selectedBooking.status === "PENDING"
                           ? "bg-yellow-100 text-yellow-800"
